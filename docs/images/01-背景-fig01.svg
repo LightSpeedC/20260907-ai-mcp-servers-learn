@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" width="900" height="300" role="img" aria-label="規約が無い場合と MCP がある場合の配線の違い">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(280,58%,55%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="215" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">規約が無いと</text>
+	<text x="685" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">MCP があると</text>
+
+	
+	<g>
+		<rect x="30" y="50" width="110" height="34" rx="7" fill="url(#i1)"/>
+		<text x="85" y="72" text-anchor="middle" font-size="12" fill="#fff">道具 A</text>
+		<rect x="30" y="105" width="110" height="34" rx="7" fill="url(#i1)"/>
+		<text x="85" y="127" text-anchor="middle" font-size="12" fill="#fff">道具 B</text>
+		<rect x="30" y="160" width="110" height="34" rx="7" fill="url(#i1)"/>
+		<text x="85" y="182" text-anchor="middle" font-size="12" fill="#fff">道具 C</text>
+
+		<rect x="290" y="50" width="110" height="34" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
+		<text x="345" y="72" text-anchor="middle" font-size="12" fill="#1c2330">Wiki 検索</text>
+		<rect x="290" y="105" width="110" height="34" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
+		<text x="345" y="127" text-anchor="middle" font-size="12" fill="#1c2330">DB 参照</text>
+		<rect x="290" y="160" width="110" height="34" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
+		<text x="345" y="182" text-anchor="middle" font-size="12" fill="#1c2330">ビルド実行</text>
+
+		<g stroke="#a51f22" stroke-width="1.2" opacity="0.75">
+			<line x1="140" y1="67" x2="290" y2="67"/><line x1="140" y1="67" x2="290" y2="122"/><line x1="140" y1="67" x2="290" y2="177"/>
+			<line x1="140" y1="122" x2="290" y2="67"/><line x1="140" y1="122" x2="290" y2="122"/><line x1="140" y1="122" x2="290" y2="177"/>
+			<line x1="140" y1="177" x2="290" y2="67"/><line x1="140" y1="177" x2="290" y2="122"/><line x1="140" y1="177" x2="290" y2="177"/>
+		</g>
+		<text x="215" y="232" text-anchor="middle" font-size="13" font-weight="700" fill="#a51f22">3 × 3 = 9 通りの実装</text>
+		<text x="215" y="252" text-anchor="middle" font-size="11" fill="#4a5568">道具が増えるたび、全部の機能を書き直す</text>
+	</g>
+
+	
+	<g>
+		<rect x="500" y="50" width="110" height="34" rx="7" fill="url(#i1)"/>
+		<text x="555" y="72" text-anchor="middle" font-size="12" fill="#fff">道具 A</text>
+		<rect x="500" y="105" width="110" height="34" rx="7" fill="url(#i1)"/>
+		<text x="555" y="127" text-anchor="middle" font-size="12" fill="#fff">道具 B</text>
+		<rect x="500" y="160" width="110" height="34" rx="7" fill="url(#i1)"/>
+		<text x="555" y="182" text-anchor="middle" font-size="12" fill="#fff">道具 C</text>
+
+		<rect x="645" y="95" width="66" height="105" rx="8" fill="#1d7a3c"/>
+		<text x="678" y="140" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">MCP</text>
+		<text x="678" y="158" text-anchor="middle" font-size="11" fill="#fff">規約</text>
+
+		<rect x="760" y="50" width="110" height="34" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
+		<text x="815" y="72" text-anchor="middle" font-size="12" fill="#1c2330">Wiki 検索</text>
+		<rect x="760" y="105" width="110" height="34" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
+		<text x="815" y="127" text-anchor="middle" font-size="12" fill="#1c2330">DB 参照</text>
+		<rect x="760" y="160" width="110" height="34" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
+		<text x="815" y="182" text-anchor="middle" font-size="12" fill="#1c2330">ビルド実行</text>
+
+		<g stroke="#1d7a3c" stroke-width="1.4">
+			<line x1="610" y1="67" x2="645" y2="115"/><line x1="610" y1="122" x2="645" y2="140"/><line x1="610" y1="177" x2="645" y2="165"/>
+			<line x1="711" y1="115" x2="760" y2="67"/><line x1="711" y1="140" x2="760" y2="122"/><line x1="711" y1="165" x2="760" y2="177"/>
+		</g>
+		<text x="685" y="232" text-anchor="middle" font-size="13" font-weight="700" fill="#1d7a3c">3 + 3 = 6 通りの実装</text>
+		<text x="685" y="252" text-anchor="middle" font-size="11" fill="#4a5568">機能は 1 回書けば、どの道具からでも使える</text>
+	</g>
+</svg>

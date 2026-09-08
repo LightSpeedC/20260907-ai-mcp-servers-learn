@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 230" width="900" height="230" role="img" aria-label="Prompts は文言を組み立てて返すだけ">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<marker id="i2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="30" y="70" width="170" height="52" rx="8" fill="url(#i1)"/>
+	<text x="115" y="93" text-anchor="middle" font-size="12" fill="#fff">利用者が選ぶ</text>
+	<text x="115" y="111" text-anchor="middle" font-size="11" fill="#fff">/summarize-notes</text>
+
+	<line x1="200" y1="96" x2="255" y2="96" stroke="#4a5568" stroke-width="2" marker-end="url(#i2)"/>
+
+	<rect x="255" y="70" width="200" height="52" rx="8" fill="url(#i1)"/>
+	<text x="355" y="93" text-anchor="middle" font-size="12" fill="#fff">サーバーが組み立てる</text>
+	<text x="355" y="111" text-anchor="middle" font-size="11" fill="#fff">データを埋め込む</text>
+
+	<line x1="455" y1="96" x2="510" y2="96" stroke="#4a5568" stroke-width="2" marker-end="url(#i2)"/>
+
+	<rect x="510" y="70" width="180" height="52" rx="8" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="600" y="93" text-anchor="middle" font-size="12" fill="#1c2330">文言が返る</text>
+	<text x="600" y="111" text-anchor="middle" font-size="11" fill="#4a5568">まだ何も起きない</text>
+
+	<line x1="690" y1="96" x2="745" y2="96" stroke="#4a5568" stroke-width="2" marker-end="url(#i2)"/>
+
+	<rect x="745" y="70" width="125" height="52" rx="8" fill="#1d7a3c"/>
+	<text x="807" y="93" text-anchor="middle" font-size="12" fill="#fff">モデルへ</text>
+	<text x="807" y="111" text-anchor="middle" font-size="11" fill="#fff">ここで動く</text>
+
+	<text x="450" y="180" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">サーバーの仕事は「文言を作る」ところまで</text>
+	<text x="450" y="203" text-anchor="middle" font-size="11" fill="#4a5568">よく使う長い指示を、引数付きで再利用できるようにする仕掛け</text>
+</svg>

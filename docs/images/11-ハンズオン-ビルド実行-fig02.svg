@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 250" width="900" height="250" role="img" aria-label="シェルを通すと引数が命令になる">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(210,78%,25%)"/><stop offset="1" stop-color="hsl(210,58%,55%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="40" y="40" width="820" height="80" rx="9" fill="#fdeaea" stroke="#a51f22" stroke-width="2"/>
+	<text x="60" y="66" font-size="13" font-weight="700" fill="#a51f22">shell: true ＋ 文字列を組み立てる</text>
+	<text x="60" y="90" font-size="12" fill="#1c2330" font-family="monospace">exec(`node build.js ${userInput}`)</text>
+	<text x="60" y="110" font-size="12" fill="#a51f22">userInput が "x &amp; del /s /q C:\\" だったら、その後ろも実行される</text>
+
+	<rect x="40" y="140" width="820" height="80" rx="9" fill="#eaf6ee" stroke="#1d7a3c" stroke-width="2"/>
+	<text x="60" y="166" font-size="13" font-weight="700" fill="#1d7a3c">shell: false ＋ 配列で渡す</text>
+	<text x="60" y="190" font-size="12" fill="#1c2330" font-family="monospace">spawn('node', ['build.js', userInput], { shell: false })</text>
+	<text x="60" y="210" font-size="12" fill="#1d7a3c">記号が入っていても、ただの引数として渡るだけ</text>
+</svg>

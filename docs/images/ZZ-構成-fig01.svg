@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" width="900" height="220" role="img" aria-label="読者の出発点と到達点">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/><stop offset="1" stop-color="hsl(280,58%,55%)"/>
+		</linearGradient>
+		<marker id="i2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="40" y="60" width="250" height="100" rx="9" fill="#e8ecf3" stroke="#d9dfe8"/>
+	<text x="165" y="90" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">出発点</text>
+	<text x="165" y="114" text-anchor="middle" font-size="11" fill="#4a5568">JS は書ける</text>
+	<text x="165" y="136" text-anchor="middle" font-size="11" fill="#4a5568">MCP は知らない</text>
+
+	<line x1="290" y1="110" x2="610" y2="110" stroke="#4a5568" stroke-width="2" marker-end="url(#i2)"/>
+	<text x="450" y="98" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">120 分</text>
+	<text x="450" y="132" text-anchor="middle" font-size="11" fill="#4a5568">手を動かしながら 11 章</text>
+
+	<rect x="610" y="60" width="250" height="100" rx="9" fill="url(#i1)"/>
+	<text x="735" y="90" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">到達点</text>
+	<text x="735" y="114" text-anchor="middle" font-size="11" fill="#fff">自分のサーバーが動いている</text>
+	<text x="735" y="136" text-anchor="middle" font-size="11" fill="#fff">限界も分かっている</text>
+</svg>

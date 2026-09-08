@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 280" width="900" height="280" role="img" aria-label="ログのどこで止まっているかで原因が分かる">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="40" y="35" width="380" height="40" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="60" y="60" font-size="12" fill="#1c2330" font-family="monospace">（ファイルが作られない）</text>
+	<rect x="440" y="35" width="420" height="40" rx="7" fill="#fdeaea" stroke="#a51f22"/>
+	<text x="460" y="60" font-size="12" fill="#a51f22">プロセスが起動していない。パス・node の場所を疑う</text>
+
+	<rect x="40" y="85" width="380" height="40" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="60" y="110" font-size="12" fill="#1c2330" font-family="monospace">*** 起動 で止まる</text>
+	<rect x="440" y="85" width="420" height="40" rx="7" fill="#fdeaea" stroke="#a51f22"/>
+	<text x="460" y="110" font-size="12" fill="#a51f22">起動直後に落ちている。stderr を見る</text>
+
+	<rect x="40" y="135" width="380" height="40" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="60" y="160" font-size="12" fill="#1c2330" font-family="monospace">initialize の後で止まる</text>
+	<rect x="440" y="135" width="420" height="40" rx="7" fill="#fff6e8" stroke="#b8620a"/>
+	<text x="460" y="160" font-size="12" fill="#b8620a">応答の形が違う。stdout に余計な出力がないか</text>
+
+	<rect x="40" y="185" width="380" height="40" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="60" y="210" font-size="12" fill="#1c2330" font-family="monospace">tools/list まで来て、call が無い</text>
+	<rect x="440" y="185" width="420" height="40" rx="7" fill="#fff6e8" stroke="#b8620a"/>
+	<text x="460" y="210" font-size="12" fill="#b8620a">サーバーは正常。説明文か承認の設定を疑う</text>
+
+	<rect x="40" y="235" width="380" height="40" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="60" y="260" font-size="12" fill="#1c2330" font-family="monospace">tools/call が来ている</text>
+	<rect x="440" y="235" width="420" height="40" rx="7" fill="#eaf6ee" stroke="#1d7a3c"/>
+	<text x="460" y="260" font-size="12" fill="#1d7a3c">通信は成立。あとはツールの中身の問題</text>
+</svg>

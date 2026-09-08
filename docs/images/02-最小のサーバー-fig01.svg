@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 230" width="900" height="230" role="img" aria-label="SDK から入った場合と手書きから入った場合で、見えている範囲が違う">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="225" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">SDK から入ると</text>
+	<rect x="60" y="45" width="330" height="46" rx="8" fill="url(#i1)"/>
+	<text x="225" y="66" text-anchor="middle" font-size="13" fill="#fff">自分で書いたコード</text>
+	<text x="225" y="83" text-anchor="middle" font-size="11" fill="#fff">見える</text>
+
+	<rect x="60" y="100" width="330" height="80" rx="8" fill="#e8ecf3" stroke="#d9dfe8"/>
+	<text x="225" y="128" text-anchor="middle" font-size="13" fill="#4a5568">SDK の中</text>
+	<text x="225" y="148" text-anchor="middle" font-size="11" fill="#4a5568">JSON-RPC の組み立て・初期化・エラー</text>
+	<text x="225" y="167" text-anchor="middle" font-size="12" font-weight="700" fill="#a51f22">見えない</text>
+
+	<text x="225" y="212" text-anchor="middle" font-size="11" fill="#4a5568">動かないとき、どこで止まっているか分からない</text>
+
+	<text x="675" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">手書きから入ると</text>
+	<rect x="510" y="45" width="330" height="135" rx="8" fill="url(#i2)"/>
+	<text x="675" y="80" text-anchor="middle" font-size="13" fill="#fff">自分で書いたコード</text>
+	<text x="675" y="105" text-anchor="middle" font-size="11" fill="#fff">JSON-RPC の組み立ても</text>
+	<text x="675" y="125" text-anchor="middle" font-size="11" fill="#fff">初期化もエラーも</text>
+	<text x="675" y="152" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">全部見える</text>
+
+	<text x="675" y="212" text-anchor="middle" font-size="11" fill="#4a5568">あとで SDK に移っても、中で何が起きているか分かる</text>
+</svg>

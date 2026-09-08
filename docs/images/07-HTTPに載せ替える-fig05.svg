@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 280" width="900" height="280" role="img" aria-label="stdioとHTTPの選び方">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="330" y="20" width="240" height="44" rx="8" fill="url(#i1)"/>
+	<text x="450" y="48" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">どちらにするか</text>
+
+	<path d="M 450 64 L 450 90" stroke="#4a5568" stroke-width="2"/>
+	<rect x="290" y="90" width="320" height="40" rx="8" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="450" y="115" text-anchor="middle" font-size="13" fill="#1c2330">別のマシンに置く必要がある？</text>
+
+	<path d="M 610 110 L 700 110" stroke="#4a5568" stroke-width="2"/>
+	<text x="655" y="102" text-anchor="middle" font-size="11" font-weight="700" fill="#1d7a3c">はい</text>
+	<rect x="700" y="90" width="170" height="40" rx="8" fill="hsl(140,58%,40%)"/>
+	<text x="785" y="115" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">HTTP</text>
+
+	<path d="M 450 130 L 450 158" stroke="#4a5568" stroke-width="2"/>
+	<text x="470" y="150" font-size="11" font-weight="700" fill="#4a5568">いいえ</text>
+
+	<rect x="290" y="158" width="320" height="40" rx="8" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="450" y="183" text-anchor="middle" font-size="13" fill="#1c2330">複数のホストで 1 本を共有したい？</text>
+
+	<path d="M 610 178 L 700 178" stroke="#4a5568" stroke-width="2"/>
+	<text x="655" y="170" text-anchor="middle" font-size="11" font-weight="700" fill="#1d7a3c">はい</text>
+	<rect x="700" y="158" width="170" height="40" rx="8" fill="hsl(140,58%,40%)"/>
+	<text x="785" y="183" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">HTTP</text>
+
+	<path d="M 450 198 L 450 226" stroke="#4a5568" stroke-width="2"/>
+	<text x="470" y="218" font-size="11" font-weight="700" fill="#4a5568">いいえ</text>
+
+	<rect x="290" y="226" width="320" height="40" rx="8" fill="hsl(280,58%,45%)"/>
+	<text x="450" y="251" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">stdio</text>
+	<text x="680" y="251" font-size="11" fill="#4a5568">起動も終了もホスト任せで済む</text>
+</svg>

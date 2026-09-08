@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 210" width="900" height="210" role="img" aria-label="入力検証をSDKが肩代わりする流れ">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<marker id="i2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="40" y="80" width="150" height="46" rx="8" fill="url(#i1)"/>
+	<text x="115" y="102" text-anchor="middle" font-size="12" fill="#fff">tools/call</text>
+	<text x="115" y="118" text-anchor="middle" font-size="11" fill="#fff">a: "あ", b: 3</text>
+
+	<line x1="190" y1="103" x2="270" y2="103" stroke="#4a5568" stroke-width="2" marker-end="url(#i2)"/>
+
+	<rect x="270" y="70" width="200" height="66" rx="8" fill="#e8ecf3" stroke="#d9dfe8"/>
+	<text x="370" y="95" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">SDK が検証</text>
+	<text x="370" y="115" text-anchor="middle" font-size="11" fill="#4a5568">zod の定義と突き合わせる</text>
+
+	<line x1="470" y1="90" x2="570" y2="60" stroke="#1d7a3c" stroke-width="2" marker-end="url(#i2)"/>
+	<text x="520" y="60" text-anchor="middle" font-size="11" font-weight="700" fill="#1d7a3c">通れば</text>
+
+	<line x1="470" y1="118" x2="570" y2="150" stroke="#a51f22" stroke-width="2" marker-end="url(#i2)"/>
+	<text x="520" y="155" text-anchor="middle" font-size="11" font-weight="700" fill="#a51f22">通らなければ</text>
+
+	<rect x="580" y="35" width="280" height="46" rx="8" fill="#1d7a3c"/>
+	<text x="720" y="57" text-anchor="middle" font-size="12" fill="#fff">自分のコードが呼ばれる</text>
+	<text x="720" y="73" text-anchor="middle" font-size="11" fill="#fff">引数は型が保証されている</text>
+
+	<rect x="580" y="130" width="280" height="46" rx="8" fill="#a51f22"/>
+	<text x="720" y="152" text-anchor="middle" font-size="12" fill="#fff">自分のコードは呼ばれない</text>
+	<text x="720" y="168" text-anchor="middle" font-size="11" fill="#fff">SDK が isError で返す</text>
+</svg>

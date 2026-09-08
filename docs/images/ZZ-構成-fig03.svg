@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 210" width="900" height="210" role="img" aria-label="ホストごとに喋る版が違う実測結果">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/><stop offset="1" stop-color="hsl(280,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="60" y="50" width="360" height="110" rx="9" fill="url(#i1)"/>
+	<text x="240" y="80" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">Claude Code 2.1.263</text>
+	<text x="240" y="106" text-anchor="middle" font-size="12" fill="#fff">protocolVersion: 2025-11-25</text>
+	<text x="240" y="130" text-anchor="middle" font-size="11" fill="#fff">roots ・ elicitation</text>
+	<text x="240" y="150" text-anchor="middle" font-size="11" fill="#fff">tasks は名乗らない</text>
+
+	<rect x="480" y="50" width="360" height="110" rx="9" fill="url(#i2)"/>
+	<text x="660" y="80" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">Codex 0.153.4</text>
+	<text x="660" y="106" text-anchor="middle" font-size="12" fill="#fff">protocolVersion: 2025-06-18</text>
+	<text x="660" y="130" text-anchor="middle" font-size="11" fill="#fff">elicitation（form ・ url）</text>
+	<text x="660" y="150" text-anchor="middle" font-size="11" fill="#fff">roots は名乗らない</text>
+
+	<text x="450" y="192" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">2026-09-07 時点。版が上がれば変わるので、自分の環境で確かめる</text>
+</svg>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" width="900" height="300" role="img" aria-label="Tools・Resources・Prompts の選び方">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="330" y="20" width="240" height="44" rx="8" fill="url(#i1)"/>
+	<text x="450" y="48" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">何かを提供したい</text>
+
+	<path d="M 450 64 L 450 90" stroke="#4a5568" stroke-width="2"/>
+	<rect x="300" y="90" width="300" height="40" rx="8" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="450" y="115" text-anchor="middle" font-size="13" fill="#1c2330">利用者が明示的に選ぶもの？</text>
+
+	<path d="M 600 110 L 700 110" stroke="#4a5568" stroke-width="2"/>
+	<text x="650" y="102" text-anchor="middle" font-size="11" font-weight="700" fill="#1d7a3c">はい</text>
+	<rect x="700" y="90" width="170" height="40" rx="8" fill="hsl(0,58%,45%)"/>
+	<text x="785" y="115" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Prompts</text>
+
+	<path d="M 450 130 L 450 158" stroke="#4a5568" stroke-width="2"/>
+	<text x="470" y="150" font-size="11" font-weight="700" fill="#4a5568">いいえ</text>
+
+	<rect x="300" y="158" width="300" height="40" rx="8" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="450" y="183" text-anchor="middle" font-size="13" fill="#1c2330">何かを変える・実行する？</text>
+
+	<path d="M 600 178 L 700 178" stroke="#4a5568" stroke-width="2"/>
+	<text x="650" y="170" text-anchor="middle" font-size="11" font-weight="700" fill="#1d7a3c">はい</text>
+	<rect x="700" y="158" width="170" height="40" rx="8" fill="hsl(280,58%,45%)"/>
+	<text x="785" y="183" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Tools</text>
+
+	<path d="M 450 198 L 450 226" stroke="#4a5568" stroke-width="2"/>
+	<text x="470" y="218" font-size="11" font-weight="700" fill="#4a5568">いいえ</text>
+
+	<rect x="300" y="226" width="300" height="40" rx="8" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="450" y="251" text-anchor="middle" font-size="13" fill="#1c2330">モデルに必ず見せたい？</text>
+
+	<path d="M 600 246 L 700 246" stroke="#4a5568" stroke-width="2"/>
+	<text x="650" y="238" text-anchor="middle" font-size="11" font-weight="700" fill="#1d7a3c">はい</text>
+	<rect x="700" y="226" width="170" height="40" rx="8" fill="hsl(280,58%,45%)"/>
+	<text x="785" y="251" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Tools</text>
+
+	<path d="M 300 246 L 200 246" stroke="#4a5568" stroke-width="2"/>
+	<text x="250" y="238" text-anchor="middle" font-size="11" font-weight="700" fill="#4a5568">いいえ</text>
+	<rect x="30" y="226" width="170" height="40" rx="8" fill="hsl(140,58%,40%)"/>
+	<text x="115" y="251" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Resources</text>
+</svg>

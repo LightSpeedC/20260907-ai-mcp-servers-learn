@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 250" width="900" height="250" role="img" aria-label="Tools・Resources・Prompts の使い手の違い">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/><stop offset="1" stop-color="hsl(280,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="40" y="40" width="250" height="130" rx="10" fill="url(#i1)"/>
+	<text x="165" y="72" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">Tools</text>
+	<text x="165" y="98" text-anchor="middle" font-size="12" fill="#fff">モデルが呼ぶ</text>
+	<text x="165" y="122" text-anchor="middle" font-size="11" fill="#fff">実行する・書き換える</text>
+	<text x="165" y="144" text-anchor="middle" font-size="11" fill="#fff">例: メモを追記する</text>
+
+	<rect x="325" y="40" width="250" height="130" rx="10" fill="url(#i2)"/>
+	<text x="450" y="72" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">Resources</text>
+	<text x="450" y="98" text-anchor="middle" font-size="12" fill="#fff">モデルか利用者が読む</text>
+	<text x="450" y="122" text-anchor="middle" font-size="11" fill="#fff">読むだけ・変わらない</text>
+	<text x="450" y="144" text-anchor="middle" font-size="11" fill="#fff">例: メモの一覧</text>
+
+	<rect x="610" y="40" width="250" height="130" rx="10" fill="url(#i3)"/>
+	<text x="735" y="72" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">Prompts</text>
+	<text x="735" y="98" text-anchor="middle" font-size="12" fill="#fff">利用者が選ぶ</text>
+	<text x="735" y="122" text-anchor="middle" font-size="11" fill="#fff">定型の指示を組み立てる</text>
+	<text x="735" y="144" text-anchor="middle" font-size="11" fill="#fff">例: メモをまとめさせる</text>
+
+	<text x="450" y="205" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">迷ったら「誰が使うか」で決める</text>
+	<text x="450" y="228" text-anchor="middle" font-size="11" fill="#4a5568">副作用があるなら Tools、読ませるだけなら Resources、利用者が明示的に呼ぶなら Prompts</text>
+</svg>

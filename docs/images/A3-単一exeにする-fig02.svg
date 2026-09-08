@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 210" width="900" height="210" role="img" aria-label="言語が違っても構造は同じ">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(210,78%,25%)"/><stop offset="1" stop-color="hsl(210,58%,55%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="40" y="40" width="380" height="140" rx="9" fill="#ffffff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="230" y="66" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">JavaScript</text>
+	<text x="60" y="94" font-size="11" fill="#1c2330" font-family="monospace">rl.on('line', ...)</text>
+	<text x="60" y="118" font-size="11" fill="#1c2330" font-family="monospace">JSON.parse(line)</text>
+	<text x="60" y="142" font-size="11" fill="#1c2330" font-family="monospace">process.stdout.write(...)</text>
+	<text x="60" y="166" font-size="11" fill="#1c2330" font-family="monospace">console.error(...)</text>
+
+	<rect x="480" y="40" width="380" height="140" rx="9" fill="url(#i1)"/>
+	<text x="670" y="66" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">C#</text>
+	<text x="500" y="94" font-size="11" fill="#fff" font-family="monospace">input.ReadLine()</text>
+	<text x="500" y="118" font-size="11" fill="#fff" font-family="monospace">Json.DeserializeObject(line)</text>
+	<text x="500" y="142" font-size="11" fill="#fff" font-family="monospace">_out.Write(...)</text>
+	<text x="500" y="166" font-size="11" fill="#fff" font-family="monospace">Console.Error.WriteLine(...)</text>
+
+	<path d="M 430 110 L 470 110" stroke="#4a5568" stroke-width="2"/>
+	<text x="450" y="102" text-anchor="middle" font-size="14" fill="#4a5568">≡</text>
+</svg>

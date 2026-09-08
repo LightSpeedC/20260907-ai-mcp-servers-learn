@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" width="900" height="220" role="img" aria-label="progressToken がある場合と無い場合">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="40" y="40" width="380" height="130" rx="9" fill="url(#i1)"/>
+	<text x="230" y="70" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">progressToken がある</text>
+	<text x="230" y="98" text-anchor="middle" font-size="12" fill="#fff">通知に添えて返せる</text>
+	<text x="230" y="122" text-anchor="middle" font-size="12" fill="#fff">ホストが進み具合を表示できる</text>
+	<text x="230" y="148" text-anchor="middle" font-size="11" fill="#fff">値は必ず増やす（仕様の決まり）</text>
+
+	<rect x="480" y="40" width="380" height="130" rx="9" fill="url(#i2)"/>
+	<text x="670" y="70" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">progressToken が無い</text>
+	<text x="670" y="98" text-anchor="middle" font-size="12" fill="#fff">送っても宛先が無い</text>
+	<text x="670" y="122" text-anchor="middle" font-size="12" fill="#fff">送らないのが正しい</text>
+	<text x="670" y="148" text-anchor="middle" font-size="11" fill="#fff">if (token === undefined) で守る</text>
+
+	<text x="450" y="200" text-anchor="middle" font-size="12" fill="#4a5568">付けてくるかどうかはホスト次第。付いていないことを前提に書く</text>
+</svg>

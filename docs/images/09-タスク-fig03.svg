@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 260" width="900" height="260" role="img" aria-label="createTaskはすぐ返し処理は裏で続く">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<marker id="i2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="30" y="40" width="160" height="40" rx="7" fill="url(#i1)"/>
+	<text x="110" y="65" text-anchor="middle" font-size="12" fill="#fff">createTask が呼ばれる</text>
+
+	<line x1="190" y1="60" x2="250" y2="60" stroke="#4a5568" stroke-width="2" marker-end="url(#i2)"/>
+
+	<rect x="250" y="40" width="180" height="40" rx="7" fill="url(#i1)"/>
+	<text x="340" y="65" text-anchor="middle" font-size="12" fill="#fff">taskId を作る</text>
+
+	<line x1="430" y1="60" x2="490" y2="60" stroke="#1d7a3c" stroke-width="2" marker-end="url(#i2)"/>
+
+	<rect x="490" y="40" width="180" height="40" rx="7" fill="#1d7a3c"/>
+	<text x="580" y="65" text-anchor="middle" font-size="12" fill="#fff">すぐ返す</text>
+
+	<line x1="340" y1="80" x2="340" y2="130" stroke="#b8620a" stroke-width="2" marker-end="url(#i2)"/>
+	<text x="360" y="110" font-size="11" fill="#b8620a">await を付けずに始める</text>
+
+	<rect x="230" y="130" width="220" height="46" rx="7" fill="#b8620a"/>
+	<text x="340" y="152" text-anchor="middle" font-size="12" fill="#fff">裏の処理</text>
+	<text x="340" y="169" text-anchor="middle" font-size="11" fill="#fff">終わったら結果を控えに入れる</text>
+
+	<line x1="450" y1="153" x2="620" y2="153" stroke="#4a5568" stroke-width="2" marker-end="url(#i2)"/>
+
+	<rect x="620" y="130" width="240" height="46" rx="7" fill="#ffffff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="740" y="152" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">taskStore</text>
+	<text x="740" y="169" text-anchor="middle" font-size="11" fill="#4a5568">状態と結果を持つ</text>
+
+	<text x="450" y="215" text-anchor="middle" font-size="12" font-weight="700" fill="#a51f22">裏の処理に await を付けると、待ってしまって意味が無くなる</text>
+	<text x="450" y="238" text-anchor="middle" font-size="11" fill="#4a5568">即時実行の関数で始めて、その場では待たない</text>
+</svg>

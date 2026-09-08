@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" width="900" height="220" role="img" aria-label="待ち受けるアドレスの違い">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="40" y="40" width="380" height="140" rx="9" fill="#ffffff" stroke="#a51f22" stroke-width="2"/>
+	<text x="230" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#a51f22">listen(3333)</text>
+	<text x="230" y="94" text-anchor="middle" font-size="12" fill="#1c2330">すべてのネットワークで待つ</text>
+	<text x="230" y="122" text-anchor="middle" font-size="12" fill="#1c2330">同じ LAN の誰でも繋がる</text>
+	<text x="230" y="152" text-anchor="middle" font-size="12" font-weight="700" fill="#a51f22">ツールを実行できてしまう</text>
+
+	<rect x="480" y="40" width="380" height="140" rx="9" fill="#ffffff" stroke="#1d7a3c" stroke-width="2"/>
+	<text x="670" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#1d7a3c">listen(3333, '127.0.0.1')</text>
+	<text x="670" y="94" text-anchor="middle" font-size="12" fill="#1c2330">同じ PC の中だけ</text>
+	<text x="670" y="122" text-anchor="middle" font-size="12" fill="#1c2330">外からは繋がらない</text>
+	<text x="670" y="152" text-anchor="middle" font-size="12" font-weight="700" fill="#1d7a3c">共有の用途にはこれで足りる</text>
+</svg>

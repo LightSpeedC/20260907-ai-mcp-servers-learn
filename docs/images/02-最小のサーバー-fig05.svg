@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 230" width="900" height="230" role="img" aria-label="stdout に混ざった文字列が通信を壊す様子">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="450" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">ホストが stdout から 1 行ずつ読む</text>
+
+	<rect x="80" y="50" width="740" height="34" rx="6" fill="#ffffff" stroke="#1d7a3c" stroke-width="2"/>
+	<text x="100" y="72" font-size="12" fill="#1d7a3c" font-family="monospace">{"jsonrpc":"2.0","id":1,"result":{...}}</text>
+	<text x="760" y="72" font-size="12" font-weight="700" fill="#1d7a3c">読めた</text>
+
+	<rect x="80" y="95" width="740" height="34" rx="6" fill="#fdeaea" stroke="#a51f22" stroke-width="2"/>
+	<text x="100" y="117" font-size="12" fill="#a51f22" font-family="monospace">サーバーを起動しました</text>
+	<text x="700" y="117" font-size="12" font-weight="700" fill="#a51f22">JSON として読めない</text>
+
+	<rect x="80" y="140" width="740" height="34" rx="6" fill="#f2f4f7" stroke="#97a1ae" stroke-width="2" stroke-dasharray="5 3"/>
+	<text x="100" y="162" font-size="12" fill="#97a1ae" font-family="monospace">{"jsonrpc":"2.0","id":2,"result":{...}}</text>
+	<text x="690" y="162" font-size="12" font-weight="700" fill="#97a1ae">ここまで届かない</text>
+
+	<text x="450" y="205" text-anchor="middle" font-size="12" fill="#4a5568">「登録したのにツールが出てこない」の原因は、たいていこれ</text>
+</svg>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 200" width="900" height="200" role="img" aria-label="registerTool を呼ぶと capabilities が自動で組み立てられる">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+		<marker id="i2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="40" y="40" width="230" height="36" rx="7" fill="url(#i1)"/>
+	<text x="155" y="63" text-anchor="middle" font-size="12" fill="#fff">registerTool(...)</text>
+	<rect x="40" y="86" width="230" height="36" rx="7" fill="url(#i1)"/>
+	<text x="155" y="109" text-anchor="middle" font-size="12" fill="#fff">registerResource(...)</text>
+	<rect x="40" y="132" width="230" height="36" rx="7" fill="url(#i1)"/>
+	<text x="155" y="155" text-anchor="middle" font-size="12" fill="#fff">registerPrompt(...)</text>
+
+	<line x1="270" y1="58" x2="420" y2="90" stroke="#4a5568" stroke-width="1.8" marker-end="url(#i2)"/>
+	<line x1="270" y1="104" x2="420" y2="104" stroke="#4a5568" stroke-width="1.8" marker-end="url(#i2)"/>
+	<line x1="270" y1="150" x2="420" y2="118" stroke="#4a5568" stroke-width="1.8" marker-end="url(#i2)"/>
+
+	<rect x="430" y="60" width="430" height="90" rx="8" fill="#ffffff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="645" y="85" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">initialize の応答に入る capabilities</text>
+	<text x="450" y="112" font-size="12" fill="#1c2330" font-family="monospace">{ "tools": {...}, "resources": {...}, "prompts": {...} }</text>
+	<text x="645" y="137" text-anchor="middle" font-size="11" fill="#4a5568">登録したものだけが並ぶ</text>
+</svg>

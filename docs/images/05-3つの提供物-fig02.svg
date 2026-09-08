@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" width="900" height="220" role="img" aria-label="固定URIとテンプレートURIの違い">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(210,78%,25%)"/><stop offset="1" stop-color="hsl(210,58%,55%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="225" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">固定の URI</text>
+	<rect x="60" y="45" width="330" height="42" rx="7" fill="url(#i1)"/>
+	<text x="225" y="72" text-anchor="middle" font-size="13" fill="#fff" font-family="monospace">note://index</text>
+	<text x="225" y="110" text-anchor="middle" font-size="11" fill="#4a5568">resources/list に出る</text>
+	<text x="225" y="130" text-anchor="middle" font-size="11" fill="#4a5568">利用者が選べる</text>
+
+	<text x="675" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">テンプレート</text>
+	<rect x="510" y="45" width="330" height="42" rx="7" fill="url(#i1)"/>
+	<text x="675" y="72" text-anchor="middle" font-size="13" fill="#fff" font-family="monospace">note://{date}</text>
+	<text x="675" y="110" text-anchor="middle" font-size="11" fill="#4a5568">resources/templates/list に出る</text>
+	<text x="675" y="130" text-anchor="middle" font-size="11" fill="#4a5568">値を埋めて読む</text>
+
+	<rect x="60" y="155" width="780" height="46" rx="8" fill="#fff6e8" stroke="#b8620a"/>
+	<text x="450" y="174" text-anchor="middle" font-size="12" font-weight="700" fill="#b8620a">テンプレートは resources/list には出てこない</text>
+	<text x="450" y="192" text-anchor="middle" font-size="11" fill="#1c2330">「登録したのに一覧に無い」と思ったら、こちらを見る</text>
+</svg>

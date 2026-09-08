@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 240" width="900" height="240" role="img" aria-label="配りやすさと作りやすさの釣り合い">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(30,78%,25%)"/><stop offset="1" stop-color="hsl(30,58%,55%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<line x1="80" y1="180" x2="840" y2="180" stroke="#4a5568" stroke-width="2"/>
+	<text x="460" y="212" text-anchor="middle" font-size="12" fill="#4a5568">配りやすさ</text>
+	<line x1="80" y1="180" x2="80" y2="40" stroke="#4a5568" stroke-width="2"/>
+	<text x="40" y="110" text-anchor="middle" font-size="12" fill="#4a5568" transform="rotate(-90 40 110)">作りやすさ</text>
+
+	<circle cx="250" cy="70" r="12" fill="url(#i1)"/>
+	<text x="275" y="66" font-size="13" font-weight="700" fill="#1c2330">Node ＋ SDK</text>
+	<text x="275" y="86" font-size="11" fill="#4a5568">機能は全部使える。配るのが重い</text>
+
+	<circle cx="690" cy="145" r="12" fill="url(#i2)"/>
+	<text x="500" y="141" font-size="13" font-weight="700" fill="#1c2330" text-anchor="end">C# ＋ csc.exe</text>
+	<text x="500" y="161" font-size="11" fill="#4a5568" text-anchor="end">配るのは楽。全部自分で書く</text>
+
+	<line x1="262" y1="82" x2="678" y2="133" stroke="#97a1ae" stroke-width="2" stroke-dasharray="6 4"/>
+</svg>

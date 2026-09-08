@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" width="900" height="300" role="img" aria-label="3つの共有方式の比較">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/><stop offset="1" stop-color="hsl(280,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="i3" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(30,78%,25%)"/><stop offset="1" stop-color="hsl(30,58%,55%)"/>
+		</linearGradient>
+		<marker id="i4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="40" y="30" font-size="13" font-weight="700" fill="#1c2330">① localhost の HTTP</text>
+	<rect x="40" y="42" width="130" height="32" rx="6" fill="url(#i1)"/>
+	<text x="105" y="63" text-anchor="middle" font-size="11" fill="#fff">ホスト</text>
+	<line x1="170" y1="58" x2="320" y2="58" stroke="#4a5568" stroke-width="1.8" marker-end="url(#i4)"/>
+	<text x="245" y="51" text-anchor="middle" font-size="10" fill="#4a5568">HTTP</text>
+	<rect x="320" y="42" width="180" height="32" rx="6" fill="#1d7a3c"/>
+	<text x="410" y="63" text-anchor="middle" font-size="11" fill="#fff">常駐サーバー :3333</text>
+	<text x="530" y="63" font-size="11" fill="#4a5568">設定を HTTP に変える</text>
+
+	<text x="40" y="120" font-size="13" font-weight="700" fill="#1c2330">② stdio ブリッジ</text>
+	<rect x="40" y="132" width="130" height="32" rx="6" fill="url(#i2)"/>
+	<text x="105" y="153" text-anchor="middle" font-size="11" fill="#fff">ホスト</text>
+	<line x1="170" y1="148" x2="220" y2="148" stroke="#4a5568" stroke-width="1.8" marker-end="url(#i4)"/>
+	<text x="195" y="141" text-anchor="middle" font-size="10" fill="#4a5568">stdio</text>
+	<rect x="220" y="132" width="100" height="32" rx="6" fill="#b8620a"/>
+	<text x="270" y="153" text-anchor="middle" font-size="11" fill="#fff">ブリッジ</text>
+	<line x1="320" y1="148" x2="370" y2="148" stroke="#4a5568" stroke-width="1.8" marker-end="url(#i4)"/>
+	<text x="345" y="141" text-anchor="middle" font-size="10" fill="#4a5568">HTTP</text>
+	<rect x="370" y="132" width="180" height="32" rx="6" fill="#1d7a3c"/>
+	<text x="460" y="153" text-anchor="middle" font-size="11" fill="#fff">常駐サーバー :3333</text>
+	<text x="580" y="153" font-size="11" fill="#1d7a3c">設定は stdio のまま</text>
+
+	<text x="40" y="210" font-size="13" font-weight="700" fill="#1c2330">③ 名前付きパイプ</text>
+	<rect x="40" y="222" width="130" height="32" rx="6" fill="url(#i3)"/>
+	<text x="105" y="243" text-anchor="middle" font-size="11" fill="#fff">ホスト</text>
+	<line x1="170" y1="238" x2="220" y2="238" stroke="#4a5568" stroke-width="1.8" marker-end="url(#i4)"/>
+	<rect x="220" y="222" width="100" height="32" rx="6" fill="#b8620a"/>
+	<text x="270" y="243" text-anchor="middle" font-size="11" fill="#fff">ブリッジ</text>
+	<line x1="320" y1="238" x2="370" y2="238" stroke="#4a5568" stroke-width="1.8" marker-end="url(#i4)"/>
+	<text x="345" y="231" text-anchor="middle" font-size="10" fill="#4a5568">パイプ</text>
+	<rect x="370" y="222" width="180" height="32" rx="6" fill="#1d7a3c"/>
+	<text x="460" y="243" text-anchor="middle" font-size="11" fill="#fff">常駐サーバー</text>
+	<text x="580" y="243" font-size="11" fill="#4a5568">ポートを使わずに済む</text>
+
+	<text x="450" y="285" text-anchor="middle" font-size="11" fill="#4a5568">仕様は「独自の運び方を作るなら、stdio と同じ改行区切りを使え」と勧めている</text>
+</svg>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" width="900" height="220" role="img" aria-label="壊れた行があっても他の行は読める">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="450" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">書き込みの途中で落ちた場合</text>
+
+	<rect x="80" y="45" width="740" height="32" rx="6" fill="#ffffff" stroke="#1d7a3c" stroke-width="2"/>
+	<text x="100" y="66" font-size="11" fill="#1d7a3c" font-family="monospace">{"at":"...","text":"1 件目"}</text>
+	<text x="770" y="66" font-size="11" font-weight="700" fill="#1d7a3c">読める</text>
+
+	<rect x="80" y="85" width="740" height="32" rx="6" fill="#ffffff" stroke="#1d7a3c" stroke-width="2"/>
+	<text x="100" y="106" font-size="11" fill="#1d7a3c" font-family="monospace">{"at":"...","text":"2 件目"}</text>
+	<text x="770" y="106" font-size="11" font-weight="700" fill="#1d7a3c">読める</text>
+
+	<rect x="80" y="125" width="740" height="32" rx="6" fill="#fff6e8" stroke="#b8620a" stroke-width="2"/>
+	<text x="100" y="146" font-size="11" fill="#b8620a" font-family="monospace">{"at":"...","te</text>
+	<text x="700" y="146" font-size="11" font-weight="700" fill="#b8620a">この行だけ捨てる</text>
+
+	<text x="450" y="190" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">1 件が壊れても、残りは無事</text>
+	<text x="450" y="210" text-anchor="middle" font-size="11" fill="#4a5568">全体を 1 つの JSON 配列にしていると、こうはいかない</text>
+</svg>

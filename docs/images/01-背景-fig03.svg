@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 260" width="900" height="260" role="img" aria-label="ホストの中にクライアントがあり、それぞれがサーバーのプロセスに繋がる">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<marker id="i2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="30" y="30" width="330" height="200" rx="12" fill="#ffffff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="195" y="56" text-anchor="middle" font-size="15" font-weight="700" fill="#1c2330">ホスト（Claude Code など）</text>
+
+	<rect x="60" y="72" width="270" height="40" rx="7" fill="url(#i1)"/>
+	<text x="195" y="97" text-anchor="middle" font-size="13" fill="#fff">クライアント 1</text>
+	<rect x="60" y="124" width="270" height="40" rx="7" fill="url(#i1)"/>
+	<text x="195" y="149" text-anchor="middle" font-size="13" fill="#fff">クライアント 2</text>
+	<rect x="60" y="176" width="270" height="40" rx="7" fill="url(#i1)"/>
+	<text x="195" y="201" text-anchor="middle" font-size="13" fill="#fff">クライアント 3</text>
+
+	<g stroke="#4a5568" stroke-width="1.8" marker-end="url(#i2)" marker-start="url(#i2)">
+		<line x1="360" y1="92" x2="560" y2="92"/>
+		<line x1="360" y1="144" x2="560" y2="144"/>
+		<line x1="360" y1="196" x2="560" y2="196"/>
+	</g>
+
+	<rect x="560" y="72" width="310" height="40" rx="7" fill="#1d7a3c"/>
+	<text x="715" y="97" text-anchor="middle" font-size="13" fill="#fff">メモのサーバー（別プロセス）</text>
+	<rect x="560" y="124" width="310" height="40" rx="7" fill="#1d7a3c"/>
+	<text x="715" y="149" text-anchor="middle" font-size="13" fill="#fff">ビルドのサーバー（別プロセス）</text>
+	<rect x="560" y="176" width="310" height="40" rx="7" fill="#1d7a3c"/>
+	<text x="715" y="201" text-anchor="middle" font-size="13" fill="#fff">社内 Wiki のサーバー（別プロセス）</text>
+
+	<text x="450" y="248" text-anchor="middle" font-size="11" fill="#4a5568">1 本のサーバーにつき 1 つのクライアント・1 つのプロセス</text>
+</svg>

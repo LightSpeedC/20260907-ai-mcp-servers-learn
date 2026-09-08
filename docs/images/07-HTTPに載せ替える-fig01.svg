@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 260" width="900" height="260" role="img" aria-label="stdioとHTTPでプロセスの数が変わる">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/><stop offset="1" stop-color="hsl(280,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<marker id="i3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="225" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">stdio</text>
+
+	<rect x="30" y="45" width="130" height="34" rx="7" fill="url(#i1)"/>
+	<text x="95" y="67" text-anchor="middle" font-size="11" fill="#fff">Claude Code</text>
+	<rect x="30" y="100" width="130" height="34" rx="7" fill="url(#i1)"/>
+	<text x="95" y="122" text-anchor="middle" font-size="11" fill="#fff">Codex</text>
+	<rect x="30" y="155" width="130" height="34" rx="7" fill="url(#i1)"/>
+	<text x="95" y="177" text-anchor="middle" font-size="11" fill="#fff">Antigravity</text>
+
+	<g stroke="#4a5568" stroke-width="1.6" marker-end="url(#i3)">
+		<line x1="160" y1="62" x2="270" y2="62"/>
+		<line x1="160" y1="117" x2="270" y2="117"/>
+		<line x1="160" y1="172" x2="270" y2="172"/>
+	</g>
+
+	<rect x="270" y="45" width="150" height="34" rx="7" fill="#97a1ae"/>
+	<text x="345" y="67" text-anchor="middle" font-size="11" fill="#fff">サーバー 1</text>
+	<rect x="270" y="100" width="150" height="34" rx="7" fill="#97a1ae"/>
+	<text x="345" y="122" text-anchor="middle" font-size="11" fill="#fff">サーバー 2</text>
+	<rect x="270" y="155" width="150" height="34" rx="7" fill="#97a1ae"/>
+	<text x="345" y="177" text-anchor="middle" font-size="11" fill="#fff">サーバー 3</text>
+
+	<text x="225" y="222" text-anchor="middle" font-size="12" font-weight="700" fill="#a51f22">同じものが 3 つ動く</text>
+	<text x="225" y="243" text-anchor="middle" font-size="11" fill="#4a5568">状態は共有されない</text>
+
+	<text x="675" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">Streamable HTTP</text>
+
+	<rect x="480" y="45" width="130" height="34" rx="7" fill="url(#i2)"/>
+	<text x="545" y="67" text-anchor="middle" font-size="11" fill="#fff">Claude Code</text>
+	<rect x="480" y="100" width="130" height="34" rx="7" fill="url(#i2)"/>
+	<text x="545" y="122" text-anchor="middle" font-size="11" fill="#fff">Codex</text>
+	<rect x="480" y="155" width="130" height="34" rx="7" fill="url(#i2)"/>
+	<text x="545" y="177" text-anchor="middle" font-size="11" fill="#fff">Antigravity</text>
+
+	<g stroke="#4a5568" stroke-width="1.6" marker-end="url(#i3)">
+		<line x1="610" y1="62" x2="720" y2="105"/>
+		<line x1="610" y1="117" x2="720" y2="117"/>
+		<line x1="610" y1="172" x2="720" y2="129"/>
+	</g>
+
+	<rect x="720" y="90" width="150" height="54" rx="7" fill="#1d7a3c"/>
+	<text x="795" y="112" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">サーバー 1 本</text>
+	<text x="795" y="130" text-anchor="middle" font-size="11" fill="#fff">:3333</text>
+
+	<text x="675" y="222" text-anchor="middle" font-size="12" font-weight="700" fill="#1d7a3c">1 つで足りる</text>
+	<text x="675" y="243" text-anchor="middle" font-size="11" fill="#4a5568">記憶も繋ぎ先も 1 つにまとまる</text>
+</svg>

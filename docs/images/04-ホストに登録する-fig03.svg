@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 200" width="900" height="200" role="img" aria-label="Codex は承認ポリシーの影響を受ける">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<marker id="i2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<rect x="40" y="60" width="200" height="52" rx="8" fill="url(#i1)"/>
+	<text x="140" y="83" text-anchor="middle" font-size="12" fill="#fff">サーバーには繋がる</text>
+	<text x="140" y="101" text-anchor="middle" font-size="11" fill="#fff">initialize / tools/list は通る</text>
+
+	<line x1="240" y1="86" x2="310" y2="86" stroke="#4a5568" stroke-width="2" marker-end="url(#i2)"/>
+
+	<rect x="310" y="60" width="200" height="52" rx="8" fill="#b8620a"/>
+	<text x="410" y="83" text-anchor="middle" font-size="12" fill="#fff">ツールの実行だけ</text>
+	<text x="410" y="101" text-anchor="middle" font-size="11" fill="#fff">承認を求められる</text>
+
+	<line x1="510" y1="86" x2="580" y2="86" stroke="#4a5568" stroke-width="2" marker-end="url(#i2)"/>
+
+	<rect x="580" y="60" width="280" height="52" rx="8" fill="#ffffff" stroke="#a51f22" stroke-width="2"/>
+	<text x="720" y="83" text-anchor="middle" font-size="12" fill="#a51f22">approval policy が never だと</text>
+	<text x="720" y="101" text-anchor="middle" font-size="12" font-weight="700" fill="#a51f22">呼ばずに断られる</text>
+
+	<text x="450" y="155" text-anchor="middle" font-size="12" fill="#4a5568">「繋がっているのにツールが動かない」ときは、承認の設定を疑う</text>
+	<text x="450" y="177" text-anchor="middle" font-size="11" fill="#4a5568">サーバー側のログには tools/call が届いていない</text>
+</svg>

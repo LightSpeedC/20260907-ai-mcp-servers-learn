@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" width="900" height="220" role="img" aria-label="テスト出力の全量と末尾だけの違い">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="225" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">全部返すと</text>
+	<rect x="60" y="45" width="330" height="120" rx="8" fill="url(#i1)"/>
+	<text x="225" y="78" text-anchor="middle" font-size="12" fill="#fff">1 件ごとの ✔ が 500 行</text>
+	<text x="225" y="104" text-anchor="middle" font-size="12" fill="#fff">大半は「通った」の羅列</text>
+	<text x="225" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">肝心の失敗が埋もれる</text>
+
+	<text x="675" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">末尾だけ返すと</text>
+	<rect x="510" y="45" width="330" height="120" rx="8" fill="url(#i2)"/>
+	<text x="675" y="78" text-anchor="middle" font-size="12" fill="#fff">「成功（終了コード 0、5.1 秒）」</text>
+	<text x="675" y="104" text-anchor="middle" font-size="12" fill="#fff">＋ 集計と失敗の内訳</text>
+	<text x="675" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">必要なものが先に来る</text>
+
+	<text x="450" y="200" text-anchor="middle" font-size="11" fill="#4a5568">テストの出力は末尾に集計が来る。だから末尾を残すのが理にかなう</text>
+</svg>

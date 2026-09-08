@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 200" width="900" height="200" role="img" aria-label="手書き版とSDK版の行数の比較">
+	<defs>
+		<linearGradient id="i1" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="i2" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+	</defs>
+	<rect width="100%" height="100%" fill="#ffffff"/>
+
+	<text x="120" y="40" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">02 章（手書き）</text>
+	<rect x="60" y="55" width="120" height="110" rx="7" fill="url(#i1)"/>
+	<text x="120" y="105" text-anchor="middle" font-size="24" font-weight="700" fill="#fff">90</text>
+	<text x="120" y="128" text-anchor="middle" font-size="12" fill="#fff">行</text>
+
+	<text x="330" y="40" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">03 章（SDK）</text>
+	<rect x="270" y="130" width="120" height="35" rx="7" fill="url(#i2)"/>
+	<text x="330" y="153" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">27 行</text>
+
+	<text x="640" y="70" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">減ったのは「毎回同じ部分」</text>
+	<text x="640" y="95" text-anchor="middle" font-size="12" fill="#4a5568">initialize の応答、id の対応付け、</text>
+	<text x="640" y="115" text-anchor="middle" font-size="12" fill="#4a5568">通知の判別、エラーの形、入力の検証</text>
+	<text x="640" y="145" text-anchor="middle" font-size="12" font-weight="700" fill="#1d7a3c">ツールの中身は 1 行も減っていない</text>
+</svg>
