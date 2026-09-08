@@ -1,0 +1,420 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MCP Server 学習資料</title>
+<style>
+:root {
+	--navy1: #12224d;
+	--navy2: #2f5fbf;
+	--ink: #1c2330;
+	--ink-soft: #4a5568;
+	--line: #d9dfe8;
+	--code-bg: #f4f6fa;
+	--link: #1a4fa0;
+	--accent: var(--navy1);
+	--accent2: var(--navy2);
+	--soft: #f2f5fb;
+}
+
+/* 本編 11 本＋付録 3 本の通し色相（刻み 280 ÷ 13） */
+.d01 { --accent: hsl(280,78%,25%);   --accent2: hsl(280,58%,55%);   --soft: hsl(280,28%,95%); }
+.d02 { --accent: hsl(258.5,78%,25%); --accent2: hsl(258.5,58%,55%); --soft: hsl(258.5,28%,95%); }
+.d03 { --accent: hsl(236.9,78%,25%); --accent2: hsl(236.9,58%,55%); --soft: hsl(236.9,28%,95%); }
+.d04 { --accent: hsl(215.4,78%,25%); --accent2: hsl(215.4,58%,55%); --soft: hsl(215.4,28%,95%); }
+.d05 { --accent: hsl(193.8,78%,25%); --accent2: hsl(193.8,58%,55%); --soft: hsl(193.8,28%,95%); }
+.d06 { --accent: hsl(172.3,78%,25%); --accent2: hsl(172.3,58%,55%); --soft: hsl(172.3,28%,95%); }
+.d07 { --accent: hsl(150.8,78%,25%); --accent2: hsl(150.8,58%,55%); --soft: hsl(150.8,28%,95%); }
+.d08 { --accent: hsl(129.2,78%,25%); --accent2: hsl(129.2,58%,55%); --soft: hsl(129.2,28%,95%); }
+.d09 { --accent: hsl(107.7,78%,25%); --accent2: hsl(107.7,58%,55%); --soft: hsl(107.7,28%,95%); }
+.d10 { --accent: hsl(86.2,78%,25%);  --accent2: hsl(86.2,58%,55%);  --soft: hsl(86.2,28%,95%); }
+.d11 { --accent: hsl(64.6,78%,25%);  --accent2: hsl(64.6,58%,55%);  --soft: hsl(64.6,28%,95%); }
+.dA1 { --accent: hsl(43.1,78%,25%);  --accent2: hsl(43.1,58%,55%);  --soft: hsl(43.1,28%,95%); }
+.dA2 { --accent: hsl(21.5,78%,25%);  --accent2: hsl(21.5,58%,55%);  --soft: hsl(21.5,28%,95%); }
+.dA3 { --accent: hsl(0,78%,25%);     --accent2: hsl(0,58%,55%);     --soft: hsl(0,28%,95%); }
+
+.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,55%); --soft: hsl(280,28%,95%); }
+.ch02 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,55%); --soft: hsl(140,28%,95%); }
+.ch03 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,55%);   --soft: hsl(0,28%,95%); }
+
+* { box-sizing: border-box; }
+
+body {
+	margin: 0;
+	background: #ffffff;
+	color: var(--ink, #1c2330);
+	font-family: "Segoe UI", "Yu Gothic UI", "Meiryo", sans-serif;
+	font-size: 15.5px;
+	line-height: 1.85;
+}
+
+.titlebar {
+	background: linear-gradient(135deg, var(--navy1, #12224d), var(--navy2, #2f5fbf));
+	color: #fff;
+	padding: 34px 30px 30px;
+}
+.titlebar .inner { max-width: 1600px; margin: 0 auto; }
+.titlebar h1 { font-size: 1.9em; margin: 0 0 8px; color: #fff; }
+.titlebar .lead { font-size: 0.95em; color: #d7e2f8; margin: 0 0 6px; }
+.titlebar .date { font-size: 0.88em; color: #b9caeb; }
+
+.wrap { max-width: 1600px; margin: 0 auto; padding: 0 30px; }
+
+.intro { margin: 26px 0 0; font-size: 1.02em; }
+
+section {
+	background: linear-gradient(180deg, var(--soft, #f2f5fb), #ffffff 55%);
+	border: 1px solid var(--line, #d9dfe8);
+	border-radius: 12px;
+	padding: 4px 26px 26px;
+	margin: 34px 0;
+}
+
+section h1 {
+	background: linear-gradient(100deg, var(--accent, #12224d), var(--accent2, #2f5fbf));
+	color: #fff;
+	font-size: 1.45em;
+	padding: 14px 20px;
+	margin: 26px 0 20px;
+	border-radius: 10px;
+	box-shadow: 0 3px 10px rgba(20,30,60,0.18);
+}
+
+h2 {
+	background: linear-gradient(90deg, var(--soft, #f2f5fb), #ffffff);
+	color: var(--accent, #12224d);
+	font-size: 1.16em;
+	padding: 6px 12px;
+	margin: 30px 0 12px;
+	border-left: 6px solid var(--accent, #12224d);
+	border-radius: 0 6px 6px 0;
+}
+
+h3 {
+	color: var(--accent, #12224d);
+	background: transparent;
+	font-size: 1.02em;
+	margin: 20px 0 8px;
+	padding-bottom: 3px;
+	border-bottom: 2px dotted var(--accent2, #2f5fbf);
+	display: inline-block;
+}
+
+a { color: var(--link, #1a4fa0); background: transparent; }
+
+code {
+	background: var(--code-bg, #f4f6fa);
+	color: #17335f;
+	border: 1px solid var(--line, #d9dfe8);
+	border-radius: 4px;
+	padding: 1px 5px;
+	font-family: "Consolas", "Cascadia Mono", monospace;
+	font-size: 0.92em;
+}
+
+pre {
+	background: var(--code-bg, #f4f6fa);
+	color: var(--ink, #1c2330);
+	border: 1px solid var(--line, #d9dfe8);
+	border-left: 5px solid var(--accent2, #2f5fbf);
+	border-radius: 0 8px 8px 0;
+	padding: 13px 16px;
+	overflow-x: auto;
+	font-size: 0.92em;
+	line-height: 1.6;
+}
+pre code { background: none; border: none; padding: 0; color: inherit; }
+
+.tablewrap { overflow-x: auto; margin: 14px 0; }
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+	background: #ffffff;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 2px 6px rgba(20,30,60,0.10);
+	font-size: 0.96em;
+}
+th {
+	background: linear-gradient(100deg, var(--accent, #12224d), var(--accent2, #2f5fbf));
+	color: #fff;
+	text-align: left;
+	padding: 9px 12px;
+	border: 1px solid var(--line, #d9dfe8);
+}
+td {
+	background: #ffffff;
+	color: var(--ink, #1c2330);
+	padding: 9px 12px;
+	border: 1px solid var(--line, #d9dfe8);
+	vertical-align: top;
+}
+tr:nth-child(even) td { background: #fafbfe; }
+td.num, th.num { text-align: right; }
+td.nowrap, th.nowrap { white-space: nowrap; }
+
+.badge {
+	display: inline-block;
+	padding: 1px 9px;
+	border-radius: 11px;
+	font-size: 0.82em;
+	font-weight: 700;
+	color: #fff;
+	background: linear-gradient(100deg, #5a6472, #97a1ae);
+	white-space: nowrap;
+	margin-right: 6px;
+}
+.b-ok { background: linear-gradient(100deg, #1d7a3c, #45b56c); color: #fff; }
+.b-ng { background: linear-gradient(100deg, #a51f22, #e05a5c); color: #fff; }
+.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); color: #fff; }
+.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); color: #fff; }
+
+.callout {
+	background: linear-gradient(180deg, var(--soft, #f2f5fb), #ffffff);
+	color: var(--ink, #1c2330);
+	border: 1px solid var(--line, #d9dfe8);
+	border-left: 6px solid var(--accent, #12224d);
+	border-radius: 0 8px 8px 0;
+	padding: 12px 18px;
+	margin: 16px 0;
+}
+.callout strong { color: var(--accent, #12224d); background: transparent; }
+.callout code { background: var(--code-bg, #f4f6fa); }
+
+.toc {
+	background: #ffffff;
+	border: 1px solid var(--line, #d9dfe8);
+	border-radius: 12px;
+	padding: 18px 24px 24px;
+	margin: 26px 0;
+}
+.toc h2 {
+	background: transparent;
+	color: var(--navy1, #12224d);
+	border-left: 6px solid var(--navy1, #12224d);
+	margin-top: 6px;
+}
+.toc ol {
+	list-style: none;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	padding: 0;
+	margin: 0;
+}
+.toc ol a {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: normal;
+	width: 310px;
+	max-width: 100%;
+	background: linear-gradient(100deg, var(--accent, #12224d), var(--accent2, #2f5fbf));
+	color: #fff;
+	text-decoration: none;
+	font-weight: 700;
+	padding: 8px 14px;
+	border-radius: 8px;
+	line-height: 1.45;
+}
+
+a.doclink {
+	display: inline-block;
+	background: linear-gradient(100deg, var(--accent, #12224d), var(--accent2, #2f5fbf));
+	color: #fff;
+	text-decoration: none;
+	font-weight: 700;
+	padding: 0 9px;
+	border-radius: 8px;
+	line-height: 1.9;
+}
+
+figure { margin: 20px 0; }
+figcaption {
+	color: var(--ink-soft, #4a5568);
+	background: transparent;
+	font-size: 0.9em;
+	margin-top: 6px;
+}
+svg { max-width: 100%; height: auto; }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>MCP Server 学習資料</h1>
+		<p class="lead">Claude Code・Codex・Antigravity CLI から呼び出せる MCP Server を、いちから自分で書けるようになるための資料</p>
+		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
+	</div>
+</div>
+
+<div class="wrap">
+
+<p class="intro">MCP（Model Context Protocol）を知らないところから始めて、120 分で自分の MCP Server を書き、AI コーディング CLI に登録して呼び出せるところまで進みます。JavaScript の文法は知っている前提で、MCP の側だけを扱います。<br>載せてあるコードはすべて動かして確かめたものです。</p>
+
+<div class="toc">
+	<h2>本編</h2>
+	<ol>
+		<li class="d01"><a href="docs/01-背景.html">01. 背景</a></li>
+		<li class="d02"><a href="docs/02-最小のサーバー.html">02. 最小のサーバー</a></li>
+		<li class="d03"><a href="docs/03-SDKで書き直す.html">03. SDK で書き直す</a></li>
+		<li class="d04"><a href="docs/04-ホストに登録する.html">04. ホストに登録する</a></li>
+		<li class="d05"><a href="docs/05-3つの提供物.html">05. 3 つの提供物</a></li>
+		<li class="d06"><a href="docs/06-ハンズオン-メモサーバー.html">06. ハンズオン① メモサーバー</a></li>
+		<li class="d07"><a href="docs/07-HTTPに載せ替える.html">07. HTTP に載せ替える</a></li>
+		<li class="d08"><a href="docs/08-通知で伝える.html">08. 通知で伝える</a></li>
+		<li class="d09"><a href="docs/09-タスク.html">09. タスク</a></li>
+		<li class="d10"><a href="docs/10-プロセス共有.html">10. プロセス共有</a></li>
+		<li class="d11"><a href="docs/11-ハンズオン-ビルド実行.html">11. ハンズオン② ビルド実行</a></li>
+	</ol>
+
+	<h2>付録</h2>
+	<ol>
+		<li class="dA1"><a href="docs/A1-逆引き.html">A1. 逆引き</a></li>
+		<li class="dA2"><a href="docs/A2-詰まったとき.html">A2. 詰まったとき</a></li>
+		<li class="dA3"><a href="docs/A3-単一exeにする.html">A3. 単一 exe にする</a></li>
+	</ol>
+
+	<h2>この資料について</h2>
+	<ol>
+		<li><a href="docs/ZZ-構成.html">ZZ. 構成</a></li>
+	</ol>
+</div>
+
+<section class="ch01" id="ch01">
+<h1>この資料について</h1>
+
+<h2>対象読者</h2>
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">項目</th><th>前提</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">MCP</td><td>まったく知らない</td></tr>
+		<tr><td class="nowrap">JavaScript</td><td>文法は十分に知っている。<code>async</code>／<code>await</code>・モジュール・クラスの説明は要らない</td></tr>
+		<tr><td class="nowrap">AI コーディング CLI</td><td>Claude Code・Codex を「とりあえず使える」水準</td></tr>
+		<tr><td class="nowrap">サーバー開発</td><td>HTTP・プロセス・標準入出力は分かる。JSON-RPC は知らなくてよい</td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>到達点</h2>
+<ul>
+	<li>MCP が何を運ぶ規約なのかを、ホスト・クライアント・サーバーの関係で説明できる</li>
+	<li>stdio の MCP Server を書き、Claude Code に登録して呼び出せる</li>
+	<li>同じサーバーを Streamable HTTP に載せ替えられる</li>
+	<li>処理の完了を伝える手段と、その限界が分かる</li>
+	<li>1 本のサーバーを複数のホストから共有できる</li>
+	<li>詰まったときにどこを見れば分かるか（ログ・仕様書・SDK の型定義）が分かる</li>
+</ul>
+
+<h2>扱う範囲</h2>
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">扱う</th><th>扱わない</th></tr>
+	</thead>
+	<tbody>
+		<tr><td>MCP Server の実装（Node.js / JavaScript）</td><td>MCP Client（ホスト側）の実装</td></tr>
+		<tr><td>stdio と Streamable HTTP の 2 つのトランスポート</td><td>LLM そのものの仕組み</td></tr>
+		<tr><td>Tools・Resources・Prompts の使い分け</td><td>TypeScript の型システムの解説</td></tr>
+		<tr><td>3 つの CLI への登録方法</td><td>MCP Server の商用ホスティング</td></tr>
+		<tr><td>処理の完了を伝える通知とタスク</td><td>認証（OAuth）を伴うリモート MCP</td></tr>
+		<tr><td>同一 PC で 1 本のサーバーを共有する構成</td><td>&nbsp;</td></tr>
+		<tr><td>C# で単一 exe にする方法（付録）</td><td>&nbsp;</td></tr>
+	</tbody>
+</table>
+</div>
+</section>
+
+<section class="ch02" id="ch02">
+<h1>手を動かす</h1>
+
+<h2>用意する</h2>
+
+<pre><code class="language-powershell">npm install</code></pre>
+
+<h2>サンプルを動かす</h2>
+
+<p>資料に出てくるサーバーは <code>docs/samples/</code> にあります。手で叩いて確かめられます。</p>
+
+<pre><code class="language-powershell">@(
+'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"手","version":"1.0"}}}'
+'{"jsonrpc":"2.0","method":"notifications/initialized"}'
+'{"jsonrpc":"2.0","id":2,"method":"tools/list"}'
+) -join "`n" | node docs/samples/02-minimal/server.mjs</code></pre>
+
+<h2>テストを流す</h2>
+
+<pre><code class="language-powershell">node --test --test-concurrency=1 tests/</code></pre>
+
+<p><code>tools/40_test/run-tests.cmd</code> をダブルクリックしても同じことができます。</p>
+
+<h2>対象環境</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">対象</th><th class="nowrap">版</th><th>確認方法</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">Node.js</td><td class="nowrap">v26.8.1</td><td><code>node --version</code></td></tr>
+		<tr><td class="nowrap">npm</td><td class="nowrap">11.19.0</td><td><code>npm --version</code></td></tr>
+		<tr><td class="nowrap">@modelcontextprotocol/sdk</td><td class="nowrap">1.30.0</td><td><code>npm view @modelcontextprotocol/sdk version</code></td></tr>
+		<tr><td class="nowrap">MCP 仕様</td><td class="nowrap">2025-11-25</td><td><a href="https://modelcontextprotocol.io/specification/2025-11-25/">仕様サイト</a></td></tr>
+		<tr><td class="nowrap">OS</td><td class="nowrap">Windows 11</td><td>パスの区切りと設定ファイルの場所が異なる箇所は本文で示す</td></tr>
+	</tbody>
+</table>
+</div>
+
+<div class="callout">
+	<p><strong>ホストによって喋る MCP の版が違います。</strong>実測では Claude Code が <code>2025-11-25</code>、Codex が <code>2025-06-18</code> でした。この資料は <code>2025-11-25</code> を基準にしています。詳しくは <a href="docs/01-背景.html">01. 背景</a>。</p>
+</div>
+</section>
+
+<section class="ch03" id="ch03">
+<h1>置き場</h1>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">フォルダ</th><th>中身</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap"><code>docs/</code></td><td>学習資料の本編と付録</td></tr>
+		<tr><td class="nowrap"><code>docs/samples/</code></td><td>資料に載せたサンプルコード</td></tr>
+		<tr><td class="nowrap"><code>tests/</code></td><td>サンプルを検証するテスト</td></tr>
+		<tr><td class="nowrap"><code>tools/40_test/</code></td><td>テストの実行ランチャー</td></tr>
+		<tr><td class="nowrap"><code>notes/</code></td><td>作る側のための管理ドキュメント</td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>作る側の資料</h2>
+<p><a class="doclink" href="notes/10_plan/p260907-01-MCP学習資料.html">MCP Server 学習資料 計画</a></p>
+
+<h2>参考にした資料</h2>
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">資料</th><th>関係</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap"><a href="https://modelcontextprotocol.io/specification/2025-11-25/">MCP 仕様 2025-11-25</a></td><td>本資料の根拠。迷ったらこちらが正</td></tr>
+		<tr><td class="nowrap"><a href="https://lightspeedc.com/20260828-typescript-learn/">TypeScript 学習資料</a></td><td>構成と書き方を揃えている。型の話はこちらに譲る</td></tr>
+		<tr><td class="nowrap"><a href="https://lightspeedc.com/20260822-powershell-pwsh-learn/">PowerShell 学習資料</a></td><td>構成と書き方を揃えている</td></tr>
+	</tbody>
+</table>
+</div>
+</section>
+
+</div>
+
+</body>
+</html>
