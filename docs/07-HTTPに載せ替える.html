@@ -1,0 +1,462 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>07. HTTP に載せ替える</title>
+<style>
+/* css/style.css が読めなかったときの代替色 */
+.titlebar, section h1, th, a.doclink, .badge { background: #12224d; color: #fff; }
+</style>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,55%); --soft: hsl(280,28%,95%); }
+.ch02 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,55%); --soft: hsl(210,28%,95%); }
+.ch03 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,55%); --soft: hsl(140,28%,95%); }
+.ch04 { --accent: hsl(70,78%,25%);  --accent2: hsl(70,58%,55%);  --soft: hsl(70,28%,95%); }
+.ch05 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,55%);   --soft: hsl(0,28%,95%); }
+.toc ol a::before { content: "07." counter(tocnum) " "; }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>07. HTTP に載せ替える</h1>
+		<p class="lead">同じサーバーを Streamable HTTP で動かす</p>
+		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
+	</div>
+</div>
+
+<div class="wrap">
+
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="06-ハンズオン-メモサーバー.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>06. ハンズオン① メモサーバー</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+	<a href="08-通知で伝える.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>08. 通知で伝える</a>
+</div>
+<!-- /AUTO:nav -->
+
+<div class="toc">
+	<h2>この資料の内容</h2>
+	<ol>
+		<li class="ch01"><a href="#ch01">何が変わるか</a></li>
+		<li class="ch02"><a href="#ch02">載せ替える</a></li>
+		<li class="ch03"><a href="#ch03">セッションを持つか</a></li>
+		<li class="ch04"><a href="#ch04">動かす</a></li>
+		<li class="ch05"><a href="#ch05">どちらを選ぶか</a></li>
+	</ol>
+</div>
+
+<section class="ch01" id="ch01">
+<h1>何が変わるか</h1>
+
+<p>ツールの中身は変わりません。変わるのは<strong>誰がプロセスを起こすか</strong>です。</p>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">項目</th><th class="nowrap">stdio</th><th class="nowrap">Streamable HTTP</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">起動する人</td><td>ホスト（子プロセスとして）</td><td>自分（先に立てておく）</td></tr>
+		<tr><td class="nowrap">寿命</td><td>ホストと一緒に終わる</td><td>止めるまで生きている</td></tr>
+		<tr><td class="nowrap">共有</td><td>ホストごとに 1 本ずつ立つ</td><td><strong>1 本を何人でも使える</strong></td></tr>
+		<tr><td class="nowrap">置き場所</td><td>同じ PC のみ</td><td>別のマシンでもよい</td></tr>
+		<tr><td class="nowrap"><code>console.log</code></td><td><span class="badge b-ng">禁止</span></td><td><span class="badge b-ok">使える</span></td></tr>
+		<tr><td class="nowrap">手間</td><td>登録するだけ</td><td>起動と終了を自分で見る</td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="stdioとHTTPでプロセスの数が変わる">
+	<defs>
+		<linearGradient id="g-07-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/><stop offset="1" stop-color="hsl(280,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="g-07-1b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<marker id="m-07-1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<text x="225" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">stdio</text>
+
+	<rect x="30" y="45" width="130" height="34" rx="7" fill="url(#g-07-1a)"/>
+	<text x="95" y="67" text-anchor="middle" font-size="11" fill="#fff">Claude Code</text>
+	<rect x="30" y="100" width="130" height="34" rx="7" fill="url(#g-07-1a)"/>
+	<text x="95" y="122" text-anchor="middle" font-size="11" fill="#fff">Codex</text>
+	<rect x="30" y="155" width="130" height="34" rx="7" fill="url(#g-07-1a)"/>
+	<text x="95" y="177" text-anchor="middle" font-size="11" fill="#fff">Antigravity</text>
+
+	<g stroke="#4a5568" stroke-width="1.6" marker-end="url(#m-07-1a)">
+		<line x1="160" y1="62" x2="270" y2="62"/>
+		<line x1="160" y1="117" x2="270" y2="117"/>
+		<line x1="160" y1="172" x2="270" y2="172"/>
+	</g>
+
+	<rect x="270" y="45" width="150" height="34" rx="7" fill="#97a1ae"/>
+	<text x="345" y="67" text-anchor="middle" font-size="11" fill="#fff">サーバー 1</text>
+	<rect x="270" y="100" width="150" height="34" rx="7" fill="#97a1ae"/>
+	<text x="345" y="122" text-anchor="middle" font-size="11" fill="#fff">サーバー 2</text>
+	<rect x="270" y="155" width="150" height="34" rx="7" fill="#97a1ae"/>
+	<text x="345" y="177" text-anchor="middle" font-size="11" fill="#fff">サーバー 3</text>
+
+	<text x="225" y="222" text-anchor="middle" font-size="12" font-weight="700" fill="#a51f22">同じものが 3 つ動く</text>
+	<text x="225" y="243" text-anchor="middle" font-size="11" fill="#4a5568">状態は共有されない</text>
+
+	<text x="675" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">Streamable HTTP</text>
+
+	<rect x="480" y="45" width="130" height="34" rx="7" fill="url(#g-07-1b)"/>
+	<text x="545" y="67" text-anchor="middle" font-size="11" fill="#fff">Claude Code</text>
+	<rect x="480" y="100" width="130" height="34" rx="7" fill="url(#g-07-1b)"/>
+	<text x="545" y="122" text-anchor="middle" font-size="11" fill="#fff">Codex</text>
+	<rect x="480" y="155" width="130" height="34" rx="7" fill="url(#g-07-1b)"/>
+	<text x="545" y="177" text-anchor="middle" font-size="11" fill="#fff">Antigravity</text>
+
+	<g stroke="#4a5568" stroke-width="1.6" marker-end="url(#m-07-1a)">
+		<line x1="610" y1="62" x2="720" y2="105"/>
+		<line x1="610" y1="117" x2="720" y2="117"/>
+		<line x1="610" y1="172" x2="720" y2="129"/>
+	</g>
+
+	<rect x="720" y="90" width="150" height="54" rx="7" fill="#1d7a3c"/>
+	<text x="795" y="112" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">サーバー 1 本</text>
+	<text x="795" y="130" text-anchor="middle" font-size="11" fill="#fff">:3333</text>
+
+	<text x="675" y="222" text-anchor="middle" font-size="12" font-weight="700" fill="#1d7a3c">1 つで足りる</text>
+	<text x="675" y="243" text-anchor="middle" font-size="11" fill="#4a5568">記憶も繋ぎ先も 1 つにまとまる</text>
+</svg>
+<figcaption>3 つのホストから使うなら、プロセスの数が 3 対 1 になる。<a href="10-プロセス共有.html">10 章</a>で詳しく扱う。</figcaption>
+</figure>
+</section>
+
+<section class="ch02" id="ch02">
+<h1>載せ替える</h1>
+
+<p><a href="samples/07-http/server.mjs">samples/07-http/server.mjs</a> の全文です。<strong><code>memo-tools.mjs</code> はそのまま使います</strong>。</p>
+
+<pre><code class="language-javascript">import { createServer } from 'node:http';
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import { createMemoServer } from '../06-memo/memo-tools.mjs';
+
+const PORT = Number(process.env.PORT ?? 3333);
+
+const http = createServer(async (req, res) =&gt; {
+	// MCP のエンドポイントは 1 つ。ここに POST が来る
+	if (!req.url?.startsWith('/mcp')) {
+		res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
+		res.end('/mcp へ POST してください\n');
+		return;
+	}
+
+	// セッションを持たない形。リクエストごとに使い捨てる
+	const server = createMemoServer();
+	const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+
+	// 応答が終わったら片付ける。閉じ忘れると接続が溜まる
+	res.on('close', () =&gt; {
+		transport.close();
+		server.close();
+	});
+
+	try {
+		await server.connect(transport);
+		await transport.handleRequest(req, res);
+	} catch (err) {
+		console.error('[http] 失敗:', err);
+		if (!res.headersSent) {
+			res.writeHead(500, { 'content-type': 'application/json' });
+			res.end(JSON.stringify({
+				jsonrpc: '2.0',
+				error: { code: -32603, message: 'Internal server error' },
+				id: null,
+			}));
+		}
+	}
+});
+
+http.listen(PORT, () =&gt; {
+	// stdio 版と違い、標準出力に書いても壊れない
+	console.log(`メモサーバー（HTTP）: http://localhost:${PORT}/mcp`);
+});</code></pre>
+
+<div class="callout">
+	<p><strong>Web のフレームワークは要りません。</strong>Node の <code>node:http</code> だけで足ります。<code>transport.handleRequest(req, res)</code> に投げれば、あとは SDK が処理します。</p>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="HTTPリクエストがtransportに渡るまで">
+	<defs>
+		<linearGradient id="g-07-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-07-2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="20" y="70" width="150" height="50" rx="8" fill="url(#g-07-2a)"/>
+	<text x="95" y="92" text-anchor="middle" font-size="12" fill="#fff">POST /mcp</text>
+	<text x="95" y="110" text-anchor="middle" font-size="11" fill="#fff">JSON-RPC が本文</text>
+
+	<line x1="170" y1="95" x2="225" y2="95" stroke="#4a5568" stroke-width="2" marker-end="url(#m-07-2a)"/>
+
+	<rect x="225" y="70" width="160" height="50" rx="8" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="305" y="92" text-anchor="middle" font-size="12" fill="#1c2330">node:http</text>
+	<text x="305" y="110" text-anchor="middle" font-size="11" fill="#4a5568">req, res</text>
+
+	<line x1="385" y1="95" x2="440" y2="95" stroke="#4a5568" stroke-width="2" marker-end="url(#m-07-2a)"/>
+
+	<rect x="440" y="70" width="200" height="50" rx="8" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="540" y="92" text-anchor="middle" font-size="12" fill="#1c2330">transport</text>
+	<text x="540" y="110" text-anchor="middle" font-size="11" fill="#4a5568">.handleRequest(req, res)</text>
+
+	<line x1="640" y1="95" x2="695" y2="95" stroke="#4a5568" stroke-width="2" marker-end="url(#m-07-2a)"/>
+
+	<rect x="695" y="70" width="180" height="50" rx="8" fill="#1d7a3c"/>
+	<text x="785" y="92" text-anchor="middle" font-size="12" fill="#fff">memo-tools.mjs</text>
+	<text x="785" y="110" text-anchor="middle" font-size="11" fill="#fff">06 章と同じもの</text>
+
+	<text x="450" y="165" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">書き換えたのは左半分だけ</text>
+</svg>
+<figcaption>トランスポートを差し替えるだけで済むのは、06 章で中身を分けておいたおかげ。</figcaption>
+</figure>
+</section>
+
+<section class="ch03" id="ch03">
+<h1>セッションを持つか</h1>
+
+<p><code>sessionIdGenerator</code> をどうするかで、2 つの作りに分かれます。</p>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">書き方</th><th>ふるまい</th><th>向くもの</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap"><code>undefined</code></td><td>セッションを持たない。1 回のリクエストで完結する</td><td>状態をファイルや DB に持つサーバー</td></tr>
+		<tr><td class="nowrap"><code>() =&gt; randomUUID()</code></td><td>セッション ID を発行し、記憶の中に状態を持つ</td><td>接続ごとの状態が要るサーバー</td></tr>
+	</tbody>
+</table>
+</div>
+
+<p>メモサーバーは<strong>持たない側</strong>にしました。状態はファイルにあるので、リクエストごとに作り直しても困りません。</p>
+
+<figure>
+<svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="セッションを持たない構成では状態を外に置く">
+	<defs>
+		<linearGradient id="g-07-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-07-3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="40" y="40" width="140" height="34" rx="7" fill="url(#g-07-3a)"/>
+	<text x="110" y="62" text-anchor="middle" font-size="11" fill="#fff">リクエスト 1</text>
+	<rect x="40" y="90" width="140" height="34" rx="7" fill="url(#g-07-3a)"/>
+	<text x="110" y="112" text-anchor="middle" font-size="11" fill="#fff">リクエスト 2</text>
+	<rect x="40" y="140" width="140" height="34" rx="7" fill="url(#g-07-3a)"/>
+	<text x="110" y="162" text-anchor="middle" font-size="11" fill="#fff">リクエスト 3</text>
+
+	<g stroke="#4a5568" stroke-width="1.6" marker-end="url(#m-07-3a)">
+		<line x1="180" y1="57" x2="290" y2="57"/>
+		<line x1="180" y1="107" x2="290" y2="107"/>
+		<line x1="180" y1="157" x2="290" y2="157"/>
+	</g>
+
+	<rect x="290" y="40" width="230" height="34" rx="7" fill="#ffffff" stroke="#d9dfe8" stroke-dasharray="4 3"/>
+	<text x="405" y="62" text-anchor="middle" font-size="11" fill="#4a5568">その場で作って捨てる</text>
+	<rect x="290" y="90" width="230" height="34" rx="7" fill="#ffffff" stroke="#d9dfe8" stroke-dasharray="4 3"/>
+	<text x="405" y="112" text-anchor="middle" font-size="11" fill="#4a5568">その場で作って捨てる</text>
+	<rect x="290" y="140" width="230" height="34" rx="7" fill="#ffffff" stroke="#d9dfe8" stroke-dasharray="4 3"/>
+	<text x="405" y="162" text-anchor="middle" font-size="11" fill="#4a5568">その場で作って捨てる</text>
+
+	<g stroke="#4a5568" stroke-width="1.6" marker-end="url(#m-07-3a)">
+		<line x1="520" y1="57" x2="660" y2="95"/>
+		<line x1="520" y1="107" x2="660" y2="107"/>
+		<line x1="520" y1="157" x2="660" y2="119"/>
+	</g>
+
+	<rect x="660" y="80" width="200" height="60" rx="8" fill="#1d7a3c"/>
+	<text x="760" y="106" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">memo.jsonl</text>
+	<text x="760" y="126" text-anchor="middle" font-size="11" fill="#fff">状態はここだけにある</text>
+
+	<text x="450" y="215" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">サーバーの側に記憶を持たせないと、作り直しても平気になる</text>
+	<text x="450" y="236" text-anchor="middle" font-size="11" fill="#4a5568">プロセスを再起動しても、複数台に増やしても、同じように動く</text>
+</svg>
+<figcaption>状態を外に出しておくのは、共有や再起動を考えると効いてくる。</figcaption>
+</figure>
+
+<div class="callout">
+	<p><strong>後片付けを忘れないでください。</strong><code>res.on('close', ...)</code> で <code>transport.close()</code> と <code>server.close()</code> を呼びます。リクエストごとに作るのに閉じないと、使われないオブジェクトが溜まり続けます。</p>
+</div>
+</section>
+
+<section class="ch04" id="ch04">
+<h1>動かす</h1>
+
+<pre><code class="language-powershell">$env:PORT = "3333"
+node docs/samples/07-http/server.mjs</code></pre>
+
+<pre><code class="language-text">メモサーバー（HTTP）: http://localhost:3333/mcp</code></pre>
+
+<h2>叩いてみる</h2>
+
+<pre><code class="language-powershell">$body = '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"手","version":"1.0"}}}'
+
+Invoke-WebRequest -Uri http://localhost:3333/mcp -Method Post `
+	-Body $body -ContentType 'application/json' `
+	-Headers @{ Accept = 'application/json, text/event-stream' } -UseBasicParsing</code></pre>
+
+<p>返ってきたものです。</p>
+
+<pre><code class="language-text">HTTP 200
+event: message
+data: {"result":{"protocolVersion":"2025-11-25","capabilities":{...},"serverInfo":{"name":"memo","version":"1.0.0"}},"jsonrpc":"2.0","id":1}</code></pre>
+
+<h2>Accept ヘッダを忘れない</h2>
+
+<p><strong>これが最初の関門です。</strong>応答は「ただの JSON」か「SSE のストリーム」のどちらかで返ります。<strong>両方を受け取れると伝えないと、サーバーは断ります</strong>。</p>
+
+<pre><code class="language-text">Accept: application/json, text/event-stream</code></pre>
+
+<figure>
+<svg viewBox="0 0 900 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Accept ヘッダの有無で応答が変わる">
+	<defs>
+		<linearGradient id="g-07-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="40" y="40" width="820" height="60" rx="8" fill="#ffffff" stroke="#1d7a3c" stroke-width="2"/>
+	<text x="60" y="65" font-size="13" font-weight="700" fill="#1d7a3c">両方を書く</text>
+	<text x="60" y="88" font-size="12" fill="#1c2330" font-family="monospace">Accept: application/json, text/event-stream</text>
+	<text x="700" y="88" font-size="12" font-weight="700" fill="#1d7a3c">どちらで返っても受けられる</text>
+
+	<rect x="40" y="115" width="820" height="60" rx="8" fill="#fdeaea" stroke="#a51f22" stroke-width="2"/>
+	<text x="60" y="140" font-size="13" font-weight="700" fill="#a51f22">片方だけ</text>
+	<text x="60" y="163" font-size="12" fill="#1c2330" font-family="monospace">Accept: application/json</text>
+	<text x="700" y="163" font-size="12" font-weight="700" fill="#a51f22">406 で断られる</text>
+
+	<text x="450" y="210" text-anchor="middle" font-size="11" fill="#4a5568">サーバーが SSE で返したいときに、受け取れる相手か確かめている</text>
+</svg>
+<figcaption>curl や fetch を手で書くときの引っかかりどころ。SDK のクライアントを使えば自動で付く。</figcaption>
+</figure>
+
+<h2>SSE の形</h2>
+
+<p>SSE で返る場合、本文はこうなります。<code>data:</code> の後ろが JSON-RPC のメッセージです。</p>
+
+<pre><code class="language-text">event: message
+data: {"result":{...},"jsonrpc":"2.0","id":1}</code></pre>
+
+<p>手で解く場合はこう取り出します（<a href="10-プロセス共有.html">10 章</a>のブリッジで使います）。</p>
+
+<pre><code class="language-javascript">function extractMessages(contentType, body) {
+	if (contentType.includes('text/event-stream')) {
+		return body.split('\n')
+			.filter((line) =&gt; line.startsWith('data:'))
+			.map((line) =&gt; line.slice(5).trim())
+			.filter(Boolean);
+	}
+	return body.trim() ? [body.trim()] : [];
+}</code></pre>
+
+<h2>ホストに登録する</h2>
+
+<pre><code class="language-powershell">claude mcp add --transport http memo http://localhost:3333/mcp
+codex mcp add memo --url http://localhost:3333/mcp</code></pre>
+</section>
+
+<section class="ch05" id="ch05">
+<h1>どちらを選ぶか</h1>
+
+<figure>
+<svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="stdioとHTTPの選び方">
+	<defs>
+		<linearGradient id="g-07-5a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="330" y="20" width="240" height="44" rx="8" fill="url(#g-07-5a)"/>
+	<text x="450" y="48" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">どちらにするか</text>
+
+	<path d="M 450 64 L 450 90" stroke="#4a5568" stroke-width="2"/>
+	<rect x="290" y="90" width="320" height="40" rx="8" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="450" y="115" text-anchor="middle" font-size="13" fill="#1c2330">別のマシンに置く必要がある？</text>
+
+	<path d="M 610 110 L 700 110" stroke="#4a5568" stroke-width="2"/>
+	<text x="655" y="102" text-anchor="middle" font-size="11" font-weight="700" fill="#1d7a3c">はい</text>
+	<rect x="700" y="90" width="170" height="40" rx="8" fill="hsl(140,58%,40%)"/>
+	<text x="785" y="115" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">HTTP</text>
+
+	<path d="M 450 130 L 450 158" stroke="#4a5568" stroke-width="2"/>
+	<text x="470" y="150" font-size="11" font-weight="700" fill="#4a5568">いいえ</text>
+
+	<rect x="290" y="158" width="320" height="40" rx="8" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="450" y="183" text-anchor="middle" font-size="13" fill="#1c2330">複数のホストで 1 本を共有したい？</text>
+
+	<path d="M 610 178 L 700 178" stroke="#4a5568" stroke-width="2"/>
+	<text x="655" y="170" text-anchor="middle" font-size="11" font-weight="700" fill="#1d7a3c">はい</text>
+	<rect x="700" y="158" width="170" height="40" rx="8" fill="hsl(140,58%,40%)"/>
+	<text x="785" y="183" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">HTTP</text>
+
+	<path d="M 450 198 L 450 226" stroke="#4a5568" stroke-width="2"/>
+	<text x="470" y="218" font-size="11" font-weight="700" fill="#4a5568">いいえ</text>
+
+	<rect x="290" y="226" width="320" height="40" rx="8" fill="hsl(280,58%,45%)"/>
+	<text x="450" y="251" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">stdio</text>
+	<text x="680" y="251" font-size="11" fill="#4a5568">起動も終了もホスト任せで済む</text>
+</svg>
+<figcaption>迷ったら stdio。共有したくなってから HTTP に移せばよい。中身は変えずに済む。</figcaption>
+</figure>
+
+<h2>HTTP を選んだときに増える仕事</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">増えること</th><th>対処</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">起動と終了</td><td>常駐させる仕掛けが要る（サービス登録など）</td></tr>
+		<tr><td class="nowrap">ポートの管理</td><td>他と重ならない番号を決める</td></tr>
+		<tr><td class="nowrap">落ちたときの検知</td><td>ホストからは「繋がらない」としか見えない</td></tr>
+		<tr><td class="nowrap">誰でも繋げる</td><td>同じ PC の他のプログラムからも叩ける。<code>127.0.0.1</code> に限定する</td></tr>
+	</tbody>
+</table>
+</div>
+
+<div class="callout">
+	<p><strong>外に出すなら認証が要ります。</strong>この資料の例は <code>localhost</code> の中だけで使う前提です。ネットワークに出す場合は、MCP の認可（OAuth）が別に決まっています。<strong>認証なしのサーバーを社内ネットワークに置かないでください。</strong>ツールは実行される側であり、誰でも叩ける状態は危険です。</p>
+</div>
+
+<h2>次の章へ</h2>
+
+<p>ここまでは「訊かれたら答える」だけでした。次は<strong>サーバーの側から伝える</strong>方法と、その限界を扱います。</p>
+</section>
+
+</div>
+
+<footer>
+	<div class="inner">
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="06-ハンズオン-メモサーバー.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>06. ハンズオン① メモサーバー</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+	<a href="08-通知で伝える.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>08. 通知で伝える</a>
+</div>
+<!-- /AUTO:nav -->
+	</div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,462 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>08. 通知で伝える</title>
+<style>
+/* css/style.css が読めなかったときの代替色 */
+.titlebar, section h1, th, a.doclink, .badge { background: #12224d; color: #fff; }
+</style>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,55%); --soft: hsl(280,28%,95%); }
+.ch02 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,55%); --soft: hsl(210,28%,95%); }
+.ch03 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,55%); --soft: hsl(140,28%,95%); }
+.ch04 { --accent: hsl(70,78%,25%);  --accent2: hsl(70,58%,55%);  --soft: hsl(70,28%,95%); }
+.ch05 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,55%);   --soft: hsl(0,28%,95%); }
+.toc ol a::before { content: "08." counter(tocnum) " "; }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>08. 通知で伝える</h1>
+		<p class="lead">処理の結果をサーバーから伝える方法と、その限界</p>
+		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
+	</div>
+</div>
+
+<div class="wrap">
+
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="07-HTTPに載せ替える.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>07. HTTP に載せ替える</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+	<a href="09-タスク.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>09. タスク</a>
+</div>
+<!-- /AUTO:nav -->
+
+<div class="toc">
+	<h2>この資料の内容</h2>
+	<ol>
+		<li class="ch01"><a href="#ch01">できることとできないこと</a></li>
+		<li class="ch02"><a href="#ch02">進捗を知らせる</a></li>
+		<li class="ch03"><a href="#ch03">利用者に尋ねる</a></li>
+		<li class="ch04"><a href="#ch04">画面に出す（枠の外）</a></li>
+		<li class="ch05"><a href="#ch05">呼ばれていないときは届かない</a></li>
+	</ol>
+</div>
+
+<section class="ch01" id="ch01">
+<h1>できることとできないこと</h1>
+
+<p>「処理が終わったら知らせたい」。よくある要望ですが、MCP では<strong>できることとできないことがはっきり分かれます</strong>。先に線を引いておきます。</p>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th>やりたいこと</th><th>手立て</th><th class="nowrap">可否</th></tr>
+	</thead>
+	<tbody>
+		<tr><td>処理の途中経過を伝えたい</td><td><code>notifications/progress</code></td><td class="nowrap"><span class="badge b-ok">できる</span></td></tr>
+		<tr><td>途中で利用者に尋ねたい</td><td><code>elicitation/create</code></td><td class="nowrap"><span class="badge b-ok">できる</span></td></tr>
+		<tr><td>人に確実に気づかせたい</td><td>OS の通知（MCP の外）</td><td class="nowrap"><span class="badge b-ok">できる</span></td></tr>
+		<tr><td>長い処理を投げて後で結果を取りたい</td><td>タスク（<a href="09-タスク.html">09 章</a>）</td><td class="nowrap"><span class="badge b-warn">相手次第</span></td></tr>
+		<tr><td>何も呼ばれていないのに割り込みたい</td><td>—</td><td class="nowrap"><span class="badge b-ng">できない</span></td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="通知が流せるのは処理中の間だけ">
+	<defs>
+		<linearGradient id="g-08-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-08-1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<line x1="60" y1="200" x2="860" y2="200" stroke="#4a5568" stroke-width="2"/>
+	<text x="860" y="225" text-anchor="end" font-size="11" fill="#4a5568">時間</text>
+
+	<rect x="230" y="60" width="330" height="120" rx="8" fill="url(#g-08-1a)" opacity="0.14"/>
+	<line x1="230" y1="60" x2="230" y2="200" stroke="var(--accent2)" stroke-width="2" stroke-dasharray="4 3"/>
+	<line x1="560" y1="60" x2="560" y2="200" stroke="var(--accent2)" stroke-width="2" stroke-dasharray="4 3"/>
+	<text x="395" y="52" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accent)">tools/call を処理している間</text>
+
+	<circle cx="230" cy="200" r="7" fill="var(--accent)"/>
+	<text x="230" y="232" text-anchor="middle" font-size="11" fill="#1c2330">呼ばれた</text>
+
+	<circle cx="560" cy="200" r="7" fill="var(--accent)"/>
+	<text x="560" y="232" text-anchor="middle" font-size="11" fill="#1c2330">結果を返した</text>
+
+	<line x1="300" y1="160" x2="300" y2="105" stroke="#1d7a3c" stroke-width="2" marker-end="url(#m-08-1a)"/>
+	<line x1="395" y1="160" x2="395" y2="105" stroke="#1d7a3c" stroke-width="2" marker-end="url(#m-08-1a)"/>
+	<line x1="490" y1="160" x2="490" y2="105" stroke="#1d7a3c" stroke-width="2" marker-end="url(#m-08-1a)"/>
+	<text x="395" y="95" text-anchor="middle" font-size="12" font-weight="700" fill="#1d7a3c">通知を送れる</text>
+
+	<line x1="680" y1="160" x2="680" y2="105" stroke="#a51f22" stroke-width="2" stroke-dasharray="5 4"/>
+	<text x="680" y="95" text-anchor="middle" font-size="12" font-weight="700" fill="#a51f22">送れない</text>
+	<text x="680" y="130" text-anchor="middle" font-size="16" font-weight="700" fill="#a51f22">×</text>
+
+	<text x="450" y="258" text-anchor="middle" font-size="12" fill="#4a5568">結果を返した瞬間に通り道が閉じる。「返した後で知らせる」はできない</text>
+</svg>
+<figcaption>通知には流し込む先が要る。その先はリクエストの処理中だけ開いている。</figcaption>
+</figure>
+
+<div class="callout">
+	<p><strong>なぜこうなっているのか。</strong>仕様には <code>Servers MUST NOT initiate JSON-RPC requests</code> と書かれています。やりとりを始めるのは常にクライアント側で、サーバーは応答と通知だけを返します。<a href="01-背景.html">01 章</a>で触れた非対称が、ここで効いてきます。</p>
+</div>
+</section>
+
+<section class="ch02" id="ch02">
+<h1>進捗を知らせる</h1>
+
+<p>ホストが <code>_meta.progressToken</code> を付けて呼んできたとき、<strong>そのときだけ</strong>進捗を送れます。</p>
+
+<h2>実際に届くもの</h2>
+
+<p>Claude Code から <code>tools/call</code> が来たときの中身です。</p>
+
+<pre><code class="language-json">{
+  "method": "tools/call",
+  "params": {
+    "name": "add",
+    "arguments": { "a": 2, "b": 3 },
+    "_meta": {
+      "claudecode/toolUseId": "toolu_018tCHaryTHbnYbduhcYUqZW",
+      "progressToken": 2
+    }
+  },
+  "jsonrpc": "2.0",
+  "id": 2
+}</code></pre>
+
+<p><code>progressToken: 2</code> が付いています。これを添えて通知を返します。</p>
+
+<h2>送る</h2>
+
+<pre><code class="language-javascript">server.registerTool(
+	'countdown',
+	{
+		title: '数える',
+		description: '指定した秒数を数え、その間に進捗を知らせる',
+		inputSchema: { seconds: z.number().int().min(1).max(10).default(3) },
+	},
+	async ({ seconds }, extra) =&gt; {
+		const token = extra._meta?.progressToken;
+
+		for (let i = 1; i &lt;= seconds; i++) {
+			await sleep(1000);
+			if (token === undefined) continue;
+			await extra.sendNotification({
+				method: 'notifications/progress',
+				params: { progressToken: token, progress: i, total: seconds, message: `${i}/${seconds} 秒` },
+			});
+		}
+
+		return { content: [{ type: 'text', text: `${seconds} 秒数えた` }] };
+	},
+);</code></pre>
+
+<p>流れる通知です。</p>
+
+<pre><code class="language-json">{"method":"notifications/progress","params":{"progressToken":"t1","progress":1,"total":2,"message":"1/2 秒"},"jsonrpc":"2.0"}
+{"method":"notifications/progress","params":{"progressToken":"t1","progress":2,"total":2,"message":"2/2 秒"},"jsonrpc":"2.0"}</code></pre>
+
+<figure>
+<svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="progressToken がある場合と無い場合">
+	<defs>
+		<linearGradient id="g-08-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="g-08-2b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="40" y="40" width="380" height="130" rx="9" fill="url(#g-08-2a)"/>
+	<text x="230" y="70" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">progressToken がある</text>
+	<text x="230" y="98" text-anchor="middle" font-size="12" fill="#fff">通知に添えて返せる</text>
+	<text x="230" y="122" text-anchor="middle" font-size="12" fill="#fff">ホストが進み具合を表示できる</text>
+	<text x="230" y="148" text-anchor="middle" font-size="11" fill="#fff">値は必ず増やす（仕様の決まり）</text>
+
+	<rect x="480" y="40" width="380" height="130" rx="9" fill="url(#g-08-2b)"/>
+	<text x="670" y="70" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">progressToken が無い</text>
+	<text x="670" y="98" text-anchor="middle" font-size="12" fill="#fff">送っても宛先が無い</text>
+	<text x="670" y="122" text-anchor="middle" font-size="12" fill="#fff">送らないのが正しい</text>
+	<text x="670" y="148" text-anchor="middle" font-size="11" fill="#fff">if (token === undefined) で守る</text>
+
+	<text x="450" y="200" text-anchor="middle" font-size="12" fill="#4a5568">付けてくるかどうかはホスト次第。付いていないことを前提に書く</text>
+</svg>
+<figcaption>トークンの有無を必ず確かめる。無いのに送るのは、宛名の無い手紙を出すのと同じ。</figcaption>
+</figure>
+
+<div class="callout">
+	<p><strong>進捗の値は必ず増やします。</strong>仕様に「<code>progress</code> の値は毎回増えなければならない」と書かれています。総数が分からないときは <code>total</code> を省き、<code>progress</code> だけを 1, 2, 3… と増やします。</p>
+</div>
+</section>
+
+<section class="ch03" id="ch03">
+<h1>利用者に尋ねる</h1>
+
+<p>サーバーからリクエストは送れない、と書きました。<strong>ただし例外があります</strong>。クライアントが「尋ねられる用意がある」と名乗っている場合です。</p>
+
+<h2>相手が名乗っているか確かめる</h2>
+
+<p>Claude Code は <code>initialize</code> でこう名乗ってきます。</p>
+
+<pre><code class="language-json">"capabilities": { "roots": { "listChanged": true }, "elicitation": {} }</code></pre>
+
+<p><code>elicitation</code> があるので、尋ねられます。</p>
+
+<h2>尋ねる</h2>
+
+<pre><code class="language-javascript">const answer = await extra.sendRequest(
+	{
+		method: 'elicitation/create',
+		params: {
+			mode: 'form',
+			message: 'お名前を教えてください',
+			requestedSchema: {
+				type: 'object',
+				properties: { name: { type: 'string', title: '名前' } },
+				required: ['name'],
+			},
+		},
+	},
+	z.object({ action: z.string(), content: z.record(z.string(), z.unknown()).optional() }),
+);
+
+if (answer.action !== 'accept') {
+	return { content: [{ type: 'text', text: `尋ねたが ${answer.action} だった` }] };
+}
+return { content: [{ type: 'text', text: `こんにちは、${answer.content?.name} さん` }] };</code></pre>
+
+<h2>3 つの返事</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">action</th><th>意味</th><th>やること</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap"><code>accept</code></td><td>答えてくれた</td><td><code>content</code> を使う</td></tr>
+		<tr><td class="nowrap"><code>decline</code></td><td>はっきり断られた</td><td>別の手を出す</td></tr>
+		<tr><td class="nowrap"><code>cancel</code></td><td>閉じられた・答えられなかった</td><td>後でまた尋ねてよい</td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="elicitation のやりとり">
+	<defs>
+		<linearGradient id="g-08-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-08-3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="30" y="30" width="140" height="36" rx="7" fill="url(#g-08-3a)"/>
+	<text x="100" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">サーバー</text>
+	<line x1="100" y1="66" x2="100" y2="200" stroke="#d9dfe8" stroke-width="2"/>
+
+	<rect x="380" y="30" width="140" height="36" rx="7" fill="url(#g-08-3a)"/>
+	<text x="450" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">クライアント</text>
+	<line x1="450" y1="66" x2="450" y2="200" stroke="#d9dfe8" stroke-width="2"/>
+
+	<rect x="730" y="30" width="140" height="36" rx="7" fill="url(#g-08-3a)"/>
+	<text x="800" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">利用者</text>
+	<line x1="800" y1="66" x2="800" y2="200" stroke="#d9dfe8" stroke-width="2"/>
+
+	<line x1="100" y1="95" x2="450" y2="95" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-08-3a)"/>
+	<text x="275" y="88" text-anchor="middle" font-size="11" fill="#1c2330">elicitation/create</text>
+
+	<line x1="450" y1="125" x2="800" y2="125" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-08-3a)"/>
+	<text x="625" y="118" text-anchor="middle" font-size="11" fill="#1c2330">画面に出す</text>
+
+	<line x1="800" y1="155" x2="450" y2="155" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-08-3a)"/>
+	<text x="625" y="148" text-anchor="middle" font-size="11" fill="#1c2330">入力する</text>
+
+	<line x1="450" y1="185" x2="100" y2="185" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-08-3a)"/>
+	<text x="275" y="178" text-anchor="middle" font-size="11" fill="#1c2330">action と content</text>
+
+	<text x="450" y="225" text-anchor="middle" font-size="11" fill="#4a5568">ツールの処理を止めたまま待つ。利用者が答えるまで結果は返せない</text>
+</svg>
+<figcaption>ツールの中から利用者に問いかけられる。ただし待たせることになるので、多用しない。</figcaption>
+</figure>
+
+<h2>実測</h2>
+
+<p>対話していない状態（<code>claude -p</code> での実行）で呼ぶと、こう返ります。</p>
+
+<pre><code class="language-text">elicitation の答え: {"action":"cancel"}</code></pre>
+
+<p>画面に出せる相手がいないので <code>cancel</code> です。<strong>断られる前提で書いておく</strong>必要があります。</p>
+
+<div class="callout">
+	<p><strong>パスワードや API キーを form で尋ねてはいけません。</strong>仕様で禁じられています。入力した値がクライアント側を通るためです。そうした情報が要る場合は、URL を開いてもらう <code>mode: 'url'</code> を使います。</p>
+</div>
+</section>
+
+<section class="ch04" id="ch04">
+<h1>画面に出す（枠の外）</h1>
+
+<p>「ビルドが終わったら気づきたい」。この要望に<strong>最も確実に応えるのは、MCP の外側</strong>です。サーバーは普通のプロセスなので、OS の通知を出せます。</p>
+
+<pre><code class="language-javascript">await execFileAsync('powershell', [
+	'-NoProfile', '-ExecutionPolicy', 'Bypass',
+	'-File', join(HERE, 'toast.ps1'),
+	'-Title', title, '-Message', message,
+]);</code></pre>
+
+<p>呼ばれる <code>toast.ps1</code> の中身です。</p>
+
+<pre><code class="language-powershell">[void][Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime]
+
+$xml = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent(
+	[Windows.UI.Notifications.ToastTemplateType]::ToastText02)
+
+$texts = $xml.GetElementsByTagName('text')
+[void]$texts.Item(0).AppendChild($xml.CreateTextNode($Title))
+[void]$texts.Item(1).AppendChild($xml.CreateTextNode($Message))
+
+# 送り主として登録済みのアプリ ID が要る。PowerShell のものを借りる
+$appId = '{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\WindowsPowerShell\v1.0\powershell.exe'
+
+$notifier = [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier($appId)
+$notifier.Show([Windows.UI.Notifications.ToastNotification]::new($xml))</code></pre>
+
+<div class="callout">
+	<p><strong>Windows PowerShell 5.1 で呼びます。</strong>pwsh 7 で同じことをすると <code>Unable to find type [Windows.UI.Notifications.ToastNotificationManager...]</code> になります。WinRT の型が読み込まれないためです。<code>powershell</code>（5.1）を明示して呼んでください。</p>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MCPの通り道とOSの通知は別の経路">
+	<defs>
+		<linearGradient id="g-08-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-08-4a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="330" y="100" width="220" height="60" rx="9" fill="#1d7a3c"/>
+	<text x="440" y="126" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">MCP サーバー</text>
+	<text x="440" y="146" text-anchor="middle" font-size="11" fill="#fff">ただのプロセス</text>
+
+	<line x1="330" y1="118" x2="180" y2="80" stroke="#4a5568" stroke-width="2" marker-end="url(#m-08-4a)"/>
+	<rect x="20" y="55" width="160" height="50" rx="8" fill="url(#g-08-4a)"/>
+	<text x="100" y="77" text-anchor="middle" font-size="12" fill="#fff">MCP の通り道</text>
+	<text x="100" y="95" text-anchor="middle" font-size="11" fill="#fff">処理中しか使えない</text>
+
+	<line x1="550" y1="140" x2="700" y2="180" stroke="#b8620a" stroke-width="2" marker-end="url(#m-08-4a)"/>
+	<rect x="700" y="155" width="180" height="50" rx="8" fill="#b8620a"/>
+	<text x="790" y="177" text-anchor="middle" font-size="12" fill="#fff">OS の通知</text>
+	<text x="790" y="195" text-anchor="middle" font-size="11" fill="#fff">いつでも出せる</text>
+
+	<text x="440" y="215" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">同じプロセスから、2 つの経路が使える</text>
+	<text x="440" y="236" text-anchor="middle" font-size="11" fill="#4a5568">メール・Slack・音を鳴らす、も同じ考え方</text>
+</svg>
+<figcaption>MCP の中で解こうとすると詰まる要望も、外から見れば普通のプロセスなので手がある。</figcaption>
+</figure>
+
+<div class="callout">
+	<p><strong>AI に伝えるのと、人に伝えるのは別です。</strong>OS の通知は<strong>人</strong>に届きますが、モデルは知りません。モデルにも伝えたいなら、次にツールが呼ばれたときに「前回の処理は終わっています」と返す形が確実です。</p>
+</div>
+</section>
+
+<section class="ch05" id="ch05">
+<h1>呼ばれていないときは届かない</h1>
+
+<p>最後に、はっきり線を引きます。</p>
+
+<div class="callout">
+	<p><strong>誰も何も呼んでいないときに、サーバーから会話へ割り込むことはできません。</strong>これは実装の都合ではなく、仕様がそう決めています。通知には流し込む先が要り、その先はクライアントが開いたときにしか存在しません。</p>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="外部イベントから会話へ割り込む経路は無い">
+	<defs>
+		<linearGradient id="g-08-5a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-08-5a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="30" y="90" width="180" height="60" rx="9" fill="#b8620a"/>
+	<text x="120" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">外で何か起きた</text>
+	<text x="120" y="136" text-anchor="middle" font-size="11" fill="#fff">監視が異常を検知した</text>
+
+	<line x1="210" y1="120" x2="320" y2="120" stroke="#4a5568" stroke-width="2" marker-end="url(#m-08-5a)"/>
+
+	<rect x="320" y="90" width="180" height="60" rx="9" fill="#1d7a3c"/>
+	<text x="410" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">サーバーは知る</text>
+	<text x="410" y="136" text-anchor="middle" font-size="11" fill="#fff">プロセスは動いている</text>
+
+	<line x1="500" y1="120" x2="640" y2="120" stroke="#a51f22" stroke-width="3" stroke-dasharray="8 5"/>
+	<text x="570" y="105" text-anchor="middle" font-size="26" font-weight="700" fill="#a51f22">×</text>
+	<text x="570" y="150" text-anchor="middle" font-size="11" font-weight="700" fill="#a51f22">経路が無い</text>
+
+	<rect x="640" y="90" width="220" height="60" rx="9" fill="#e8ecf3" stroke="#d9dfe8"/>
+	<text x="750" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#4a5568">会話に割り込む</text>
+	<text x="750" y="136" text-anchor="middle" font-size="11" fill="#4a5568">モデルに知らせる</text>
+
+	<line x1="410" y1="150" x2="410" y2="200" stroke="#1d7a3c" stroke-width="2" marker-end="url(#m-08-5a)"/>
+	<rect x="290" y="200" width="240" height="46" rx="8" fill="#1d7a3c"/>
+	<text x="410" y="222" text-anchor="middle" font-size="12" fill="#fff">OS の通知・メール・Slack</text>
+	<text x="410" y="239" text-anchor="middle" font-size="11" fill="#fff">こちらは通る（人に届く）</text>
+</svg>
+<figcaption>横に抜ける道はある。真っ直ぐ会話に入る道が無い。</figcaption>
+</figure>
+
+<h2>実際にはこう作る</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">やりたいこと</th><th>作り方</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">ビルドの完了を知りたい</td><td>ツールの中で最後まで待ち、進捗を送る。終わったら OS の通知も出す</td></tr>
+		<tr><td class="nowrap">長すぎて待てない</td><td>タスクにする（<a href="09-タスク.html">09 章</a>）。ただし相手の対応が要る</td></tr>
+		<tr><td class="nowrap">溜まったものを伝えたい</td><td>サーバー側に溜めておき、<strong>次に呼ばれたとき</strong>に結果へ添える</td></tr>
+		<tr><td class="nowrap">今すぐ人に気づかせたい</td><td>OS の通知。MCP の外</td></tr>
+	</tbody>
+</table>
+</div>
+
+<div class="callout">
+	<p><strong>「次に呼ばれたときに伝える」は地味ですが確実です。</strong>サーバー側に未読の知らせを溜めておき、どのツールが呼ばれても結果の末尾に「※ 3 件の完了があります」と付ける。どのホストでも動き、対応状況にも左右されません。</p>
+</div>
+
+<h2>次の章へ</h2>
+
+<p>「長い処理を投げて、後から結果を取る」仕組みが仕様にあります。次の章で作りますが、<strong>手元の Claude Code では使われませんでした</strong>。その実測も含めて扱います。</p>
+</section>
+
+</div>
+
+<footer>
+	<div class="inner">
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="07-HTTPに載せ替える.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>07. HTTP に載せ替える</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+	<a href="09-タスク.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>09. タスク</a>
+</div>
+<!-- /AUTO:nav -->
+	</div>
+</footer>
+
+</body>
+</html>

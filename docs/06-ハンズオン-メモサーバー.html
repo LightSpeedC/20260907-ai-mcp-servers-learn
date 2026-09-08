@@ -1,0 +1,468 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>06. ハンズオン① メモサーバー</title>
+<style>
+/* css/style.css が読めなかったときの代替色 */
+.titlebar, section h1, th, a.doclink, .badge { background: #12224d; color: #fff; }
+</style>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,55%); --soft: hsl(280,28%,95%); }
+.ch02 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,55%); --soft: hsl(210,28%,95%); }
+.ch03 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,55%); --soft: hsl(140,28%,95%); }
+.ch04 { --accent: hsl(70,78%,25%);  --accent2: hsl(70,58%,55%);  --soft: hsl(70,28%,95%); }
+.ch05 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,55%);   --soft: hsl(0,28%,95%); }
+.toc ol a::before { content: "06." counter(tocnum) " "; }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>06. ハンズオン① メモサーバー</h1>
+		<p class="lead">メモを記録・検索するサーバーを、動くところまで作りきる</p>
+		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
+	</div>
+</div>
+
+<div class="wrap">
+
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="05-3つの提供物.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>05. 3 つの提供物</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+	<a href="07-HTTPに載せ替える.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>07. HTTP に載せ替える</a>
+</div>
+<!-- /AUTO:nav -->
+
+<div class="toc">
+	<h2>この資料の内容</h2>
+	<ol>
+		<li class="ch01"><a href="#ch01">何を作るか</a></li>
+		<li class="ch02"><a href="#ch02">中身と運び方を分ける</a></li>
+		<li class="ch03"><a href="#ch03">記録する</a></li>
+		<li class="ch04"><a href="#ch04">探す</a></li>
+		<li class="ch05"><a href="#ch05">確かめる</a></li>
+	</ol>
+</div>
+
+<section class="ch01" id="ch01">
+<h1>何を作るか</h1>
+
+<p>思いついたことを記録し、あとから探せるサーバーです。外部のサービスに繋がないので、ネットワークが無くても動きます。</p>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">出すもの</th><th class="nowrap">名前</th><th>すること</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">Tool</td><td class="nowrap"><code>memo_add</code></td><td>本文と札を受け取って 1 件記録する</td></tr>
+		<tr><td class="nowrap">Tool</td><td class="nowrap"><code>memo_search</code></td><td>語を含むメモを探す</td></tr>
+		<tr><td class="nowrap">Resource</td><td class="nowrap"><code>memo://all</code></td><td>全部読む</td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="メモサーバーの構成">
+	<defs>
+		<linearGradient id="g-06-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-06-1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="40" y="40" width="170" height="130" rx="9" fill="url(#g-06-1a)"/>
+	<text x="125" y="72" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">ホスト</text>
+	<text x="125" y="100" text-anchor="middle" font-size="11" fill="#fff">「さっきの件、</text>
+	<text x="125" y="120" text-anchor="middle" font-size="11" fill="#fff">メモしておいて」</text>
+	<text x="125" y="148" text-anchor="middle" font-size="11" fill="#fff">「mcp の話あった？」</text>
+
+	<line x1="210" y1="80" x2="330" y2="80" stroke="#4a5568" stroke-width="2" marker-end="url(#m-06-1a)"/>
+	<text x="270" y="72" text-anchor="middle" font-size="11" fill="#4a5568">memo_add</text>
+	<line x1="210" y1="135" x2="330" y2="135" stroke="#4a5568" stroke-width="2" marker-end="url(#m-06-1a)"/>
+	<text x="270" y="127" text-anchor="middle" font-size="11" fill="#4a5568">memo_search</text>
+
+	<rect x="330" y="40" width="250" height="130" rx="9" fill="#1d7a3c"/>
+	<text x="455" y="72" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">メモサーバー</text>
+	<text x="455" y="100" text-anchor="middle" font-size="11" fill="#fff">追記する / 探す</text>
+	<text x="455" y="126" text-anchor="middle" font-size="11" fill="#fff">memo://all で全部読む</text>
+	<text x="455" y="150" text-anchor="middle" font-size="11" fill="#fff">状態は持たない</text>
+
+	<line x1="580" y1="105" x2="700" y2="105" stroke="#4a5568" stroke-width="2" marker-end="url(#m-06-1a)" marker-start="url(#m-06-1a)"/>
+
+	<rect x="700" y="65" width="160" height="80" rx="9" fill="#ffffff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="780" y="95" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">memo.jsonl</text>
+	<text x="780" y="118" text-anchor="middle" font-size="11" fill="#4a5568">1 行 1 件の JSON</text>
+
+	<text x="450" y="210" text-anchor="middle" font-size="11" fill="#4a5568">サーバー自身は何も覚えない。覚えるのはファイル側の役目</text>
+</svg>
+<figcaption>状態をファイルに持たせておくと、07 章でそのまま HTTP に載せ替えられる。</figcaption>
+</figure>
+
+<h2>保存の形</h2>
+
+<p>1 行 1 件の JSON（JSONL）にします。追記が <code>appendFile</code> だけで済み、途中で落ちても壊れた行を読み飛ばせます。</p>
+
+<pre><code class="language-text">{"at":"2026-09-07T09:51:42.075Z","text":"MCP の資料を書き始めた","tags":["mcp","資料"]}
+{"at":"2026-09-07T09:51:42.078Z","text":"stdio と HTTP の違いを整理","tags":[]}</code></pre>
+</section>
+
+<section class="ch02" id="ch02">
+<h1>中身と運び方を分ける</h1>
+
+<p>ファイルを 2 つに分けます。<strong>これが後で効きます</strong>。</p>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">ファイル</th><th>役割</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap"><code>memo-tools.mjs</code></td><td>ツールと Resource の中身。トランスポートには触れない</td></tr>
+		<tr><td class="nowrap"><code>server.mjs</code></td><td>stdio に繋ぐだけ。7 行</td></tr>
+	</tbody>
+</table>
+</div>
+
+<pre><code class="language-javascript">// server.mjs はこれだけ
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { createMemoServer } from './memo-tools.mjs';
+
+await createMemoServer().connect(new StdioServerTransport());</code></pre>
+
+<p><code>memo-tools.mjs</code> 側は、サーバーを組み立てて返す関数にします。</p>
+
+<pre><code class="language-javascript">export function createMemoServer() {
+	const server = new McpServer({ name: 'memo', version: '1.0.0' });
+
+	server.registerTool('memo_add', { /* ... */ }, async ({ text, tags }) =&gt; { /* ... */ });
+	server.registerTool('memo_search', { /* ... */ }, async ({ query, limit }) =&gt; { /* ... */ });
+	server.registerResource('memo-all', 'memo://all', { /* ... */ }, async (uri) =&gt; { /* ... */ });
+
+	return server;
+}</code></pre>
+
+<figure>
+<svg viewBox="0 0 900 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="中身を分けておくと運び方だけ差し替えられる">
+	<defs>
+		<linearGradient id="g-06-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-06-2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="300" y="80" width="300" height="60" rx="9" fill="url(#g-06-2a)"/>
+	<text x="450" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">memo-tools.mjs</text>
+	<text x="450" y="126" text-anchor="middle" font-size="11" fill="#fff">1 回書けば、どの運び方でも使える</text>
+
+	<line x1="300" y1="95" x2="200" y2="60" stroke="#4a5568" stroke-width="2" marker-end="url(#m-06-2a)"/>
+	<rect x="30" y="35" width="170" height="46" rx="8" fill="#1d7a3c"/>
+	<text x="115" y="55" text-anchor="middle" font-size="12" fill="#fff">server.mjs</text>
+	<text x="115" y="72" text-anchor="middle" font-size="11" fill="#fff">stdio（06 章）</text>
+
+	<line x1="300" y1="125" x2="200" y2="160" stroke="#4a5568" stroke-width="2" marker-end="url(#m-06-2a)"/>
+	<rect x="30" y="139" width="170" height="46" rx="8" fill="#1d7a3c"/>
+	<text x="115" y="159" text-anchor="middle" font-size="12" fill="#fff">07-http/server.mjs</text>
+	<text x="115" y="176" text-anchor="middle" font-size="11" fill="#fff">HTTP（07 章）</text>
+
+	<line x1="600" y1="110" x2="700" y2="110" stroke="#4a5568" stroke-width="2" marker-end="url(#m-06-2a)"/>
+	<rect x="700" y="87" width="170" height="46" rx="8" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="785" y="107" text-anchor="middle" font-size="12" fill="#1c2330">テストからも</text>
+	<text x="785" y="124" text-anchor="middle" font-size="11" fill="#4a5568">同じものを呼べる</text>
+</svg>
+<figcaption>ツールの中身とトランスポートを混ぜて書くと、07 章で全部書き直すことになる。</figcaption>
+</figure>
+
+<h2>保存先を差し替えられるようにする</h2>
+
+<pre><code class="language-javascript">const FILE = process.env.MEMO_FILE
+	?? join(dirname(fileURLToPath(import.meta.url)), 'memo.jsonl');</code></pre>
+
+<div class="callout">
+	<p><strong>置き場所は必ず環境変数で変えられるようにします。</strong>テストのたびに本物のメモが汚れては困ります。既定値を持たせつつ、外から差し替えられる形にしておくのが基本です。</p>
+</div>
+</section>
+
+<section class="ch03" id="ch03">
+<h1>記録する</h1>
+
+<pre><code class="language-javascript">server.registerTool(
+	'memo_add',
+	{
+		title: 'メモを足す',
+		description: 'メモを 1 件記録する',
+		inputSchema: {
+			text: z.string().min(1).describe('記録する内容'),
+			tags: z.array(z.string()).optional().describe('分類のための札'),
+		},
+	},
+	async ({ text, tags }) =&gt; {
+		const entry = { at: new Date().toISOString(), text, tags: tags ?? [] };
+		await appendFile(FILE, JSON.stringify(entry) + '\n', 'utf8');
+		return { content: [{ type: 'text', text: `記録した: ${entry.at}` }] };
+	},
+);</code></pre>
+
+<h2>読み込みは壊れに強くする</h2>
+
+<pre><code class="language-javascript">// 1 行 1 件の JSON。壊れた行は読み飛ばす
+async function load() {
+	try {
+		const text = await readFile(FILE, 'utf8');
+		return text.split('\n')
+			.filter((line) =&gt; line.trim())
+			.map((line) =&gt; { try { return JSON.parse(line); } catch { return null; } })
+			.filter(Boolean);
+	} catch (err) {
+		if (err.code === 'ENOENT') return [];
+		throw err;
+	}
+}</code></pre>
+
+<figure>
+<svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="壊れた行があっても他の行は読める">
+	<defs>
+		<linearGradient id="g-06-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="450" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">書き込みの途中で落ちた場合</text>
+
+	<rect x="80" y="45" width="740" height="32" rx="6" fill="#ffffff" stroke="#1d7a3c" stroke-width="2"/>
+	<text x="100" y="66" font-size="11" fill="#1d7a3c" font-family="monospace">{"at":"...","text":"1 件目"}</text>
+	<text x="770" y="66" font-size="11" font-weight="700" fill="#1d7a3c">読める</text>
+
+	<rect x="80" y="85" width="740" height="32" rx="6" fill="#ffffff" stroke="#1d7a3c" stroke-width="2"/>
+	<text x="100" y="106" font-size="11" fill="#1d7a3c" font-family="monospace">{"at":"...","text":"2 件目"}</text>
+	<text x="770" y="106" font-size="11" font-weight="700" fill="#1d7a3c">読める</text>
+
+	<rect x="80" y="125" width="740" height="32" rx="6" fill="#fff6e8" stroke="#b8620a" stroke-width="2"/>
+	<text x="100" y="146" font-size="11" fill="#b8620a" font-family="monospace">{"at":"...","te</text>
+	<text x="700" y="146" font-size="11" font-weight="700" fill="#b8620a">この行だけ捨てる</text>
+
+	<text x="450" y="190" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">1 件が壊れても、残りは無事</text>
+	<text x="450" y="210" text-anchor="middle" font-size="11" fill="#4a5568">全体を 1 つの JSON 配列にしていると、こうはいかない</text>
+</svg>
+<figcaption>追記型の形式を選ぶ理由。1 つの大きな JSON にすると、途中で落ちた瞬間に全件を失う。</figcaption>
+</figure>
+</section>
+
+<section class="ch04" id="ch04">
+<h1>探す</h1>
+
+<pre><code class="language-javascript">server.registerTool(
+	'memo_search',
+	{
+		title: 'メモを探す',
+		description: '本文か札に語を含むメモを探す',
+		inputSchema: {
+			query: z.string().describe('探す語'),
+			limit: z.number().int().min(1).max(50).default(10).describe('返す件数の上限'),
+		},
+	},
+	async ({ query, limit }) =&gt; {
+		const all = await load();
+		const q = query.toLowerCase();
+		const hit = all.filter((m) =&gt;
+			m.text.toLowerCase().includes(q) || m.tags.some((t) =&gt; t.toLowerCase().includes(q)));
+
+		if (hit.length === 0) {
+			return { content: [{ type: 'text', text: `「${query}」を含むメモはありません` }] };
+		}
+
+		// 新しいものから返す
+		const lines = hit.slice(-limit).reverse()
+			.map((m) =&gt; `${m.at} ${m.text}${m.tags.length ? ` [${m.tags.join(' ')}]` : ''}`);
+		return {
+			content: [{ type: 'text', text: `${hit.length} 件のうち ${lines.length} 件\n${lines.join('\n')}` }],
+		};
+	},
+);</code></pre>
+
+<h2>返し方に気を配る</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">やっていること</th><th>理由</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">0 件でも <code>isError</code> にしない</td><td>探して無かったのは失敗ではない。「ありません」と伝えれば足りる</td></tr>
+		<tr><td class="nowrap">件数を先に書く</td><td>「120 件のうち 10 件」と分かれば、モデルは絞り込みを提案できる</td></tr>
+		<tr><td class="nowrap"><code>limit</code> に上限を付ける</td><td>全件を返すと会話が埋まる。<code>max(50)</code> で歯止めをかける</td></tr>
+		<tr><td class="nowrap">新しいものから返す</td><td>直近の話題を探していることが多い</td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="返す量を絞らないと会話が埋まる">
+	<defs>
+		<linearGradient id="g-06-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="g-06-4b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="225" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">全件返すと</text>
+	<rect x="60" y="45" width="330" height="120" rx="8" fill="url(#g-06-4a)"/>
+	<text x="225" y="80" text-anchor="middle" font-size="12" fill="#fff">1200 件のメモ本文</text>
+	<text x="225" y="106" text-anchor="middle" font-size="12" fill="#fff">文脈の大半を占める</text>
+	<text x="225" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">本題を押し出してしまう</text>
+
+	<text x="675" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">絞って返すと</text>
+	<rect x="510" y="45" width="330" height="120" rx="8" fill="url(#g-06-4b)"/>
+	<text x="675" y="80" text-anchor="middle" font-size="12" fill="#fff">「1200 件のうち 10 件」</text>
+	<text x="675" y="106" text-anchor="middle" font-size="12" fill="#fff">＋ 直近の 10 件</text>
+	<text x="675" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">足りなければモデルが絞り直す</text>
+
+	<text x="450" y="200" text-anchor="middle" font-size="11" fill="#4a5568">ツールの戻り値はそのまま文脈に入る。長さは設計事項</text>
+</svg>
+<figcaption>返す量を決めるのはサーバー側の責任。ホストは受け取ったものをそのまま渡す。</figcaption>
+</figure>
+</section>
+
+<section class="ch05" id="ch05">
+<h1>確かめる</h1>
+
+<h2>手で叩く</h2>
+
+<pre><code class="language-powershell">$env:MEMO_FILE = "./memo-test.jsonl"
+@(
+'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"手","version":"1.0"}}}'
+'{"jsonrpc":"2.0","method":"notifications/initialized"}'
+'{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"memo_add","arguments":{"text":"MCP の資料を書き始めた","tags":["mcp"]}}}'
+) -join "`n" | node server.mjs</code></pre>
+
+<div class="callout">
+	<p><strong>手で流し込むと、順番どおりに処理されるとは限りません。</strong>実際にやってみると、後から送った検索が先に返ってくることがあります。サーバーは受け取った順に<strong>並行して</strong>処理し、終わった順に返すためです。<code>id</code> で対応が取れているので問題はありませんが、「追記してから探す」ような確認には向きません。</p>
+</div>
+
+<h2>テストを書く</h2>
+
+<p>順番が要る確認には、応答を待てるクライアントを使います。SDK にはクライアント側も入っています。</p>
+
+<pre><code class="language-javascript">import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+
+const transport = new StdioClientTransport({
+	command: process.execPath,
+	args: [serverPath],
+	// 環境変数を渡さないと既定の PATH すら無くなる
+	env: { ...process.env, MEMO_FILE: '...' },
+	stderr: 'ignore',
+});
+
+const client = new Client({ name: 'tests', version: '1.0.0' }, { capabilities: {} });
+await client.connect(transport);</code></pre>
+
+<p>これを使ったテストです。</p>
+
+<pre><code class="language-javascript">test('書いたメモは探せる。札でも探せる', async () =&gt; {
+	await rm(STDIO_FILE, { force: true });
+	const client = await connect(sample('06-memo/server.mjs'), { env: { MEMO_FILE: STDIO_FILE } });
+
+	try {
+		await client.callTool({
+			name: 'memo_add',
+			arguments: { text: 'stdio と HTTP の違いを整理した', tags: ['mcp'] },
+		});
+
+		// 本文で探す
+		const byText = await client.callTool({ name: 'memo_search', arguments: { query: 'stdio' } });
+		assert.match(textOf(byText), /1 件のうち 1 件/);
+
+		// 無いものは無いと返す（例外にしない）
+		const none = await client.callTool({ name: 'memo_search', arguments: { query: 'ない語' } });
+		assert.match(textOf(none), /ありません/);
+	} finally {
+		await client.close();
+	}
+});</code></pre>
+
+<pre><code class="language-text">✔ 何も書いていなければ、その旨を返す (980.9083ms)
+✔ 書いたメモは探せる。札でも探せる (357.8825ms)
+✔ 何度実行しても同じ結果になる（前の実行が残らない） (699.2658ms)</code></pre>
+
+<figure>
+<svg viewBox="0 0 900 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="テスト用クライアントはサーバーを子プロセスとして起こす">
+	<defs>
+		<linearGradient id="g-06-5a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-06-5a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="40" y="60" width="220" height="90" rx="9" fill="url(#g-06-5a)"/>
+	<text x="150" y="90" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">テスト</text>
+	<text x="150" y="114" text-anchor="middle" font-size="11" fill="#fff">node --test</text>
+	<text x="150" y="134" text-anchor="middle" font-size="11" fill="#fff">SDK のクライアント</text>
+
+	<line x1="260" y1="105" x2="380" y2="105" stroke="#4a5568" stroke-width="2" marker-end="url(#m-06-5a)" marker-start="url(#m-06-5a)"/>
+	<text x="320" y="97" text-anchor="middle" font-size="11" fill="#4a5568">stdio</text>
+
+	<rect x="380" y="60" width="220" height="90" rx="9" fill="#1d7a3c"/>
+	<text x="490" y="90" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">メモサーバー</text>
+	<text x="490" y="114" text-anchor="middle" font-size="11" fill="#fff">ホストに登録せずに</text>
+	<text x="490" y="134" text-anchor="middle" font-size="11" fill="#fff">そのまま起動できる</text>
+
+	<line x1="600" y1="105" x2="700" y2="105" stroke="#4a5568" stroke-width="2" marker-end="url(#m-06-5a)"/>
+
+	<rect x="700" y="70" width="170" height="70" rx="9" fill="#ffffff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="785" y="97" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">tmp/ のファイル</text>
+	<text x="785" y="120" text-anchor="middle" font-size="11" fill="#4a5568">毎回消してから始める</text>
+
+	<text x="450" y="195" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">ホストを起動しなくても、サーバー単体で検証できる</text>
+	<text x="450" y="216" text-anchor="middle" font-size="11" fill="#4a5568">直してはホストを再起動、という往復が要らなくなる</text>
+</svg>
+<figcaption>ホストを介さずに確かめられる。これがあると開発が速くなる。</figcaption>
+</figure>
+
+<h2>ホストに登録して使う</h2>
+
+<pre><code class="language-json">{
+	"mcpServers": {
+		"memo": {
+			"command": "node",
+			"args": ["docs/samples/06-memo/server.mjs"]
+		}
+	}
+}</code></pre>
+
+<p>登録して起動し直すと、「今日やったことをメモして」「先週 mcp の話をした記録ある？」が通るようになります。</p>
+
+<h2>次の章へ</h2>
+
+<p>このサーバーを、次の章で HTTP に載せ替えます。<strong><code>memo-tools.mjs</code> は 1 文字も変えません。</strong></p>
+</section>
+
+</div>
+
+<footer>
+	<div class="inner">
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="05-3つの提供物.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>05. 3 つの提供物</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+	<a href="07-HTTPに載せ替える.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>07. HTTP に載せ替える</a>
+</div>
+<!-- /AUTO:nav -->
+	</div>
+</footer>
+
+</body>
+</html>

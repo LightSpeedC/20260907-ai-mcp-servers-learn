@@ -1,0 +1,392 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>03. SDK で書き直す</title>
+<style>
+/* css/style.css が読めなかったときの代替色 */
+.titlebar, section h1, th, a.doclink, .badge { background: #12224d; color: #fff; }
+</style>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,55%); --soft: hsl(280,28%,95%); }
+.ch02 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,55%); --soft: hsl(210,28%,95%); }
+.ch03 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,55%); --soft: hsl(140,28%,95%); }
+.ch04 { --accent: hsl(70,78%,25%);  --accent2: hsl(70,58%,55%);  --soft: hsl(70,28%,95%); }
+.ch05 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,55%);   --soft: hsl(0,28%,95%); }
+.toc ol a::before { content: "03." counter(tocnum) " "; }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>03. SDK で書き直す</h1>
+		<p class="lead">同じサーバーを公式 SDK で書き、何が省けたのかを確かめる</p>
+		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
+	</div>
+</div>
+
+<div class="wrap">
+
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="02-最小のサーバー.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>02. 最小のサーバー</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+	<a href="04-ホストに登録する.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>04. ホストに登録する</a>
+</div>
+<!-- /AUTO:nav -->
+
+<div class="toc">
+	<h2>この資料の内容</h2>
+	<ol>
+		<li class="ch01"><a href="#ch01">用意する</a></li>
+		<li class="ch02"><a href="#ch02">20 行で同じものになる</a></li>
+		<li class="ch03"><a href="#ch03">何が省けたか</a></li>
+		<li class="ch04"><a href="#ch04">入力の形は zod で書く</a></li>
+		<li class="ch05"><a href="#ch05">SDK が黙って足すもの</a></li>
+	</ol>
+</div>
+
+<section class="ch01" id="ch01">
+<h1>用意する</h1>
+
+<h2>入れるもの</h2>
+
+<pre><code class="language-powershell">npm init -y
+npm install @modelcontextprotocol/sdk</code></pre>
+
+<p><code>zod</code> は SDK が依存しているので一緒に入りますが、自分のコードから直接使うので明示しておきます。</p>
+
+<pre><code class="language-json">{
+	"dependencies": {
+		"@modelcontextprotocol/sdk": "^1.30.0",
+		"zod": "^4.5.4"
+	}
+}</code></pre>
+
+<h2>この資料を書いた時点の版</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">もの</th><th class="nowrap">版</th><th>確かめ方</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">Node.js</td><td class="nowrap">v26.8.1</td><td><code>node --version</code></td></tr>
+		<tr><td class="nowrap">npm</td><td class="nowrap">11.19.0</td><td><code>npm --version</code></td></tr>
+		<tr><td class="nowrap">SDK</td><td class="nowrap">1.30.0</td><td><code>npm view @modelcontextprotocol/sdk version</code></td></tr>
+		<tr><td class="nowrap">zod</td><td class="nowrap">4.5.4</td><td><code>npm ls zod</code></td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SDK が受け持つ範囲と自分が書く範囲">
+	<defs>
+		<linearGradient id="g-03-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="60" y="35" width="780" height="46" rx="8" fill="url(#g-03-1a)"/>
+	<text x="450" y="56" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">自分が書くところ</text>
+	<text x="450" y="74" text-anchor="middle" font-size="11" fill="#fff">ツールの名前・説明・入力の形・中身の処理</text>
+
+	<rect x="60" y="92" width="780" height="46" rx="8" fill="#e8ecf3" stroke="#d9dfe8"/>
+	<text x="450" y="113" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">SDK が受け持つところ</text>
+	<text x="450" y="131" text-anchor="middle" font-size="11" fill="#4a5568">JSON-RPC の組み立て・initialize の応答・入力の検証・エラーの形式・通知の宛先</text>
+
+	<rect x="60" y="149" width="780" height="34" rx="8" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="450" y="171" text-anchor="middle" font-size="12" fill="#4a5568">stdio / HTTP（トランスポート）</text>
+</svg>
+<figcaption>02 章で手書きした部分の大半が、真ん中の層に収まる。</figcaption>
+</figure>
+</section>
+
+<section class="ch02" id="ch02">
+<h1>20 行で同じものになる</h1>
+
+<p><a href="samples/03-sdk/server.mjs">samples/03-sdk/server.mjs</a> の全文です。02 章の 90 行と同じことをします。</p>
+
+<pre><code class="language-javascript">import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { z } from 'zod';
+
+const server = new McpServer({
+	name: 'sdk',
+	version: '1.0.0',
+});
+
+server.registerTool(
+	'add',
+	{
+		title: '足し算',
+		description: '2 つの数を足す',
+		// 入力の形は zod で書く。JSON Schema には SDK が変換して送る
+		inputSchema: {
+			a: z.number().describe('1 つめの数'),
+			b: z.number().describe('2 つめの数'),
+		},
+	},
+	async ({ a, b }) =&gt; ({
+		content: [{ type: 'text', text: String(a + b) }],
+	}),
+);
+
+// stdio に繋ぐ。ここで初めて標準入出力を読み書きし始める
+await server.connect(new StdioServerTransport());</code></pre>
+
+<p>02 章と同じ手順で動かせます。</p>
+
+<pre><code class="language-text">{"result":{"protocolVersion":"2025-11-25","capabilities":{"tools":{"listChanged":true}},"serverInfo":{"name":"sdk","version":"1.0.0"}},"jsonrpc":"2.0","id":1}
+{"result":{"content":[{"type":"text","text":"5"}]},"jsonrpc":"2.0","id":3}</code></pre>
+
+<figure>
+<svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="手書き版とSDK版の行数の比較">
+	<defs>
+		<linearGradient id="g-03-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="g-03-2b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="120" y="40" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">02 章（手書き）</text>
+	<rect x="60" y="55" width="120" height="110" rx="7" fill="url(#g-03-2a)"/>
+	<text x="120" y="105" text-anchor="middle" font-size="24" font-weight="700" fill="#fff">90</text>
+	<text x="120" y="128" text-anchor="middle" font-size="12" fill="#fff">行</text>
+
+	<text x="330" y="40" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">03 章（SDK）</text>
+	<rect x="270" y="130" width="120" height="35" rx="7" fill="url(#g-03-2b)"/>
+	<text x="330" y="153" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">27 行</text>
+
+	<text x="640" y="70" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">減ったのは「毎回同じ部分」</text>
+	<text x="640" y="95" text-anchor="middle" font-size="12" fill="#4a5568">initialize の応答、id の対応付け、</text>
+	<text x="640" y="115" text-anchor="middle" font-size="12" fill="#4a5568">通知の判別、エラーの形、入力の検証</text>
+	<text x="640" y="145" text-anchor="middle" font-size="12" font-weight="700" fill="#1d7a3c">ツールの中身は 1 行も減っていない</text>
+</svg>
+<figcaption>SDK が肩代わりするのは、どのサーバーにも共通の定型部分だけ。</figcaption>
+</figure>
+</section>
+
+<section class="ch03" id="ch03">
+<h1>何が省けたか</h1>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">02 章で書いていたこと</th><th>SDK では</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap"><code>initialize</code> への応答</td><td>不要。<code>McpServer</code> が答える</td></tr>
+		<tr><td class="nowrap">通知（<code>id</code> 無し）の判別</td><td>不要。SDK が振り分ける</td></tr>
+		<tr><td class="nowrap"><code>capabilities</code> の申告</td><td>不要。<code>registerTool</code> を呼べば <code>tools</code> が付く</td></tr>
+		<tr><td class="nowrap">JSON の組み立てと改行</td><td>不要。トランスポートが行う</td></tr>
+		<tr><td class="nowrap">引数の型の検査</td><td>不要。zod の定義から SDK が検証する</td></tr>
+		<tr><td class="nowrap"><code>-32601</code> などのエラー</td><td>不要。知らないメソッドには SDK が返す</td></tr>
+		<tr><td class="nowrap"><strong>ツールの中身</strong></td><td><strong>自分で書く</strong></td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="入力検証をSDKが肩代わりする流れ">
+	<defs>
+		<linearGradient id="g-03-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-03-3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="40" y="80" width="150" height="46" rx="8" fill="url(#g-03-3a)"/>
+	<text x="115" y="102" text-anchor="middle" font-size="12" fill="#fff">tools/call</text>
+	<text x="115" y="118" text-anchor="middle" font-size="11" fill="#fff">a: "あ", b: 3</text>
+
+	<line x1="190" y1="103" x2="270" y2="103" stroke="#4a5568" stroke-width="2" marker-end="url(#m-03-3a)"/>
+
+	<rect x="270" y="70" width="200" height="66" rx="8" fill="#e8ecf3" stroke="#d9dfe8"/>
+	<text x="370" y="95" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">SDK が検証</text>
+	<text x="370" y="115" text-anchor="middle" font-size="11" fill="#4a5568">zod の定義と突き合わせる</text>
+
+	<line x1="470" y1="90" x2="570" y2="60" stroke="#1d7a3c" stroke-width="2" marker-end="url(#m-03-3a)"/>
+	<text x="520" y="60" text-anchor="middle" font-size="11" font-weight="700" fill="#1d7a3c">通れば</text>
+
+	<line x1="470" y1="118" x2="570" y2="150" stroke="#a51f22" stroke-width="2" marker-end="url(#m-03-3a)"/>
+	<text x="520" y="155" text-anchor="middle" font-size="11" font-weight="700" fill="#a51f22">通らなければ</text>
+
+	<rect x="580" y="35" width="280" height="46" rx="8" fill="#1d7a3c"/>
+	<text x="720" y="57" text-anchor="middle" font-size="12" fill="#fff">自分のコードが呼ばれる</text>
+	<text x="720" y="73" text-anchor="middle" font-size="11" fill="#fff">引数は型が保証されている</text>
+
+	<rect x="580" y="130" width="280" height="46" rx="8" fill="#a51f22"/>
+	<text x="720" y="152" text-anchor="middle" font-size="12" fill="#fff">自分のコードは呼ばれない</text>
+	<text x="720" y="168" text-anchor="middle" font-size="11" fill="#fff">SDK が isError で返す</text>
+</svg>
+<figcaption>型が違う引数は自分のコードまで届かない。02 章で書いた <code>typeof</code> の検査が要らなくなる。</figcaption>
+</figure>
+
+<div class="callout">
+	<p><strong>検証は SDK に任せ、意味の検査は自分でやります。</strong>「数値であること」は SDK が見ますが、「0 で割ろうとしている」は自分で見て <code>isError</code> で返します。<strong>型は SDK、業務の都合は自分</strong>と覚えておくと分けやすくなります。</p>
+</div>
+</section>
+
+<section class="ch04" id="ch04">
+<h1>入力の形は zod で書く</h1>
+
+<p><code>inputSchema</code> には zod の定義を渡します。SDK がこれを JSON Schema に変換してホストへ送ります。</p>
+
+<pre><code class="language-javascript">inputSchema: {
+	a: z.number().describe('1 つめの数'),
+	b: z.number().describe('2 つめの数'),
+}</code></pre>
+
+<p>実際に送られる JSON Schema です。</p>
+
+<pre><code class="language-json">{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "a": { "type": "number", "description": "1 つめの数" },
+    "b": { "type": "number", "description": "2 つめの数" }
+  },
+  "required": ["a", "b"]
+}</code></pre>
+
+<h2>よく使う書き方</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">やりたいこと</th><th class="nowrap">書き方</th><th>備考</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">文字列</td><td class="nowrap"><code>z.string()</code></td><td>空を禁じるなら <code>.min(1)</code></td></tr>
+		<tr><td class="nowrap">整数の範囲</td><td class="nowrap"><code>z.number().int().min(1).max(50)</code></td><td>範囲は説明よりも効く</td></tr>
+		<tr><td class="nowrap">省略できる</td><td class="nowrap"><code>z.string().optional()</code></td><td><code>required</code> から外れる</td></tr>
+		<tr><td class="nowrap">既定値</td><td class="nowrap"><code>z.number().default(10)</code></td><td>省略時にこの値が入る</td></tr>
+		<tr><td class="nowrap">選択肢</td><td class="nowrap"><code>z.enum(['箇条書き', '文章'])</code></td><td>モデルが値を迷わない</td></tr>
+		<tr><td class="nowrap">配列</td><td class="nowrap"><code>z.array(z.string())</code></td><td>札の一覧など</td></tr>
+		<tr><td class="nowrap">説明を足す</td><td class="nowrap"><code>.describe('探す語')</code></td><td><strong>必ず書く</strong></td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zodの定義がJSON Schemaになりモデルに届くまで">
+	<defs>
+		<linearGradient id="g-03-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-03-4a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="30" y="60" width="200" height="60" rx="8" fill="url(#g-03-4a)"/>
+	<text x="130" y="85" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">zod の定義</text>
+	<text x="130" y="104" text-anchor="middle" font-size="11" fill="#fff">z.number().describe(...)</text>
+
+	<line x1="230" y1="90" x2="300" y2="90" stroke="#4a5568" stroke-width="2" marker-end="url(#m-03-4a)"/>
+	<text x="265" y="82" text-anchor="middle" font-size="10" fill="#4a5568">SDK</text>
+
+	<rect x="300" y="60" width="200" height="60" rx="8" fill="url(#g-03-4a)"/>
+	<text x="400" y="85" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">JSON Schema</text>
+	<text x="400" y="104" text-anchor="middle" font-size="11" fill="#fff">tools/list で送られる</text>
+
+	<line x1="500" y1="90" x2="570" y2="90" stroke="#4a5568" stroke-width="2" marker-end="url(#m-03-4a)"/>
+
+	<rect x="570" y="60" width="200" height="60" rx="8" fill="#1d7a3c"/>
+	<text x="670" y="85" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">モデルが読む</text>
+	<text x="670" y="104" text-anchor="middle" font-size="11" fill="#fff">これだけを頼りに呼ぶ</text>
+
+	<text x="450" y="160" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">describe を省くと、モデルは名前と型だけで推測することになる</text>
+</svg>
+<figcaption>モデルはツールの実装を見ない。渡るのは名前・説明・スキーマだけ。</figcaption>
+</figure>
+
+<div class="callout">
+	<p><strong>説明文はプロンプトの一部です。</strong><code>description</code> と <code>describe</code> はモデルに直接読まれます。「いつ使うか」「何を渡すか」を、初めて見る人に説明するつもりで書いてください。ここが雑だと、モデルは正しく呼べません。</p>
+</div>
+</section>
+
+<section class="ch05" id="ch05">
+<h1>SDK が黙って足すもの</h1>
+
+<p><code>tools/list</code> の応答を実際に見ると、書いた覚えのない項目が入っています。</p>
+
+<pre><code class="language-json">{
+  "name": "add",
+  "title": "足し算",
+  "description": "2 つの数を足す",
+  "inputSchema": { ... },
+  "execution": { "taskSupport": "forbidden" }
+}</code></pre>
+
+<p><code>execution.taskSupport</code> は SDK が付けたものです。「このツールはタスクとして実行できない」という意味で、<a href="09-タスク.html">09. タスク</a> で扱います。<strong>今は気にしなくて構いません</strong>が、覚えのない項目が出ても壊れてはいない、と知っておくと安心です。</p>
+
+<h2>capabilities も自動で付く</h2>
+
+<p><code>registerTool</code> を呼べば <code>tools</code>、<code>registerResource</code> を呼べば <code>resources</code> が <code>capabilities</code> に足されます。02 章で手書きしていた申告は要りません。</p>
+
+<pre><code class="language-json">"capabilities": { "tools": { "listChanged": true } }</code></pre>
+
+<figure>
+<svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="registerTool を呼ぶと capabilities が自動で組み立てられる">
+	<defs>
+		<linearGradient id="g-03-5a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-03-5a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="40" y="40" width="230" height="36" rx="7" fill="url(#g-03-5a)"/>
+	<text x="155" y="63" text-anchor="middle" font-size="12" fill="#fff">registerTool(...)</text>
+	<rect x="40" y="86" width="230" height="36" rx="7" fill="url(#g-03-5a)"/>
+	<text x="155" y="109" text-anchor="middle" font-size="12" fill="#fff">registerResource(...)</text>
+	<rect x="40" y="132" width="230" height="36" rx="7" fill="url(#g-03-5a)"/>
+	<text x="155" y="155" text-anchor="middle" font-size="12" fill="#fff">registerPrompt(...)</text>
+
+	<line x1="270" y1="58" x2="420" y2="90" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-03-5a)"/>
+	<line x1="270" y1="104" x2="420" y2="104" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-03-5a)"/>
+	<line x1="270" y1="150" x2="420" y2="118" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-03-5a)"/>
+
+	<rect x="430" y="60" width="430" height="90" rx="8" fill="#ffffff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="645" y="85" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">initialize の応答に入る capabilities</text>
+	<text x="450" y="112" font-size="12" fill="#1c2330" font-family="monospace">{ "tools": {...}, "resources": {...}, "prompts": {...} }</text>
+	<text x="645" y="137" text-anchor="middle" font-size="11" fill="#4a5568">登録したものだけが並ぶ</text>
+</svg>
+<figcaption>持っていない機能を名乗ることはない。ホストは並んだものだけを使う。</figcaption>
+</figure>
+
+<div class="callout">
+	<p><strong>例外があります。</strong>タスク（<a href="09-タスク.html">09 章</a>）だけは自分で <code>capabilities</code> に書く必要があります。実験的な機能なので、自動では付きません。忘れると「タスクに対応していない」と断られます。</p>
+</div>
+
+<h2>次の章へ</h2>
+
+<p>サーバーは書けました。次はこれを Claude Code・Codex・Antigravity に<strong>登録して、実際に呼ばせます</strong>。3 つとも登録の仕方が違います。</p>
+</section>
+
+</div>
+
+<footer>
+	<div class="inner">
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="02-最小のサーバー.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>02. 最小のサーバー</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+	<a href="04-ホストに登録する.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>04. ホストに登録する</a>
+</div>
+<!-- /AUTO:nav -->
+	</div>
+</footer>
+
+</body>
+</html>

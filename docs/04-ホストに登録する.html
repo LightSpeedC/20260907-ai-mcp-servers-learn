@@ -1,0 +1,425 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>04. ホストに登録する</title>
+<style>
+/* css/style.css が読めなかったときの代替色 */
+.titlebar, section h1, th, a.doclink, .badge { background: #12224d; color: #fff; }
+</style>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,55%); --soft: hsl(280,28%,95%); }
+.ch02 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,55%); --soft: hsl(210,28%,95%); }
+.ch03 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,55%); --soft: hsl(140,28%,95%); }
+.ch04 { --accent: hsl(70,78%,25%);  --accent2: hsl(70,58%,55%);  --soft: hsl(70,28%,95%); }
+.ch05 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,55%);   --soft: hsl(0,28%,95%); }
+.toc ol a::before { content: "04." counter(tocnum) " "; }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>04. ホストに登録する</h1>
+		<p class="lead">Claude Code・Codex・Antigravity へ登録し、実際に呼ばせる</p>
+		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
+	</div>
+</div>
+
+<div class="wrap">
+
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="03-SDKで書き直す.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>03. SDK で書き直す</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+	<a href="05-3つの提供物.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>05. 3 つの提供物</a>
+</div>
+<!-- /AUTO:nav -->
+
+<div class="toc">
+	<h2>この資料の内容</h2>
+	<ol>
+		<li class="ch01"><a href="#ch01">登録するとは何をすることか</a></li>
+		<li class="ch02"><a href="#ch02">Claude Code</a></li>
+		<li class="ch03"><a href="#ch03">Codex</a></li>
+		<li class="ch04"><a href="#ch04">Antigravity</a></li>
+		<li class="ch05"><a href="#ch05">動かないときの切り分け</a></li>
+	</ol>
+</div>
+
+<section class="ch01" id="ch01">
+<h1>登録するとは何をすることか</h1>
+
+<p>stdio のサーバーの登録は、要するに<strong>「このコマンドを起動してください」と伝えるだけ</strong>です。特別な仕組みはありません。</p>
+
+<pre><code class="language-json">{
+	"command": "node",
+	"args": ["docs/samples/03-sdk/server.mjs"]
+}</code></pre>
+
+<p>ホストはこれを子プロセスとして起こし、標準入出力で話しかけます。<strong>どのホストでも中身は同じ</strong>で、書き方と置き場所だけが違います。</p>
+
+<figure>
+<svg viewBox="0 0 900 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="3つのホストの登録方法の違い">
+	<defs>
+		<linearGradient id="g-04-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/><stop offset="1" stop-color="hsl(280,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="g-04-1b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="g-04-1c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(30,78%,25%)"/><stop offset="1" stop-color="hsl(30,58%,55%)"/>
+		</linearGradient>
+		<marker id="m-04-1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="30" y="40" width="230" height="52" rx="8" fill="url(#g-04-1a)"/>
+	<text x="145" y="63" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Claude Code</text>
+	<text x="145" y="81" text-anchor="middle" font-size="11" fill="#fff">claude mcp add / .mcp.json</text>
+
+	<rect x="30" y="102" width="230" height="52" rx="8" fill="url(#g-04-1b)"/>
+	<text x="145" y="125" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Codex</text>
+	<text x="145" y="143" text-anchor="middle" font-size="11" fill="#fff">codex mcp add / config.toml</text>
+
+	<rect x="30" y="164" width="230" height="52" rx="8" fill="url(#g-04-1c)"/>
+	<text x="145" y="187" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Antigravity</text>
+	<text x="145" y="205" text-anchor="middle" font-size="11" fill="#fff">antigravity --add-mcp</text>
+
+	<line x1="260" y1="66" x2="430" y2="120" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-04-1a)"/>
+	<line x1="260" y1="128" x2="430" y2="128" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-04-1a)"/>
+	<line x1="260" y1="190" x2="430" y2="136" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-04-1a)"/>
+
+	<rect x="430" y="100" width="230" height="56" rx="8" fill="#ffffff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="545" y="124" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">同じことを言っている</text>
+	<text x="545" y="143" text-anchor="middle" font-size="11" fill="#4a5568">node &lt;path&gt; を起動して</text>
+
+	<line x1="660" y1="128" x2="730" y2="128" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-04-1a)"/>
+
+	<rect x="730" y="100" width="140" height="56" rx="8" fill="#1d7a3c"/>
+	<text x="800" y="124" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">あなたの</text>
+	<text x="800" y="143" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">サーバー</text>
+</svg>
+<figcaption>書き方は 3 通りだが、伝えている内容は同じ。サーバー側を作り分ける必要はない。</figcaption>
+</figure>
+
+<h2>置き場所には範囲がある</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">範囲</th><th>効く先</th><th>使いどころ</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">プロジェクト</td><td>そのフォルダで作業するときだけ</td><td>チームで共有したい。<strong>お勧め</strong></td></tr>
+		<tr><td class="nowrap">利用者</td><td>その人のすべての作業</td><td>どこでも使う道具</td></tr>
+	</tbody>
+</table>
+</div>
+
+<div class="callout">
+	<p><strong>まずプロジェクト範囲で試してください。</strong>設定がリポジトリの中に収まるので、消したいときはファイルを消すだけで済みます。利用者範囲に入れると、他のプロジェクトでも起動されるようになります。</p>
+</div>
+</section>
+
+<section class="ch02" id="ch02">
+<h1>Claude Code</h1>
+
+<h2>コマンドで登録する</h2>
+
+<pre><code class="language-powershell"># プロジェクト範囲（.mcp.json に書かれる）
+claude mcp add --scope project memo -- node docs/samples/06-memo/server.mjs
+
+# 環境変数を渡す
+claude mcp add memo -e MEMO_FILE=C:/data/memo.jsonl -- node server.mjs
+
+# HTTP のサーバー
+claude mcp add --transport http remote https://example.com/mcp</code></pre>
+
+<p><code>--</code> より後ろが、そのまま起動するコマンドになります。<strong>この区切りを忘れると、後ろの引数が <code>claude</code> のものとして読まれます</strong>。</p>
+
+<h2>ファイルに直接書く</h2>
+
+<p>プロジェクト範囲の実体は、リポジトリ直下の <code>.mcp.json</code> です。手で書いても同じです。</p>
+
+<pre><code class="language-json">{
+	"mcpServers": {
+		"memo": {
+			"command": "node",
+			"args": ["docs/samples/06-memo/server.mjs"]
+		}
+	}
+}</code></pre>
+
+<h2>確かめる</h2>
+
+<pre><code class="language-powershell">claude mcp list        # 一覧と接続の可否
+claude mcp get memo    # 1 本の詳細
+claude mcp remove memo # 消す</code></pre>
+
+<figure>
+<svg viewBox="0 0 900 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Claude Code の登録から呼び出しまでの流れ">
+	<defs>
+		<linearGradient id="g-04-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-04-2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="20" y="70" width="180" height="52" rx="8" fill="url(#g-04-2a)"/>
+	<text x="110" y="93" text-anchor="middle" font-size="12" fill="#fff">.mcp.json に書く</text>
+	<text x="110" y="111" text-anchor="middle" font-size="11" fill="#fff">または mcp add</text>
+
+	<line x1="200" y1="96" x2="255" y2="96" stroke="#4a5568" stroke-width="2" marker-end="url(#m-04-2a)"/>
+
+	<rect x="255" y="70" width="180" height="52" rx="8" fill="url(#g-04-2a)"/>
+	<text x="345" y="93" text-anchor="middle" font-size="12" fill="#fff">起動し直す</text>
+	<text x="345" y="111" text-anchor="middle" font-size="11" fill="#fff">読み込みは起動時だけ</text>
+
+	<line x1="435" y1="96" x2="490" y2="96" stroke="#4a5568" stroke-width="2" marker-end="url(#m-04-2a)"/>
+
+	<rect x="490" y="70" width="180" height="52" rx="8" fill="url(#g-04-2a)"/>
+	<text x="580" y="93" text-anchor="middle" font-size="12" fill="#fff">承認する</text>
+	<text x="580" y="111" text-anchor="middle" font-size="11" fill="#fff">プロジェクト範囲は初回のみ</text>
+
+	<line x1="670" y1="96" x2="725" y2="96" stroke="#4a5568" stroke-width="2" marker-end="url(#m-04-2a)"/>
+
+	<rect x="725" y="70" width="155" height="52" rx="8" fill="#1d7a3c"/>
+	<text x="802" y="93" text-anchor="middle" font-size="12" fill="#fff">使える</text>
+	<text x="802" y="111" text-anchor="middle" font-size="11" fill="#fff">mcp__memo__memo_add</text>
+
+	<text x="450" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">ツールの名前は mcp__&lt;サーバー名&gt;__&lt;ツール名&gt; になる</text>
+	<text x="450" y="192" text-anchor="middle" font-size="11" fill="#4a5568">同じツール名を持つサーバーが複数あっても、サーバー名で分かれる</text>
+</svg>
+<figcaption>設定を読むのは起動のときだけ。書き換えたら起動し直す。</figcaption>
+</figure>
+
+<div class="callout">
+	<p><strong>プロジェクト範囲の <code>.mcp.json</code> は、初回に承認が要ります。</strong>他人のリポジトリを開いただけで勝手にプロセスが起動しないための仕組みです。承認していないサーバーは一覧に「⏸ Pending approval」と出て、接続されません。</p>
+</div>
+</section>
+
+<section class="ch03" id="ch03">
+<h1>Codex</h1>
+
+<h2>コマンドで登録する</h2>
+
+<pre><code class="language-powershell">codex mcp add memo -- node docs/samples/06-memo/server.mjs
+
+# HTTP のサーバー
+codex mcp add remote --url https://example.com/mcp
+
+# 環境変数
+codex mcp add memo --env MEMO_FILE=C:/data/memo.jsonl -- node server.mjs</code></pre>
+
+<p>書かれる先は <code>~/.codex/config.toml</code> です。Claude Code と違い、<strong>プロジェクト単位の設定ファイルはありません</strong>。</p>
+
+<h2>設定を書き換えずに試す</h2>
+
+<p><code>-c</code> でその場だけ上書きできます。<strong>設定ファイルを汚さずに試せる</strong>ので、動作確認に向きます。</p>
+
+<pre><code class="language-powershell">codex exec -c 'mcp_servers.memo={command="node", args=["docs/samples/06-memo/server.mjs"]}' "メモを検索して"</code></pre>
+
+<h2>確かめる</h2>
+
+<pre><code class="language-powershell">codex mcp list
+codex mcp get memo
+codex mcp remove memo</code></pre>
+
+<figure>
+<svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Codex は承認ポリシーの影響を受ける">
+	<defs>
+		<linearGradient id="g-04-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-04-3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="40" y="60" width="200" height="52" rx="8" fill="url(#g-04-3a)"/>
+	<text x="140" y="83" text-anchor="middle" font-size="12" fill="#fff">サーバーには繋がる</text>
+	<text x="140" y="101" text-anchor="middle" font-size="11" fill="#fff">initialize / tools/list は通る</text>
+
+	<line x1="240" y1="86" x2="310" y2="86" stroke="#4a5568" stroke-width="2" marker-end="url(#m-04-3a)"/>
+
+	<rect x="310" y="60" width="200" height="52" rx="8" fill="#b8620a"/>
+	<text x="410" y="83" text-anchor="middle" font-size="12" fill="#fff">ツールの実行だけ</text>
+	<text x="410" y="101" text-anchor="middle" font-size="11" fill="#fff">承認を求められる</text>
+
+	<line x1="510" y1="86" x2="580" y2="86" stroke="#4a5568" stroke-width="2" marker-end="url(#m-04-3a)"/>
+
+	<rect x="580" y="60" width="280" height="52" rx="8" fill="#ffffff" stroke="#a51f22" stroke-width="2"/>
+	<text x="720" y="83" text-anchor="middle" font-size="12" fill="#a51f22">approval policy が never だと</text>
+	<text x="720" y="101" text-anchor="middle" font-size="12" font-weight="700" fill="#a51f22">呼ばずに断られる</text>
+
+	<text x="450" y="155" text-anchor="middle" font-size="12" fill="#4a5568">「繋がっているのにツールが動かない」ときは、承認の設定を疑う</text>
+	<text x="450" y="177" text-anchor="middle" font-size="11" fill="#4a5568">サーバー側のログには tools/call が届いていない</text>
+</svg>
+<figcaption>接続とツールの実行は別の関門。ログに <code>tools/call</code> が来ていなければ、サーバーの問題ではない。</figcaption>
+</figure>
+</section>
+
+<section class="ch04" id="ch04">
+<h1>Antigravity</h1>
+
+<p>Antigravity は VS Code をもとにしたエディタなので、登録の作法もそちら寄りです。</p>
+
+<pre><code class="language-powershell">antigravity --add-mcp '{"name":"memo","command":"node","args":["docs/samples/06-memo/server.mjs"]}'</code></pre>
+
+<p>JSON を 1 つの引数として渡します。<strong>PowerShell では全体をシングルクォートで囲みます</strong>。ダブルクォートで囲むと、中の <code>"</code> が壊れます。</p>
+
+<div class="callout">
+	<p><strong>エディタの設定画面からも登録できます。</strong>コマンドが使えない・引数の引用符で詰まる、というときは画面から入れるほうが確実です。GUI から入れても、書かれる先は同じです。</p>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PowerShell での引用符の扱い">
+	<defs>
+		<linearGradient id="g-04-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="40" y="40" width="820" height="60" rx="8" fill="#ffffff" stroke="#1d7a3c" stroke-width="2"/>
+	<text x="60" y="65" font-size="13" font-weight="700" fill="#1d7a3c">通る</text>
+	<text x="60" y="88" font-size="12" fill="#1c2330" font-family="monospace">antigravity --add-mcp '{"name":"memo","command":"node",...}'</text>
+
+	<rect x="40" y="115" width="820" height="60" rx="8" fill="#fdeaea" stroke="#a51f22" stroke-width="2"/>
+	<text x="60" y="140" font-size="13" font-weight="700" fill="#a51f22">壊れる</text>
+	<text x="60" y="163" font-size="12" fill="#1c2330" font-family="monospace">antigravity --add-mcp "{\"name\":\"memo\",...}"</text>
+
+	<text x="450" y="203" text-anchor="middle" font-size="12" fill="#4a5568">cmd.exe 向けのエスケープを PowerShell に持ち込まない</text>
+</svg>
+<figcaption>JSON を引数に渡すときは、外側をシングルクォートで囲むのが確実。</figcaption>
+</figure>
+
+<h2>3 つの違いのまとめ</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">項目</th><th class="nowrap">Claude Code</th><th class="nowrap">Codex</th><th class="nowrap">Antigravity</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">登録コマンド</td><td class="nowrap"><code>claude mcp add</code></td><td class="nowrap"><code>codex mcp add</code></td><td class="nowrap"><code>--add-mcp</code></td></tr>
+		<tr><td class="nowrap">プロジェクト単位</td><td class="nowrap"><span class="badge b-ok">あり</span><code>.mcp.json</code></td><td class="nowrap"><span class="badge b-ng">なし</span></td><td class="nowrap"><span class="badge b-warn">エディタ次第</span></td></tr>
+		<tr><td class="nowrap">一時的に試す</td><td class="nowrap">—</td><td class="nowrap"><span class="badge b-ok">あり</span><code>-c</code></td><td class="nowrap">—</td></tr>
+		<tr><td class="nowrap">喋る版</td><td class="nowrap">2025-11-25</td><td class="nowrap">2025-06-18</td><td class="nowrap">—</td></tr>
+	</tbody>
+</table>
+</div>
+
+<div class="callout">
+	<p><strong>「喋る版」は実測した値です。</strong>Claude Code 2.1.263 と Codex 0.153.4 で確かめました。版が上がれば変わります。自分の環境で確かめる方法は次の章にあります。</p>
+</div>
+</section>
+
+<section class="ch05" id="ch05">
+<h1>動かないときの切り分け</h1>
+
+<p>「登録したのにツールが出てこない」。このとき最初にやるべきは、<strong>どこまで届いているかを見ること</strong>です。</p>
+
+<h2>観測用のサーバーを挟む</h2>
+
+<p>受け取った行をすべてファイルに書き出すサーバーを用意しておくと、一発で分かります。<a href="samples/02-minimal/probe.mjs">samples/02-minimal/probe.mjs</a> がそれです。</p>
+
+<pre><code class="language-javascript">function record(direction, text) {
+	const stamp = new Date().toISOString();
+	appendFileSync(LOG, `${stamp} ${direction} ${text}\n`, 'utf8');
+}</code></pre>
+
+<p>これを登録して呼ぶと、こう残ります。</p>
+
+<pre><code class="language-text">2026-09-07T09:43:33.182Z *** 起動 pid=22140
+2026-09-07T09:43:33.335Z --&gt; {"method":"initialize","params":{"protocolVersion":"2025-11-25",...}}
+2026-09-07T09:43:33.337Z &lt;-- {"jsonrpc":"2.0","id":0,"result":{...}}
+2026-09-07T09:43:33.471Z --&gt; {"jsonrpc":"2.0","method":"notifications/initialized"}
+2026-09-07T09:43:33.546Z --&gt; {"method":"tools/list","jsonrpc":"2.0","id":1}
+2026-09-07T09:43:41.732Z --&gt; {"method":"tools/call","params":{"name":"add",...}}</code></pre>
+
+<figure>
+<svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ログのどこで止まっているかで原因が分かる">
+	<defs>
+		<linearGradient id="g-04-5a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="40" y="35" width="380" height="40" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="60" y="60" font-size="12" fill="#1c2330" font-family="monospace">（ファイルが作られない）</text>
+	<rect x="440" y="35" width="420" height="40" rx="7" fill="#fdeaea" stroke="#a51f22"/>
+	<text x="460" y="60" font-size="12" fill="#a51f22">プロセスが起動していない。パス・node の場所を疑う</text>
+
+	<rect x="40" y="85" width="380" height="40" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="60" y="110" font-size="12" fill="#1c2330" font-family="monospace">*** 起動 で止まる</text>
+	<rect x="440" y="85" width="420" height="40" rx="7" fill="#fdeaea" stroke="#a51f22"/>
+	<text x="460" y="110" font-size="12" fill="#a51f22">起動直後に落ちている。stderr を見る</text>
+
+	<rect x="40" y="135" width="380" height="40" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="60" y="160" font-size="12" fill="#1c2330" font-family="monospace">initialize の後で止まる</text>
+	<rect x="440" y="135" width="420" height="40" rx="7" fill="#fff6e8" stroke="#b8620a"/>
+	<text x="460" y="160" font-size="12" fill="#b8620a">応答の形が違う。stdout に余計な出力がないか</text>
+
+	<rect x="40" y="185" width="380" height="40" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="60" y="210" font-size="12" fill="#1c2330" font-family="monospace">tools/list まで来て、call が無い</text>
+	<rect x="440" y="185" width="420" height="40" rx="7" fill="#fff6e8" stroke="#b8620a"/>
+	<text x="460" y="210" font-size="12" fill="#b8620a">サーバーは正常。説明文か承認の設定を疑う</text>
+
+	<rect x="40" y="235" width="380" height="40" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="60" y="260" font-size="12" fill="#1c2330" font-family="monospace">tools/call が来ている</text>
+	<rect x="440" y="235" width="420" height="40" rx="7" fill="#eaf6ee" stroke="#1d7a3c"/>
+	<text x="460" y="260" font-size="12" fill="#1d7a3c">通信は成立。あとはツールの中身の問題</text>
+</svg>
+<figcaption>止まった位置が原因を教える。推測で設定をいじる前に、まずここを見る。</figcaption>
+</figure>
+
+<h2>よくある原因</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">症状</th><th>原因</th><th>直し方</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">プロセスが起動しない</td><td>相対パスの基準がずれている</td><td>絶対パスにして確かめる。通ったら相対に戻す</td></tr>
+		<tr><td class="nowrap">起動直後に落ちる</td><td>依存が入っていない</td><td>手で <code>node server.mjs</code> を動かしてエラーを見る</td></tr>
+		<tr><td class="nowrap">繋がるがツールが出ない</td><td><code>console.log</code> が混ざっている</td><td><a href="02-最小のサーバー.html">02 章</a>の「stdout を汚さない」</td></tr>
+		<tr><td class="nowrap">ツールは出るが呼ばれない</td><td>説明文が足りない</td><td><code>description</code> に「いつ使うか」を書く</td></tr>
+		<tr><td class="nowrap">呼ばれるが断られる</td><td>承認の設定</td><td>ホスト側の設定を見る。サーバーは無関係</td></tr>
+		<tr><td class="nowrap">設定を変えても反映されない</td><td>読み込みは起動時だけ</td><td>ホストを起動し直す</td></tr>
+	</tbody>
+</table>
+</div>
+
+<div class="callout">
+	<p><strong>手で動かせるものは、まず手で動かします。</strong><code>node server.mjs</code> と打って何も起きなければ（入力待ちになれば）正常です。エラーが出るなら、ホストに登録する前にそれを直します。ホストを経由すると、エラーメッセージが見えなくなります。</p>
+</div>
+
+<h2>次の章へ</h2>
+
+<p>登録して呼べるようになりました。次は Tools 以外の 2 つ、Resources と Prompts を扱います。</p>
+</section>
+
+</div>
+
+<footer>
+	<div class="inner">
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="03-SDKで書き直す.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>03. SDK で書き直す</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+	<a href="05-3つの提供物.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>05. 3 つの提供物</a>
+</div>
+<!-- /AUTO:nav -->
+	</div>
+</footer>
+
+</body>
+</html>

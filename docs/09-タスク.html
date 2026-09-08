@@ -1,0 +1,493 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>09. タスク</title>
+<style>
+/* css/style.css が読めなかったときの代替色 */
+.titlebar, section h1, th, a.doclink, .badge { background: #12224d; color: #fff; }
+</style>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,55%); --soft: hsl(280,28%,95%); }
+.ch02 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,55%); --soft: hsl(210,28%,95%); }
+.ch03 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,55%); --soft: hsl(140,28%,95%); }
+.ch04 { --accent: hsl(70,78%,25%);  --accent2: hsl(70,58%,55%);  --soft: hsl(70,28%,95%); }
+.ch05 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,55%);   --soft: hsl(0,28%,95%); }
+.toc ol a::before { content: "09." counter(tocnum) " "; }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>09. タスク</h1>
+		<p class="lead">長い処理を投げて、あとから結果を取りに行く</p>
+		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
+	</div>
+</div>
+
+<div class="wrap">
+
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="08-通知で伝える.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>08. 通知で伝える</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+	<a href="10-プロセス共有.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>10. プロセス共有</a>
+</div>
+<!-- /AUTO:nav -->
+
+<div class="toc">
+	<h2>この資料の内容</h2>
+	<ol>
+		<li class="ch01"><a href="#ch01">待たせないための仕組み</a></li>
+		<li class="ch02"><a href="#ch02">名乗る</a></li>
+		<li class="ch03"><a href="#ch03">受け取って裏で進める</a></li>
+		<li class="ch04"><a href="#ch04">取りに行く</a></li>
+		<li class="ch05"><a href="#ch05">手元では使われなかった</a></li>
+	</ol>
+</div>
+
+<section class="ch01" id="ch01">
+<h1>待たせないための仕組み</h1>
+
+<p>ツールの中で 30 分かかる処理をすると、その間ずっと接続を掴んだままになります。途中で切れれば結果は失われます。</p>
+
+<p><strong>タスク</strong>は、この状況のためにあります。サーバーは受け付けた印（<code>taskId</code>）だけをすぐ返し、処理は裏で進めます。呼んだ側は好きなときに様子を見に来ます。</p>
+
+<figure>
+<svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="普通の呼び出しとタスクの違い">
+	<defs>
+		<linearGradient id="g-09-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="g-09-1b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<marker id="m-09-1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<text x="450" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">普通の呼び出し</text>
+	<line x1="60" y1="80" x2="840" y2="80" stroke="#d9dfe8" stroke-width="2"/>
+	<circle cx="140" cy="80" r="6" fill="hsl(0,58%,45%)"/>
+	<text x="140" y="66" text-anchor="middle" font-size="11" fill="#1c2330">呼ぶ</text>
+	<rect x="140" y="88" width="560" height="22" rx="5" fill="url(#g-09-1a)"/>
+	<text x="420" y="104" text-anchor="middle" font-size="11" fill="#fff">ずっと待っている（接続を掴んだまま）</text>
+	<circle cx="700" cy="80" r="6" fill="hsl(0,58%,45%)"/>
+	<text x="700" y="66" text-anchor="middle" font-size="11" fill="#1c2330">結果</text>
+	<text x="790" y="104" font-size="11" fill="#a51f22">途中で切れたら失う</text>
+
+	<text x="450" y="160" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">タスク</text>
+	<line x1="60" y1="215" x2="840" y2="215" stroke="#d9dfe8" stroke-width="2"/>
+	<circle cx="140" cy="215" r="6" fill="hsl(140,58%,40%)"/>
+	<text x="140" y="201" text-anchor="middle" font-size="11" fill="#1c2330">呼ぶ</text>
+	<circle cx="200" cy="215" r="6" fill="hsl(140,58%,40%)"/>
+	<text x="205" y="201" text-anchor="middle" font-size="11" fill="#1c2330">taskId が返る</text>
+
+	<rect x="200" y="223" width="500" height="22" rx="5" fill="url(#g-09-1b)"/>
+	<text x="450" y="239" text-anchor="middle" font-size="11" fill="#fff">裏で進む（呼んだ側は別のことができる）</text>
+
+	<circle cx="360" cy="215" r="5" fill="#4a5568"/>
+	<circle cx="500" cy="215" r="5" fill="#4a5568"/>
+	<circle cx="640" cy="215" r="5" fill="#4a5568"/>
+	<text x="500" y="201" text-anchor="middle" font-size="11" fill="#4a5568">ときどき様子を見る</text>
+
+	<circle cx="700" cy="215" r="6" fill="hsl(140,58%,40%)"/>
+	<text x="790" y="219" font-size="11" fill="#1d7a3c">結果を取りに行く</text>
+</svg>
+<figcaption>タスクは「引換券」を先に渡す仕組み。券があれば、あとから何度でも取りに行ける。</figcaption>
+</figure>
+
+<h2>状態は 5 つ</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">状態</th><th>意味</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap"><code>working</code></td><td>処理中。最初は必ずこれ</td></tr>
+		<tr><td class="nowrap"><code>input_required</code></td><td>続けるのに入力が要る</td></tr>
+		<tr><td class="nowrap"><code>completed</code></td><td>終わった。結果がある</td></tr>
+		<tr><td class="nowrap"><code>failed</code></td><td>失敗した</td></tr>
+		<tr><td class="nowrap"><code>cancelled</code></td><td>取り消された</td></tr>
+	</tbody>
+</table>
+</div>
+
+<p>下 3 つは<strong>そこで止まり</strong>、もう変わりません。</p>
+
+<div class="callout">
+	<p><strong>この仕組みは 2025-11-25 で入った新しいものです。</strong>仕様自身が「experimental（実験的）」と書いており、SDK でも <code>server.experimental.tasks</code> という置き場になっています。<strong>将来変わる前提</strong>で扱ってください。</p>
+</div>
+</section>
+
+<section class="ch02" id="ch02">
+<h1>名乗る</h1>
+
+<p>タスクは<strong>両者が対応していて初めて使えます</strong>。名乗りは 2 段階あります。</p>
+
+<h2>1. サーバー全体として</h2>
+
+<pre><code class="language-javascript">const server = new McpServer(
+	{ name: 'tasks', version: '1.0.0' },
+	{
+		taskStore,
+		// タスクに対応していることを名乗る。これを書かないとホストは task を付けてこない
+		capabilities: {
+			tasks: {
+				list: {},
+				cancel: {},
+				requests: { tools: { call: {} } },
+			},
+		},
+	},
+);</code></pre>
+
+<div class="callout">
+	<p><strong>これを書き忘れると <code>Server does not support task creation</code> で断られます。</strong>他の機能と違い、<code>registerToolTask</code> を呼んでも <code>capabilities</code> は自動で付きません。実際にこれで一度詰まりました。</p>
+</div>
+
+<h2>2. ツール 1 つずつ</h2>
+
+<pre><code class="language-javascript">execution: { taskSupport: 'optional' }</code></pre>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">値</th><th>意味</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap"><code>forbidden</code></td><td>タスクにできない。<strong>既定</strong></td></tr>
+		<tr><td class="nowrap"><code>optional</code></td><td>どちらでもよい。ホストが選ぶ</td></tr>
+		<tr><td class="nowrap"><code>required</code></td><td>必ずタスクにする。普通に呼ばれたら断る</td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="タスクが使われるには3つの条件が揃う必要がある">
+	<defs>
+		<linearGradient id="g-09-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="40" y="50" width="240" height="70" rx="9" fill="url(#g-09-2a)"/>
+	<text x="160" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">① サーバーが名乗る</text>
+	<text x="160" y="100" text-anchor="middle" font-size="11" fill="#fff">capabilities.tasks</text>
+
+	<rect x="330" y="50" width="240" height="70" rx="9" fill="url(#g-09-2a)"/>
+	<text x="450" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">② ツールが許す</text>
+	<text x="450" y="100" text-anchor="middle" font-size="11" fill="#fff">execution.taskSupport</text>
+
+	<rect x="620" y="50" width="240" height="70" rx="9" fill="url(#g-09-2a)"/>
+	<text x="740" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">③ ホストが対応</text>
+	<text x="740" y="100" text-anchor="middle" font-size="11" fill="#fff">capabilities.tasks を名乗る</text>
+
+	<text x="303" y="92" text-anchor="middle" font-size="20" font-weight="700" fill="#4a5568">＋</text>
+	<text x="595" y="92" text-anchor="middle" font-size="20" font-weight="700" fill="#4a5568">＋</text>
+
+	<path d="M 450 120 L 450 150" stroke="#4a5568" stroke-width="2"/>
+	<path d="M 444 145 L 450 155 L 456 145 Z" fill="#4a5568"/>
+
+	<rect x="280" y="158" width="340" height="46" rx="8" fill="#1d7a3c"/>
+	<text x="450" y="186" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">はじめてタスクとして呼ばれる</text>
+
+	<text x="450" y="228" text-anchor="middle" font-size="11" fill="#a51f22">1 つでも欠けると、普通の呼び出しになる（エラーにはならない）</text>
+</svg>
+<figcaption>静かに普通の呼び出しに落ちるので、「タスクにしたつもりが違った」に気づきにくい。</figcaption>
+</figure>
+</section>
+
+<section class="ch03" id="ch03">
+<h1>受け取って裏で進める</h1>
+
+<p>SDK の <code>registerToolTask</code> を使います。<a href="samples/09-tasks/server.mjs">samples/09-tasks/server.mjs</a> の中心部です。</p>
+
+<pre><code class="language-javascript">import { InMemoryTaskStore } from '@modelcontextprotocol/sdk/experimental/tasks/stores/in-memory.js';
+
+// タスクの状態をどこに置くか。ここでは記憶の中（再起動で消える）
+const taskStore = new InMemoryTaskStore();
+
+server.experimental.tasks.registerToolTask(
+	'long_job',
+	{
+		title: '長い処理',
+		description: '指定した秒数だけかかる処理。タスクとして実行できる',
+		inputSchema: { seconds: z.number().int().min(1).max(60).default(5) },
+		execution: { taskSupport: 'optional' },
+	},
+	{
+		// 受け付けた時点で呼ばれる。すぐ返し、処理は裏で進める
+		createTask: async ({ seconds }, extra) =&gt; {
+			const task = await extra.taskStore.createTask({ ttl: 300000 });
+
+			(async () =&gt; {
+				await sleep(seconds * 1000);
+				await extra.taskStore.storeTaskResult(task.taskId, 'completed', {
+					content: [{ type: 'text', text: `${seconds} 秒の処理が終わった` }],
+				});
+			})();
+
+			return { task };
+		},
+
+		// tasks/get で呼ばれる。今どうなっているかを返す
+		getTask: async (_args, extra) =&gt; extra.taskStore.getTask(extra.taskId),
+
+		// tasks/result で呼ばれる。終わっていなければ SDK が待たせる
+		getTaskResult: async (_args, extra) =&gt; extra.taskStore.getTaskResult(extra.taskId),
+	},
+);</code></pre>
+
+<p>3 つの入り口を実装します。</p>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">関数</th><th>いつ呼ばれるか</th><th>返すもの</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap"><code>createTask</code></td><td>タスク付きで呼ばれたとき</td><td><code>{ task }</code>。<strong>待たずに返す</strong></td></tr>
+		<tr><td class="nowrap"><code>getTask</code></td><td><code>tasks/get</code></td><td>今の状態</td></tr>
+		<tr><td class="nowrap"><code>getTaskResult</code></td><td><code>tasks/result</code></td><td>最終的な結果</td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="createTaskはすぐ返し処理は裏で続く">
+	<defs>
+		<linearGradient id="g-09-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-09-3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="30" y="40" width="160" height="40" rx="7" fill="url(#g-09-3a)"/>
+	<text x="110" y="65" text-anchor="middle" font-size="12" fill="#fff">createTask が呼ばれる</text>
+
+	<line x1="190" y1="60" x2="250" y2="60" stroke="#4a5568" stroke-width="2" marker-end="url(#m-09-3a)"/>
+
+	<rect x="250" y="40" width="180" height="40" rx="7" fill="url(#g-09-3a)"/>
+	<text x="340" y="65" text-anchor="middle" font-size="12" fill="#fff">taskId を作る</text>
+
+	<line x1="430" y1="60" x2="490" y2="60" stroke="#1d7a3c" stroke-width="2" marker-end="url(#m-09-3a)"/>
+
+	<rect x="490" y="40" width="180" height="40" rx="7" fill="#1d7a3c"/>
+	<text x="580" y="65" text-anchor="middle" font-size="12" fill="#fff">すぐ返す</text>
+
+	<line x1="340" y1="80" x2="340" y2="130" stroke="#b8620a" stroke-width="2" marker-end="url(#m-09-3a)"/>
+	<text x="360" y="110" font-size="11" fill="#b8620a">await を付けずに始める</text>
+
+	<rect x="230" y="130" width="220" height="46" rx="7" fill="#b8620a"/>
+	<text x="340" y="152" text-anchor="middle" font-size="12" fill="#fff">裏の処理</text>
+	<text x="340" y="169" text-anchor="middle" font-size="11" fill="#fff">終わったら結果を控えに入れる</text>
+
+	<line x1="450" y1="153" x2="620" y2="153" stroke="#4a5568" stroke-width="2" marker-end="url(#m-09-3a)"/>
+
+	<rect x="620" y="130" width="240" height="46" rx="7" fill="#ffffff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="740" y="152" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">taskStore</text>
+	<text x="740" y="169" text-anchor="middle" font-size="11" fill="#4a5568">状態と結果を持つ</text>
+
+	<text x="450" y="215" text-anchor="middle" font-size="12" font-weight="700" fill="#a51f22">裏の処理に await を付けると、待ってしまって意味が無くなる</text>
+	<text x="450" y="238" text-anchor="middle" font-size="11" fill="#4a5568">即時実行の関数で始めて、その場では待たない</text>
+</svg>
+<figcaption>ここで <code>await</code> を書いてしまうのが最初の間違い。すぐ返すことがタスクの目的。</figcaption>
+</figure>
+
+<div class="callout">
+	<p><strong>プロセスが終わらなくなることがあります。</strong><code>InMemoryTaskStore</code> は TTL のタイマーを抱えるので、後片付けをしないとホストが切れてもプロセスが残ります。</p>
+</div>
+
+<pre><code class="language-javascript">const transport = new StdioServerTransport();
+
+// タスクの控えは TTL のタイマーを抱えている。
+// 片付けないと、ホストが切れてもプロセスが終わらない
+transport.onclose = () =&gt; {
+	taskStore.cleanup();
+	process.exit(0);
+};
+
+await server.connect(transport);</code></pre>
+</section>
+
+<section class="ch04" id="ch04">
+<h1>取りに行く</h1>
+
+<p>呼ぶ側は 3 段階で進めます。</p>
+
+<figure>
+<svg viewBox="0 0 900 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="タスクの取得手順">
+	<defs>
+		<linearGradient id="g-09-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-09-4a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="30" y="30" width="140" height="36" rx="7" fill="url(#g-09-4a)"/>
+	<text x="100" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">呼ぶ側</text>
+	<line x1="100" y1="66" x2="100" y2="240" stroke="#d9dfe8" stroke-width="2"/>
+
+	<rect x="700" y="30" width="140" height="36" rx="7" fill="url(#g-09-4a)"/>
+	<text x="770" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">サーバー</text>
+	<line x1="770" y1="66" x2="770" y2="240" stroke="#d9dfe8" stroke-width="2"/>
+
+	<line x1="100" y1="95" x2="770" y2="95" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-09-4a)"/>
+	<text x="435" y="88" text-anchor="middle" font-size="11" fill="#1c2330">tools/call（params に task を付ける）</text>
+
+	<line x1="770" y1="120" x2="100" y2="120" stroke="#1d7a3c" stroke-width="1.8" marker-end="url(#m-09-4a)" stroke-dasharray="5 3"/>
+	<text x="435" y="113" text-anchor="middle" font-size="11" font-weight="700" fill="#1d7a3c">taskId ・ status: working</text>
+
+	<line x1="100" y1="155" x2="770" y2="155" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-09-4a)"/>
+	<text x="435" y="148" text-anchor="middle" font-size="11" fill="#1c2330">tasks/get（pollInterval ごとに）</text>
+
+	<line x1="770" y1="180" x2="100" y2="180" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-09-4a)" stroke-dasharray="5 3"/>
+	<text x="435" y="173" text-anchor="middle" font-size="11" fill="#1c2330">working … working … completed</text>
+
+	<line x1="100" y1="215" x2="770" y2="215" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-09-4a)"/>
+	<text x="435" y="208" text-anchor="middle" font-size="11" fill="#1c2330">tasks/result</text>
+
+	<line x1="770" y1="238" x2="100" y2="238" stroke="#1d7a3c" stroke-width="1.8" marker-end="url(#m-09-4a)" stroke-dasharray="5 3"/>
+	<text x="435" y="231" text-anchor="middle" font-size="11" font-weight="700" fill="#1d7a3c">本来の結果</text>
+</svg>
+<figcaption>様子を見に行くのは呼んだ側の仕事。サーバーから「終わりました」とは言わない。</figcaption>
+</figure>
+
+<h2>テストで確かめる</h2>
+
+<pre><code class="language-javascript">test('tasks/get で状態を見て、completed になったら tasks/result で取る', async () =&gt; {
+	const client = await connect(sample('09-tasks/server.mjs'), { capabilities: TASK_CAPS });
+
+	try {
+		const task = await createTask(client, { seconds: 2 });
+
+		// 仕様どおり、pollInterval に従って状態を見に行く
+		let state;
+		for (let i = 0; i &lt; 20; i++) {
+			state = await client.experimental.tasks.getTask(task.taskId);
+			if (state.status !== 'working') break;
+			await sleep(state.pollInterval ?? 500);
+		}
+		assert.equal(state.status, 'completed');
+
+		// 終わってから結果を取りに行く
+		const result = await client.request(
+			{ method: 'tasks/result', params: { taskId: task.taskId } },
+			CallToolResultSchema,
+		);
+		assert.match(result.content[0].text, /2 秒の処理が終わった/);
+	} finally {
+		await client.close();
+	}
+});</code></pre>
+
+<pre><code class="language-text">✔ ツールがタスク対応を名乗る（execution.taskSupport） (368.4261ms)
+✔ タスクは working で返り、待たずに次へ進める (2359.1304ms)
+✔ tasks/get で状態を見て、completed になったら tasks/result で取る (4369.7507ms)
+✔ タスクにしないで呼ぶこともできる（optional のため） (3390.4841ms)</code></pre>
+
+<h2>通知もあるが、あてにしない</h2>
+
+<p><code>notifications/tasks/status</code> で状態の変化を知らせることもできます。ただし仕様に「<strong>呼ぶ側はこの通知に頼ってはならない</strong>」と書かれています。送らない実装も正しいためです。<strong>基本は様子を見に行く（ポーリング）</strong>と考えてください。</p>
+</section>
+
+<section class="ch05" id="ch05">
+<h1>手元では使われなかった</h1>
+
+<p>ここまで作ったサーバーを Claude Code に登録して呼ばせました。結果です。</p>
+
+<pre><code class="language-text">### クライアント capabilities: {"roots":{"listChanged":true},"elicitation":{}}
+### tasks capability の有無: なし
+--&gt; {"method":"tools/call","params":{"name":"longjob","arguments":{},"_meta":{...}},"jsonrpc":"2.0","id":2}
+### task なしで呼ばれた（普通のリクエスト）</code></pre>
+
+<div class="callout">
+	<p><strong>Claude Code 2.1.263 はタスクに対応していません。</strong>サーバー側で <code>capabilities.tasks</code> を名乗り、ツールに <code>taskSupport: 'optional'</code> を付けても、<code>task</code> を付けずに普通に呼んできます。仕様に「相手が名乗っていなければタスクを作ろうとしてはならない」とあるので、これは正しい動きです。</p>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ホストが対応していないと普通の呼び出しになる">
+	<defs>
+		<linearGradient id="g-09-5a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-09-5a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="40" y="50" width="230" height="60" rx="9" fill="url(#g-09-5a)"/>
+	<text x="155" y="76" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">サーバーは対応済み</text>
+	<text x="155" y="96" text-anchor="middle" font-size="11" fill="#fff">capabilities.tasks あり</text>
+
+	<rect x="40" y="130" width="230" height="60" rx="9" fill="#97a1ae"/>
+	<text x="155" y="156" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">ホストは未対応</text>
+	<text x="155" y="176" text-anchor="middle" font-size="11" fill="#fff">capabilities.tasks なし</text>
+
+	<line x1="270" y1="120" x2="380" y2="120" stroke="#4a5568" stroke-width="2" marker-end="url(#m-09-5a)"/>
+
+	<rect x="380" y="95" width="230" height="50" rx="8" fill="#ffffff" stroke="#b8620a" stroke-width="2"/>
+	<text x="495" y="118" text-anchor="middle" font-size="12" font-weight="700" fill="#b8620a">普通の呼び出しになる</text>
+	<text x="495" y="136" text-anchor="middle" font-size="11" fill="#1c2330">エラーは出ない</text>
+
+	<line x1="610" y1="120" x2="700" y2="120" stroke="#4a5568" stroke-width="2" marker-end="url(#m-09-5a)"/>
+
+	<rect x="700" y="95" width="170" height="50" rx="8" fill="#1d7a3c"/>
+	<text x="785" y="118" text-anchor="middle" font-size="12" fill="#fff">ちゃんと動く</text>
+	<text x="785" y="136" text-anchor="middle" font-size="11" fill="#fff">待つだけ</text>
+
+	<text x="450" y="215" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">optional にしておけば、どちらの相手でも動く</text>
+</svg>
+<figcaption><code>required</code> にすると未対応のホストから呼べなくなる。<code>optional</code> が安全。</figcaption>
+</figure>
+
+<h2>それでも書く意味はあるか</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">立場</th><th>判断</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">今すぐ必要</td><td><strong>使えない。</strong>08 章の進捗通知＋ OS の通知にする</td></tr>
+		<tr><td class="nowrap">将来に備える</td><td><code>optional</code> で書いておく。対応したホストが来れば自然に使われる</td></tr>
+		<tr><td class="nowrap">自分でクライアントも作る</td><td>両方を自分で握れるので使える</td></tr>
+	</tbody>
+</table>
+</div>
+
+<div class="callout">
+	<p><strong>対応状況は自分で確かめてください。</strong>ここに書いたのは 2026-09-07 時点の実測です。<a href="04-ホストに登録する.html">04 章</a>の観測用サーバーを使えば、<code>initialize</code> に <code>tasks</code> が入っているかをすぐ見られます。<strong>公式の対応表には Tasks の欄がまだありません</strong>ので、実測が唯一の方法です。</p>
+</div>
+
+<h2>次の章へ</h2>
+
+<p>次は、同じ PC で 1 本のサーバーを何本ものホストから使う方法です。</p>
+</section>
+
+</div>
+
+<footer>
+	<div class="inner">
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="08-通知で伝える.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>08. 通知で伝える</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+	<a href="10-プロセス共有.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>10. プロセス共有</a>
+</div>
+<!-- /AUTO:nav -->
+	</div>
+</footer>
+
+</body>
+</html>

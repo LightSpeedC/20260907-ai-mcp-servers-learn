@@ -1,0 +1,443 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>02. 最小のサーバー</title>
+<style>
+/* css/style.css が読めなかったときの代替色 */
+.titlebar, section h1, th, a.doclink, .badge { background: #12224d; color: #fff; }
+</style>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,55%); --soft: hsl(280,28%,95%); }
+.ch02 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,55%); --soft: hsl(210,28%,95%); }
+.ch03 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,55%); --soft: hsl(140,28%,95%); }
+.ch04 { --accent: hsl(70,78%,25%);  --accent2: hsl(70,58%,55%);  --soft: hsl(70,28%,95%); }
+.ch05 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,55%);   --soft: hsl(0,28%,95%); }
+.toc ol a::before { content: "02." counter(tocnum) " "; }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>02. 最小のサーバー</h1>
+		<p class="lead">ライブラリを使わず、JSON-RPC を手で組み立てて動かす</p>
+		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
+	</div>
+</div>
+
+<div class="wrap">
+
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="01-背景.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>01. 背景</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+	<a href="03-SDKで書き直す.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>03. SDK で書き直す</a>
+</div>
+<!-- /AUTO:nav -->
+
+<div class="toc">
+	<h2>この資料の内容</h2>
+	<ol>
+		<li class="ch01"><a href="#ch01">なぜ手で書くのか</a></li>
+		<li class="ch02"><a href="#ch02">標準入出力でやりとりする</a></li>
+		<li class="ch03"><a href="#ch03">3 つのメソッドに答える</a></li>
+		<li class="ch04"><a href="#ch04">動かす</a></li>
+		<li class="ch05"><a href="#ch05">stdout を汚さない</a></li>
+	</ol>
+</div>
+
+<section class="ch01" id="ch01">
+<h1>なぜ手で書くのか</h1>
+
+<p>MCP には公式の SDK があり、次の章ではそれを使います。ここで<strong>あえて手で書く</strong>のには理由があります。</p>
+
+<p>SDK を使うと 20 行ほどでサーバーが完成します。ところが、いざホストに登録して動かないとき、<strong>どこまで届いているのかが分かりません</strong>。プロセスは起動しているのか。初期化まで進んだのか。ツールの一覧は渡ったのか。SDK の内側で起きていることが見えないと、切り分けようがありません。</p>
+
+<p>この章で JSON-RPC を 1 往復させておけば、以降どの章で詰まっても「どこまで来ているか」を自分で確かめられます。<strong>15 分の投資で、残りの時間が助かります。</strong></p>
+
+<figure>
+<svg viewBox="0 0 900 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SDK から入った場合と手書きから入った場合で、見えている範囲が違う">
+	<defs>
+		<linearGradient id="g-02-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="g-02-1b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="225" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">SDK から入ると</text>
+	<rect x="60" y="45" width="330" height="46" rx="8" fill="url(#g-02-1a)"/>
+	<text x="225" y="66" text-anchor="middle" font-size="13" fill="#fff">自分で書いたコード</text>
+	<text x="225" y="83" text-anchor="middle" font-size="11" fill="#fff">見える</text>
+
+	<rect x="60" y="100" width="330" height="80" rx="8" fill="#e8ecf3" stroke="#d9dfe8"/>
+	<text x="225" y="128" text-anchor="middle" font-size="13" fill="#4a5568">SDK の中</text>
+	<text x="225" y="148" text-anchor="middle" font-size="11" fill="#4a5568">JSON-RPC の組み立て・初期化・エラー</text>
+	<text x="225" y="167" text-anchor="middle" font-size="12" font-weight="700" fill="#a51f22">見えない</text>
+
+	<text x="225" y="212" text-anchor="middle" font-size="11" fill="#4a5568">動かないとき、どこで止まっているか分からない</text>
+
+	<text x="675" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">手書きから入ると</text>
+	<rect x="510" y="45" width="330" height="135" rx="8" fill="url(#g-02-1b)"/>
+	<text x="675" y="80" text-anchor="middle" font-size="13" fill="#fff">自分で書いたコード</text>
+	<text x="675" y="105" text-anchor="middle" font-size="11" fill="#fff">JSON-RPC の組み立ても</text>
+	<text x="675" y="125" text-anchor="middle" font-size="11" fill="#fff">初期化もエラーも</text>
+	<text x="675" y="152" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">全部見える</text>
+
+	<text x="675" y="212" text-anchor="middle" font-size="11" fill="#4a5568">あとで SDK に移っても、中で何が起きているか分かる</text>
+</svg>
+<figcaption>この章で見た景色が、以降すべての章の土台になる。</figcaption>
+</figure>
+</section>
+
+<section class="ch02" id="ch02">
+<h1>標準入出力でやりとりする</h1>
+
+<p>MCP には運び方（トランスポート）が 2 つあります。ここで使うのは <strong>stdio</strong> です。</p>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">運び方</th><th>やっていること</th><th>いつ使うか</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">stdio</td><td>ホストがサーバーを子プロセスとして起動し、その標準入出力に JSON を 1 行ずつ流す</td><td>手元の PC で動かすとき。<strong>まずこれ</strong></td></tr>
+		<tr><td class="nowrap">Streamable HTTP</td><td>1 つの URL に HTTP POST する</td><td>別のマシンに置くとき、1 本を共有するとき</td></tr>
+	</tbody>
+</table>
+</div>
+
+<p>stdio の実体は<strong>改行区切りの JSON</strong>です。特別なライブラリは要りません。</p>
+
+<figure>
+<svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="stdin・stdout・stderr の役割分担">
+	<defs>
+		<linearGradient id="g-02-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-02-2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="40" y="80" width="180" height="80" rx="10" fill="url(#g-02-2a)"/>
+	<text x="130" y="115" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">ホスト</text>
+	<text x="130" y="136" text-anchor="middle" font-size="11" fill="#fff">親プロセス</text>
+
+	<rect x="480" y="80" width="200" height="80" rx="10" fill="#1d7a3c"/>
+	<text x="580" y="115" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">サーバー</text>
+	<text x="580" y="136" text-anchor="middle" font-size="11" fill="#fff">子プロセス（node）</text>
+
+	<line x1="220" y1="100" x2="480" y2="100" stroke="#4a5568" stroke-width="2" marker-end="url(#m-02-2a)"/>
+	<text x="350" y="93" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">stdin</text>
+	<text x="350" y="118" text-anchor="middle" font-size="11" fill="#4a5568">リクエストの JSON が 1 行ずつ届く</text>
+
+	<line x1="480" y1="145" x2="220" y2="145" stroke="#4a5568" stroke-width="2" marker-end="url(#m-02-2a)"/>
+	<text x="350" y="138" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">stdout</text>
+	<text x="350" y="163" text-anchor="middle" font-size="11" fill="#4a5568">応答の JSON だけを書く</text>
+
+	<line x1="580" y1="160" x2="580" y2="205" stroke="#b8620a" stroke-width="2" marker-end="url(#m-02-2a)"/>
+	<rect x="480" y="205" width="200" height="34" rx="7" fill="#ffffff" stroke="#b8620a"/>
+	<text x="580" y="227" text-anchor="middle" font-size="12" fill="#b8620a">stderr（ログはこちら）</text>
+
+	<text x="450" y="40" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">stdout は JSON-RPC 専用の通り道</text>
+	<text x="450" y="60" text-anchor="middle" font-size="11" fill="#4a5568">ここに他のものを書くと通信が壊れる（第 5 章）</text>
+</svg>
+<figcaption>ログを出したくなったら stderr へ。stdout は 1 行 1 メッセージの通り道として空けておく。</figcaption>
+</figure>
+
+<h2>受け取る側の骨組み</h2>
+
+<pre><code class="language-javascript">import { createInterface } from 'node:readline';
+
+// stdout は JSON-RPC 専用。ログは stderr へ出す
+function log(...args) {
+	console.error('[minimal]', ...args);
+}
+
+// 1 メッセージ 1 行。末尾の改行が区切りになる
+function send(message) {
+	process.stdout.write(JSON.stringify(message) + '\n');
+}
+
+const rl = createInterface({ input: process.stdin });
+
+rl.on('line', (line) =&gt; {
+	if (!line.trim()) return;
+	const request = JSON.parse(line);
+	// ここで処理する
+});</code></pre>
+
+<p><code>readline</code> が改行で区切ってくれるので、こちらは 1 行ずつ受け取るだけです。</p>
+</section>
+
+<section class="ch03" id="ch03">
+<h1>3 つのメソッドに答える</h1>
+
+<p>最低限のサーバーが答えるべきメソッドは 3 つです。</p>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">メソッド</th><th>訊かれていること</th><th class="nowrap">いつ来るか</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap"><code>initialize</code></td><td>あなたは誰で、何ができますか</td><td class="nowrap">接続の直後に 1 回</td></tr>
+		<tr><td class="nowrap"><code>tools/list</code></td><td>どんなツールを持っていますか</td><td class="nowrap">初期化の後</td></tr>
+		<tr><td class="nowrap"><code>tools/call</code></td><td>このツールを実行してください</td><td class="nowrap">モデルが使うたび</td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="3つのメソッドが呼ばれる順序">
+	<defs>
+		<linearGradient id="g-02-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="40" y="50" width="180" height="60" rx="9" fill="url(#g-02-3a)"/>
+	<text x="130" y="76" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">initialize</text>
+	<text x="130" y="96" text-anchor="middle" font-size="11" fill="#fff">名乗り合い（1 回）</text>
+
+	<rect x="260" y="50" width="180" height="60" rx="9" fill="url(#g-02-3a)"/>
+	<text x="350" y="76" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">tools/list</text>
+	<text x="350" y="96" text-anchor="middle" font-size="11" fill="#fff">品書きを渡す</text>
+
+	<rect x="480" y="50" width="180" height="60" rx="9" fill="url(#g-02-3a)"/>
+	<text x="570" y="76" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">tools/call</text>
+	<text x="570" y="96" text-anchor="middle" font-size="11" fill="#fff">実行する（何度でも）</text>
+
+	<path d="M 220 80 L 255 80" stroke="#4a5568" stroke-width="2"/>
+	<path d="M 250 74 L 260 80 L 250 86 Z" fill="#4a5568"/>
+	<path d="M 440 80 L 475 80" stroke="#4a5568" stroke-width="2"/>
+	<path d="M 470 74 L 480 80 L 470 86 Z" fill="#4a5568"/>
+	<path d="M 660 80 C 700 80 700 130 660 130 L 490 130 C 450 130 450 80 490 80" fill="none" stroke="#4a5568" stroke-width="2" stroke-dasharray="5 3"/>
+	<path d="M 496 74 L 486 80 L 496 86 Z" fill="#4a5568"/>
+
+	<rect x="700" y="50" width="160" height="60" rx="9" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="780" y="76" text-anchor="middle" font-size="12" fill="#1c2330">それ以外</text>
+	<text x="780" y="96" text-anchor="middle" font-size="11" fill="#4a5568">-32601 を返す</text>
+
+	<text x="450" y="175" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">通知（id が無いメッセージ）には応答しない</text>
+	<text x="450" y="198" text-anchor="middle" font-size="11" fill="#4a5568">例: notifications/initialized は「初期化が済んだ」という知らせで、返事は要らない</text>
+	<text x="450" y="228" text-anchor="middle" font-size="11" fill="#a51f22">返事を返すと、相手は身に覚えのない応答を受け取ることになる</text>
+</svg>
+<figcaption>通知とリクエストの見分けは <code>id</code> の有無だけ。ここを取り違えると、繋がっているのに動かない状態になる。</figcaption>
+</figure>
+
+<h2>ツールの品書き</h2>
+
+<p><code>tools/list</code> で返す内容です。<code>inputSchema</code> は JSON Schema で書きます。<strong>モデルはこの説明だけを頼りに呼ぶ</strong>ので、<code>description</code> は人に説明するつもりで書きます。</p>
+
+<pre><code class="language-javascript">const TOOLS = [
+	{
+		name: 'add',
+		description: '2 つの数を足す',
+		inputSchema: {
+			type: 'object',
+			properties: {
+				a: { type: 'number', description: '1 つめの数' },
+				b: { type: 'number', description: '2 つめの数' },
+			},
+			required: ['a', 'b'],
+		},
+	},
+];</code></pre>
+
+<h2>3 つに答える</h2>
+
+<pre><code class="language-javascript">function handle(request) {
+	const { id, method, params } = request;
+
+	switch (method) {
+		// ホストが最初に送ってくる。名乗り合いをする
+		case 'initialize':
+			return reply(id, {
+				// 相手が送ってきたバージョンをそのまま返す
+				protocolVersion: params?.protocolVersion ?? '2025-06-18',
+				capabilities: { tools: {} },
+				serverInfo: { name: 'minimal', version: '1.0.0' },
+			});
+
+		// 提供するツールの一覧を返す
+		case 'tools/list':
+			return reply(id, { tools: TOOLS });
+
+		// ツールを実行する
+		case 'tools/call': {
+			if (params?.name !== 'add') {
+				return replyError(id, -32602, `unknown tool: ${params?.name}`);
+			}
+			const { a, b } = params.arguments ?? {};
+			if (typeof a !== 'number' || typeof b !== 'number') {
+				// 引数が不正なときは、プロトコルのエラーではなく結果として返す
+				return reply(id, {
+					content: [{ type: 'text', text: 'a と b には数値を渡してください' }],
+					isError: true,
+				});
+			}
+			return reply(id, {
+				content: [{ type: 'text', text: String(a + b) }],
+			});
+		}
+
+		default:
+			return replyError(id, -32601, `method not found: ${method}`);
+	}
+}</code></pre>
+
+<div class="callout">
+	<p><strong>相手が言ってきた版をそのまま返します。</strong><code>params?.protocolVersion ?? '2025-06-18'</code> としているのはそのためです。<a href="01-背景.html">01. 背景</a> で見たとおり、ホストによって版が違います。自分の対応版を押し付けると、片方で繋がらなくなります。</p>
+</div>
+
+<div class="callout">
+	<p><strong>ツールの失敗は <code>isError</code> で返します。</strong>JSON-RPC のエラー（<code>error</code>）にすると「サーバーが壊れた」扱いになり、モデルには理由が伝わりません。<code>isError: true</code> と本文を返せば、モデルはそれを読んで引数を直し、もう一度呼べます。<strong>直せる失敗は結果として返す</strong>のが原則です。</p>
+</div>
+
+<p>全体は <a href="samples/02-minimal/server.mjs">samples/02-minimal/server.mjs</a> にあります。90 行ほどです。</p>
+</section>
+
+<section class="ch04" id="ch04">
+<h1>動かす</h1>
+
+<p>ホストに登録する前に、手で叩いて確かめます。標準入力に JSON を流し込むだけです。</p>
+
+<pre><code class="language-powershell">@(
+'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"手","version":"1.0"}}}'
+'{"jsonrpc":"2.0","method":"notifications/initialized"}'
+'{"jsonrpc":"2.0","id":2,"method":"tools/list"}'
+'{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"add","arguments":{"a":2,"b":3}}}'
+) -join "`n" | node server.mjs</code></pre>
+
+<p>実際の出力です。</p>
+
+<pre><code class="language-text">[minimal] 起動した
+[minimal] 受信: {"jsonrpc":"2.0","id":1,"method":"initialize",...}
+{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-11-25","capabilities":{"tools":{}},"serverInfo":{"name":"minimal","version":"1.0.0"}}}
+[minimal] 受信: {"jsonrpc":"2.0","method":"notifications/initialized"}
+[minimal] 通知: notifications/initialized
+[minimal] 受信: {"jsonrpc":"2.0","id":2,"method":"tools/list"}
+{"jsonrpc":"2.0","id":2,"result":{"tools":[{"name":"add","description":"2 つの数を足す",...}]}}
+[minimal] 受信: {"jsonrpc":"2.0","id":3,"method":"tools/call",...}
+{"jsonrpc":"2.0","id":3,"result":{"content":[{"type":"text","text":"5"}]}}</code></pre>
+
+<p><code>[minimal]</code> が付いている行は stderr、付いていない行が stdout です。<strong>混ざって見えていても、実際には別の流れ</strong>です。</p>
+
+<figure>
+<svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="端末では混ざって見えるが、stdoutとstderrは別の流れ">
+	<defs>
+		<linearGradient id="g-02-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="40" y="30" width="330" height="140" rx="9" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="205" y="54" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">端末で見ると</text>
+	<text x="60" y="80" font-size="11" fill="#b8620a" font-family="monospace">[minimal] 起動した</text>
+	<text x="60" y="100" font-size="11" fill="#1d7a3c" font-family="monospace">{"jsonrpc":"2.0","id":1,...}</text>
+	<text x="60" y="120" font-size="11" fill="#b8620a" font-family="monospace">[minimal] 受信: ...</text>
+	<text x="60" y="140" font-size="11" fill="#1d7a3c" font-family="monospace">{"jsonrpc":"2.0","id":2,...}</text>
+	<text x="205" y="162" text-anchor="middle" font-size="11" fill="#4a5568">交互に並ぶ</text>
+
+	<path d="M 385 100 L 425 100" stroke="#4a5568" stroke-width="2"/>
+	<path d="M 420 94 L 430 100 L 420 106 Z" fill="#4a5568"/>
+
+	<rect x="450" y="30" width="200" height="140" rx="9" fill="#ffffff" stroke="#1d7a3c" stroke-width="2"/>
+	<text x="550" y="54" text-anchor="middle" font-size="13" font-weight="700" fill="#1d7a3c">stdout</text>
+	<text x="470" y="80" font-size="11" fill="#1d7a3c" font-family="monospace">{"id":1,...}</text>
+	<text x="470" y="100" font-size="11" fill="#1d7a3c" font-family="monospace">{"id":2,...}</text>
+	<text x="550" y="140" text-anchor="middle" font-size="11" fill="#4a5568">ホストが読む</text>
+
+	<rect x="670" y="30" width="190" height="140" rx="9" fill="#ffffff" stroke="#b8620a" stroke-width="2"/>
+	<text x="765" y="54" text-anchor="middle" font-size="13" font-weight="700" fill="#b8620a">stderr</text>
+	<text x="690" y="80" font-size="11" fill="#b8620a" font-family="monospace">[minimal] 起動した</text>
+	<text x="690" y="100" font-size="11" fill="#b8620a" font-family="monospace">[minimal] 受信: ...</text>
+	<text x="765" y="140" text-anchor="middle" font-size="11" fill="#4a5568">人が読む</text>
+</svg>
+<figcaption>端末では 1 つに見えるが、ホストが読むのは stdout だけ。</figcaption>
+</figure>
+</section>
+
+<section class="ch05" id="ch05">
+<h1>stdout を汚さない</h1>
+
+<p>MCP サーバーで最も多い事故がこれです。</p>
+
+<pre><code class="language-javascript">// これをやると壊れる
+console.log('サーバーを起動しました');</code></pre>
+
+<p><code>console.log</code> は stdout に書きます。stdout は JSON-RPC の通り道なので、ホストはこの行を<strong>メッセージとして読もうとします</strong>。JSON として読めないので、その接続は成立しません。</p>
+
+<figure>
+<svg viewBox="0 0 900 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="stdout に混ざった文字列が通信を壊す様子">
+	<defs>
+		<linearGradient id="g-02-5a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="450" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">ホストが stdout から 1 行ずつ読む</text>
+
+	<rect x="80" y="50" width="740" height="34" rx="6" fill="#ffffff" stroke="#1d7a3c" stroke-width="2"/>
+	<text x="100" y="72" font-size="12" fill="#1d7a3c" font-family="monospace">{"jsonrpc":"2.0","id":1,"result":{...}}</text>
+	<text x="760" y="72" font-size="12" font-weight="700" fill="#1d7a3c">読めた</text>
+
+	<rect x="80" y="95" width="740" height="34" rx="6" fill="#fdeaea" stroke="#a51f22" stroke-width="2"/>
+	<text x="100" y="117" font-size="12" fill="#a51f22" font-family="monospace">サーバーを起動しました</text>
+	<text x="700" y="117" font-size="12" font-weight="700" fill="#a51f22">JSON として読めない</text>
+
+	<rect x="80" y="140" width="740" height="34" rx="6" fill="#f2f4f7" stroke="#97a1ae" stroke-width="2" stroke-dasharray="5 3"/>
+	<text x="100" y="162" font-size="12" fill="#97a1ae" font-family="monospace">{"jsonrpc":"2.0","id":2,"result":{...}}</text>
+	<text x="690" y="162" font-size="12" font-weight="700" fill="#97a1ae">ここまで届かない</text>
+
+	<text x="450" y="205" text-anchor="middle" font-size="12" fill="#4a5568">「登録したのにツールが出てこない」の原因は、たいていこれ</text>
+</svg>
+<figcaption>1 行の <code>console.log</code> で接続ごと落ちる。しかもホスト側には「繋がらない」としか出ない。</figcaption>
+</figure>
+
+<h2>対策</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">やること</th><th>書き方</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">ログを出す</td><td><code>console.error(...)</code> を使う。<code>console.log</code> は使わない</td></tr>
+		<tr><td class="nowrap">ライブラリの出力を抑える</td><td>読み込んだライブラリが <code>console.log</code> する場合がある。疑わしければファイルに記録する形に変える</td></tr>
+		<tr><td class="nowrap">確かめる</td><td>手で動かして、stdout に JSON 以外が出ていないか目で見る</td></tr>
+	</tbody>
+</table>
+</div>
+
+<div class="callout">
+	<p><strong>この癖は stdio のときだけ必要です。</strong><a href="07-HTTPに載せ替える.html">07. HTTP に載せ替える</a> で扱う HTTP 版では、標準出力は空いているので <code>console.log</code> を使えます。同じサーバーでも運び方で作法が変わります。</p>
+</div>
+
+<h2>次の章へ</h2>
+
+<p>ここまでで、MCP サーバーが何をしているかは全部見えました。次は同じものを SDK で書き直し、<strong>何が省けるのか</strong>を確かめます。</p>
+</section>
+
+</div>
+
+<footer>
+	<div class="inner">
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="01-背景.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>01. 背景</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+	<a href="03-SDKで書き直す.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>03. SDK で書き直す</a>
+</div>
+<!-- /AUTO:nav -->
+	</div>
+</footer>
+
+</body>
+</html>

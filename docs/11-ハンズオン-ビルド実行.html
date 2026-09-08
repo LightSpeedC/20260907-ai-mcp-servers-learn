@@ -1,0 +1,497 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11. ハンズオン② ビルド実行</title>
+<style>
+/* css/style.css が読めなかったときの代替色 */
+.titlebar, section h1, th, a.doclink, .badge { background: #12224d; color: #fff; }
+</style>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,55%); --soft: hsl(280,28%,95%); }
+.ch02 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,55%); --soft: hsl(210,28%,95%); }
+.ch03 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,55%); --soft: hsl(140,28%,95%); }
+.ch04 { --accent: hsl(70,78%,25%);  --accent2: hsl(70,58%,55%);  --soft: hsl(70,28%,95%); }
+.ch05 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,55%);   --soft: hsl(0,28%,95%); }
+.toc ol a::before { content: "11." counter(tocnum) " "; }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>11. ハンズオン② ビルド実行</h1>
+		<p class="lead">コマンドを実行し、進み具合を知らせ、終わったら画面にも出す</p>
+		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
+	</div>
+</div>
+
+<div class="wrap">
+
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="10-プロセス共有.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>10. プロセス共有</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+</div>
+<!-- /AUTO:nav -->
+
+<div class="toc">
+	<h2>この資料の内容</h2>
+	<ol>
+		<li class="ch01"><a href="#ch01">何を作るか</a></li>
+		<li class="ch02"><a href="#ch02">実行してよいものを決める</a></li>
+		<li class="ch03"><a href="#ch03">進み具合を伝える</a></li>
+		<li class="ch04"><a href="#ch04">終わったら知らせる</a></li>
+		<li class="ch05"><a href="#ch05">越えてはいけない線</a></li>
+	</ol>
+</div>
+
+<section class="ch01" id="ch01">
+<h1>何を作るか</h1>
+
+<p>テストやビルドを AI に走らせ、結果を受け取れるようにします。<a href="08-通知で伝える.html">08 章</a>の通知と、<a href="10-プロセス共有.html">10 章</a>の考え方を全部使います。</p>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">出すもの</th><th class="nowrap">名前</th><th>すること</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">Resource</td><td class="nowrap"><code>build://commands</code></td><td>実行できるコマンドの一覧</td></tr>
+		<tr><td class="nowrap">Tool</td><td class="nowrap"><code>build_run</code></td><td>名前を指定して実行する</td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ビルド実行サーバーの流れ">
+	<defs>
+		<linearGradient id="g-11-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-11-1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="30" y="90" width="150" height="50" rx="8" fill="url(#g-11-1a)"/>
+	<text x="105" y="112" text-anchor="middle" font-size="12" fill="#fff">「テスト流して」</text>
+	<text x="105" y="130" text-anchor="middle" font-size="11" fill="#fff">利用者</text>
+
+	<line x1="180" y1="115" x2="240" y2="115" stroke="#4a5568" stroke-width="2" marker-end="url(#m-11-1a)"/>
+
+	<rect x="240" y="90" width="160" height="50" rx="8" fill="url(#g-11-1a)"/>
+	<text x="320" y="112" text-anchor="middle" font-size="12" fill="#fff">build_run</text>
+	<text x="320" y="130" text-anchor="middle" font-size="11" fill="#fff">name: "test"</text>
+
+	<line x1="400" y1="115" x2="460" y2="115" stroke="#4a5568" stroke-width="2" marker-end="url(#m-11-1a)"/>
+
+	<rect x="460" y="65" width="180" height="100" rx="8" fill="#1d7a3c"/>
+	<text x="550" y="92" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">一覧と照らす</text>
+	<text x="550" y="115" text-anchor="middle" font-size="11" fill="#fff">あれば実行</text>
+	<text x="550" y="136" text-anchor="middle" font-size="11" fill="#fff">無ければ断る</text>
+
+	<line x1="640" y1="95" x2="720" y2="60" stroke="#4a5568" stroke-width="2" marker-end="url(#m-11-1a)"/>
+	<rect x="720" y="35" width="150" height="46" rx="8" fill="#b8620a"/>
+	<text x="795" y="55" text-anchor="middle" font-size="11" fill="#fff">進捗を送る</text>
+	<text x="795" y="72" text-anchor="middle" font-size="10" fill="#fff">1 行ごと</text>
+
+	<line x1="640" y1="135" x2="720" y2="170" stroke="#4a5568" stroke-width="2" marker-end="url(#m-11-1a)"/>
+	<rect x="720" y="148" width="150" height="46" rx="8" fill="#b8620a"/>
+	<text x="795" y="168" text-anchor="middle" font-size="11" fill="#fff">終わったら</text>
+	<text x="795" y="185" text-anchor="middle" font-size="10" fill="#fff">トーストを出す</text>
+
+	<text x="450" y="225" text-anchor="middle" font-size="11" fill="#4a5568">結果は末尾 30 行だけ返す。全部返すと会話が埋まる</text>
+</svg>
+<figcaption>「何でも実行できる」ではなく「決めたものだけ実行できる」形にする。理由は第 5 章。</figcaption>
+</figure>
+
+<h2>実行してよいものを外に書く</h2>
+
+<p><a href="samples/11-build/commands.json">commands.json</a> に定義します。コードを直さずに増やせます。</p>
+
+<pre><code class="language-json">{
+	"test": {
+		"description": "テストを全件実行する",
+		"command": "node",
+		"args": ["--test", "tests/"]
+	},
+	"version": {
+		"description": "Node.js の版を表示する",
+		"command": "node",
+		"args": ["--version"]
+	}
+}</code></pre>
+</section>
+
+<section class="ch02" id="ch02">
+<h1>実行してよいものを決める</h1>
+
+<pre><code class="language-javascript">// 名前で引ける形にしておく。ここに無いものは実行しない
+const commands = JSON.parse(await readFile(COMMANDS_FILE, 'utf8'));
+
+server.registerTool(
+	'build_run',
+	{
+		title: 'コマンドを実行する',
+		description: '決めておいたコマンドを名前で指定して実行する',
+		inputSchema: {
+			name: z.string().describe('commands.json に書いてある名前'),
+		},
+		annotations: {
+			readOnlyHint: false,
+			destructiveHint: false,
+		},
+	},
+	async ({ name }, extra) =&gt; {
+		const spec = commands[name];
+		if (!spec) {
+			return {
+				content: [{
+					type: 'text',
+					text: `${name} は実行できません。使えるのは ${Object.keys(commands).join(' / ')} です`,
+				}],
+				isError: true,
+			};
+		}
+		// ...
+	},
+);</code></pre>
+
+<div class="callout">
+	<p><strong>断るときに「何なら使えるか」を書きます。</strong>「実行できません」だけだと、モデルは同じ名前で何度も試します。使える名前を並べれば、その中から選び直します。<a href="05-3つの提供物.html">05 章</a>の「失敗の返し方」と同じ考え方です。</p>
+</div>
+
+<h2>シェルを通さない</h2>
+
+<pre><code class="language-javascript">// シェルを通さない。文字列を組み立てて渡すと、
+// 引数に仕込まれた記号がそのまま命令になる
+const child = spawn(spec.command, spec.args, { cwd: CWD, shell: false });</code></pre>
+
+<figure>
+<svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="シェルを通すと引数が命令になる">
+	<defs>
+		<linearGradient id="g-11-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="40" y="40" width="820" height="80" rx="9" fill="#fdeaea" stroke="#a51f22" stroke-width="2"/>
+	<text x="60" y="66" font-size="13" font-weight="700" fill="#a51f22">shell: true ＋ 文字列を組み立てる</text>
+	<text x="60" y="90" font-size="12" fill="#1c2330" font-family="monospace">exec(`node build.js ${userInput}`)</text>
+	<text x="60" y="110" font-size="12" fill="#a51f22">userInput が "x &amp; del /s /q C:\\" だったら、その後ろも実行される</text>
+
+	<rect x="40" y="140" width="820" height="80" rx="9" fill="#eaf6ee" stroke="#1d7a3c" stroke-width="2"/>
+	<text x="60" y="166" font-size="13" font-weight="700" fill="#1d7a3c">shell: false ＋ 配列で渡す</text>
+	<text x="60" y="190" font-size="12" fill="#1c2330" font-family="monospace">spawn('node', ['build.js', userInput], { shell: false })</text>
+	<text x="60" y="210" font-size="12" fill="#1d7a3c">記号が入っていても、ただの引数として渡るだけ</text>
+</svg>
+<figcaption>コマンドと引数を分けて渡せば、記号は解釈されない。文字列を組み立てないのが要点。</figcaption>
+</figure>
+
+<h2>実行と結果</h2>
+
+<pre><code class="language-javascript">function run(spec, onLine) {
+	return new Promise((resolve) =&gt; {
+		const child = spawn(spec.command, spec.args, { cwd: CWD, shell: false });
+
+		const out = [];
+		let lines = 0;
+
+		const pick = (chunk) =&gt; {
+			const text = chunk.toString();
+			out.push(text);
+			for (const line of text.split('\n')) {
+				if (line.trim()) onLine(++lines, line.trim());
+			}
+		};
+
+		child.stdout.on('data', pick);
+		child.stderr.on('data', pick);
+
+		child.on('error', (err) =&gt; resolve({ code: -1, output: `起動できなかった: ${err.message}` }));
+		child.on('close', (code) =&gt; resolve({ code, output: out.join('') }));
+	});
+}</code></pre>
+
+<div class="callout">
+	<p><strong><code>error</code> と <code>close</code> の両方を拾います。</strong><code>error</code> はコマンドが見つからないときなど、そもそも起動できなかった場合に飛びます。これを拾い忘れると、Promise が解決されず永久に待ち続けます。</p>
+</div>
+</section>
+
+<section class="ch03" id="ch03">
+<h1>進み具合を伝える</h1>
+
+<p>出力が 1 行出るたびに進捗として送ります。<a href="08-通知で伝える.html">08 章</a>で見た形です。</p>
+
+<pre><code class="language-javascript">const token = extra._meta?.progressToken;
+
+const { code, output } = await run(spec, (n, line) =&gt; {
+	if (token === undefined) return;
+	// 総数が分からないので total は付けない
+	extra.sendNotification({
+		method: 'notifications/progress',
+		params: { progressToken: token, progress: n, message: line.slice(0, 80) },
+	}).catch(() =&gt; { /* 送れなくても本題は続ける */ });
+});</code></pre>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">やっていること</th><th>理由</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap"><code>total</code> を付けない</td><td>何行出るか事前に分からない。<code>progress</code> だけ増やせばよい</td></tr>
+		<tr><td class="nowrap"><code>slice(0, 80)</code></td><td>長い行をそのまま流さない</td></tr>
+		<tr><td class="nowrap"><code>await</code> しない</td><td>通知の送信でコマンドの読み取りを止めない</td></tr>
+		<tr><td class="nowrap"><code>.catch()</code> を付ける</td><td>通知が失敗しても本題は続ける</td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>確かめる</h2>
+
+<pre><code class="language-javascript">test('進捗通知が出力の行ごとに届く', async () =&gt; {
+	const client = await connect(sample('11-build/server.mjs'));
+	const progress = [];
+
+	try {
+		await client.callTool(
+			{ name: 'build_run', arguments: { name: 'slow' } },
+			undefined,
+			{ onprogress: (p) =&gt; progress.push(p) },
+		);
+
+		// 1 秒ごとに 1 行出るコマンドなので 3 回来る
+		assert.equal(progress.length, 3);
+		assert.equal(progress[0].message, '1');
+		assert.equal(progress[2].message, '3');
+	} finally {
+		await client.close();
+	}
+});</code></pre>
+
+<pre><code class="language-text">✔ 実行できるコマンドの一覧を読める (465.2207ms)
+✔ 決めたコマンドは実行でき、終了コードが 0 なら成功と返る (470.6477ms)
+✔ 一覧に無いものは実行せずに断る (402.7811ms)
+✔ 進捗通知が出力の行ごとに届く (3450.8708ms)</code></pre>
+
+<figure>
+<svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="出力の1行ごとに進捗が流れる">
+	<defs>
+		<linearGradient id="g-11-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-11-3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="30" y="60" width="180" height="100" rx="9" fill="#97a1ae"/>
+	<text x="120" y="88" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">子プロセス</text>
+	<text x="120" y="112" text-anchor="middle" font-size="11" fill="#fff">stdout / stderr</text>
+	<text x="120" y="134" text-anchor="middle" font-size="11" fill="#fff">1 行ずつ出る</text>
+
+	<line x1="210" y1="110" x2="290" y2="110" stroke="#4a5568" stroke-width="2" marker-end="url(#m-11-3a)"/>
+
+	<rect x="290" y="60" width="200" height="100" rx="9" fill="url(#g-11-3a)"/>
+	<text x="390" y="88" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">サーバー</text>
+	<text x="390" y="112" text-anchor="middle" font-size="11" fill="#fff">溜めつつ</text>
+	<text x="390" y="134" text-anchor="middle" font-size="11" fill="#fff">1 行ごとに通知</text>
+
+	<line x1="490" y1="90" x2="600" y2="65" stroke="#1d7a3c" stroke-width="2" marker-end="url(#m-11-3a)"/>
+	<rect x="600" y="42" width="270" height="46" rx="8" fill="#1d7a3c"/>
+	<text x="735" y="62" text-anchor="middle" font-size="11" fill="#fff">進捗（途中で何度も）</text>
+	<text x="735" y="79" text-anchor="middle" font-size="10" fill="#fff">notifications/progress</text>
+
+	<line x1="490" y1="135" x2="600" y2="160" stroke="#4a5568" stroke-width="2" marker-end="url(#m-11-3a)"/>
+	<rect x="600" y="138" width="270" height="46" rx="8" fill="#ffffff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="735" y="158" text-anchor="middle" font-size="11" font-weight="700" fill="#1c2330">結果（最後に 1 回）</text>
+	<text x="735" y="175" text-anchor="middle" font-size="10" fill="#4a5568">末尾 30 行だけ</text>
+</svg>
+<figcaption>途中は通知、最後は結果。全出力を結果に詰め込まない。</figcaption>
+</figure>
+</section>
+
+<section class="ch04" id="ch04">
+<h1>終わったら知らせる</h1>
+
+<pre><code class="language-javascript">const seconds = ((Date.now() - started) / 1000).toFixed(1);
+const ok = code === 0;
+
+await toast(ok ? `${name} 成功` : `${name} 失敗`, `${seconds} 秒 / 終了コード ${code}`);
+
+// 出力が長いと会話を埋めてしまう。末尾だけ返す
+const tail = output.split('\n').slice(-30).join('\n');
+
+return {
+	content: [{
+		type: 'text',
+		text: `${ok ? '成功' : '失敗'}（終了コード ${code}、${seconds} 秒）\n\n${tail}`,
+	}],
+	isError: !ok,
+};</code></pre>
+
+<p>トーストは <a href="08-通知で伝える.html">08 章</a>のものを使い回します。失敗しても本題は止めません。</p>
+
+<pre><code class="language-javascript">async function toast(title, message) {
+	if (!TOAST) return;
+	try {
+		await execFileAsync('powershell', [ /* ... */ ]);
+	} catch {
+		// 知らせられなくても本題は済んでいる。落とさない
+	}
+}</code></pre>
+
+<div class="callout">
+	<p><strong>通知は既定で切っておきます。</strong>環境変数 <code>BUILD_TOAST=1</code> のときだけ出す形にしました。テストのたびに画面へトーストが出ては邪魔になります。<strong>人の環境を邪魔する機能は、既定で切る</strong>のが作法です。</p>
+</div>
+
+<h2>返す量を絞る</h2>
+
+<figure>
+<svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="テスト出力の全量と末尾だけの違い">
+	<defs>
+		<linearGradient id="g-11-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="g-11-4b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="225" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">全部返すと</text>
+	<rect x="60" y="45" width="330" height="120" rx="8" fill="url(#g-11-4a)"/>
+	<text x="225" y="78" text-anchor="middle" font-size="12" fill="#fff">1 件ごとの ✔ が 500 行</text>
+	<text x="225" y="104" text-anchor="middle" font-size="12" fill="#fff">大半は「通った」の羅列</text>
+	<text x="225" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">肝心の失敗が埋もれる</text>
+
+	<text x="675" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">末尾だけ返すと</text>
+	<rect x="510" y="45" width="330" height="120" rx="8" fill="url(#g-11-4b)"/>
+	<text x="675" y="78" text-anchor="middle" font-size="12" fill="#fff">「成功（終了コード 0、5.1 秒）」</text>
+	<text x="675" y="104" text-anchor="middle" font-size="12" fill="#fff">＋ 集計と失敗の内訳</text>
+	<text x="675" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">必要なものが先に来る</text>
+
+	<text x="450" y="200" text-anchor="middle" font-size="11" fill="#4a5568">テストの出力は末尾に集計が来る。だから末尾を残すのが理にかなう</text>
+</svg>
+<figcaption>何を残すかは対象による。テストなら末尾、ビルドのエラーなら該当箇所の周辺。</figcaption>
+</figure>
+
+<h2>登録して使う</h2>
+
+<pre><code class="language-json">{
+	"mcpServers": {
+		"build": {
+			"command": "node",
+			"args": ["docs/samples/11-build/server.mjs"],
+			"env": { "BUILD_TOAST": "1" }
+		}
+	}
+}</code></pre>
+
+<p>「テストを流して」と頼めば実行され、進み具合が表示され、終わればトーストが出ます。</p>
+</section>
+
+<section class="ch05" id="ch05">
+<h1>越えてはいけない線</h1>
+
+<p>コマンドを実行するサーバーは、<strong>作れるものの中で最も危ないもの</strong>です。線を引いておきます。</p>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">やってはいけないこと</th><th>なぜ</th></tr>
+	</thead>
+	<tbody>
+		<tr><td>任意のコマンドを受け取って実行する</td><td>モデルが誤ったものを渡せば、そのまま実行される</td></tr>
+		<tr><td>引数を文字列で組み立てて <code>shell: true</code> で渡す</td><td>記号が命令として解釈される</td></tr>
+		<tr><td>作業場所を呼ぶ側に決めさせる</td><td>どこでも実行できてしまう</td></tr>
+		<tr><td>結果に環境変数をそのまま載せる</td><td>認証情報が会話に流れる</td></tr>
+		<tr><td>認証なしで HTTP に出す</td><td>同じネットワークの誰でも実行できる</td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="許可リスト方式と任意実行の違い">
+	<defs>
+		<linearGradient id="g-11-5a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="g-11-5b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<marker id="m-11-5a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<text x="225" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">任意のコマンドを受ける</text>
+	<rect x="40" y="45" width="370" height="46" rx="7" fill="url(#g-11-5a)"/>
+	<text x="225" y="73" text-anchor="middle" font-size="12" fill="#fff">command: "何でも書ける"</text>
+
+	<line x1="225" y1="91" x2="225" y2="120" stroke="#4a5568" stroke-width="2" marker-end="url(#m-11-5a)"/>
+
+	<rect x="40" y="128" width="370" height="90" rx="7" fill="#fdeaea" stroke="#a51f22" stroke-width="2"/>
+	<text x="225" y="155" text-anchor="middle" font-size="12" fill="#1c2330">安全かどうかを判断するのは</text>
+	<text x="225" y="180" text-anchor="middle" font-size="13" font-weight="700" fill="#a51f22">モデルとホストの承認だけ</text>
+	<text x="225" y="205" text-anchor="middle" font-size="11" fill="#1c2330">承認を切っている環境では素通り</text>
+
+	<text x="675" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">名前で選ばせる</text>
+	<rect x="490" y="45" width="370" height="46" rx="7" fill="url(#g-11-5b)"/>
+	<text x="675" y="73" text-anchor="middle" font-size="12" fill="#fff">name: "test" | "version" | "slow"</text>
+
+	<line x1="675" y1="91" x2="675" y2="120" stroke="#4a5568" stroke-width="2" marker-end="url(#m-11-5a)"/>
+
+	<rect x="490" y="128" width="370" height="90" rx="7" fill="#eaf6ee" stroke="#1d7a3c" stroke-width="2"/>
+	<text x="675" y="155" text-anchor="middle" font-size="12" fill="#1c2330">実行できる範囲を決めるのは</text>
+	<text x="675" y="180" text-anchor="middle" font-size="13" font-weight="700" fill="#1d7a3c">commands.json を書いた人</text>
+	<text x="675" y="205" text-anchor="middle" font-size="11" fill="#1c2330">承認の設定に関わらず範囲が保たれる</text>
+
+	<text x="450" y="248" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">「何を実行できるか」を、実行時ではなく設計時に決める</text>
+</svg>
+<figcaption>ホスト側の承認は最後の砦であって、最初の砦ではない。範囲はサーバー側で決める。</figcaption>
+</figure>
+
+<div class="callout">
+	<p><strong>ツールの説明文は信用されない前提で設計します。</strong>仕様にも「注釈は信用できないものとして扱え」とあります。「危険なので確認してください」と <code>description</code> に書いても、それは<strong>お願い</strong>にすぎません。実際に守らせるには、サーバー側で実行できる範囲を絞るしかありません。</p>
+</div>
+
+<h2>ここまでで身に付いたこと</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">章</th><th>できるようになったこと</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">02・03</td><td>JSON-RPC で何が流れているか分かる。SDK でも手書きでも書ける</td></tr>
+		<tr><td class="nowrap">04</td><td>3 つのホストに登録し、動かないときに切り分けられる</td></tr>
+		<tr><td class="nowrap">05・06</td><td>Tools・Resources・Prompts を使い分け、失敗を正しく返せる</td></tr>
+		<tr><td class="nowrap">07・10</td><td>stdio と HTTP を選び、1 本を共有できる</td></tr>
+		<tr><td class="nowrap">08・09</td><td>伝えられること・伝えられないことの線が引ける</td></tr>
+		<tr><td class="nowrap">11</td><td>危ないものを、危なくない形にして出せる</td></tr>
+	</tbody>
+</table>
+</div>
+
+<p>詰まったときは <a href="A2-詰まったとき.html">A2. 詰まったとき</a> を、やり方を忘れたときは <a href="A1-逆引き.html">A1. 逆引き</a> を引いてください。Node.js を入れられない環境へ配る話は <a href="A3-単一exeにする.html">A3. 単一 exe にする</a> にあります。</p>
+</section>
+
+</div>
+
+<footer>
+	<div class="inner">
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="10-プロセス共有.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>10. プロセス共有</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+</div>
+<!-- /AUTO:nav -->
+	</div>
+</footer>
+
+</body>
+</html>

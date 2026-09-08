@@ -1,0 +1,455 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10. プロセス共有</title>
+<style>
+/* css/style.css が読めなかったときの代替色 */
+.titlebar, section h1, th, a.doclink, .badge { background: #12224d; color: #fff; }
+</style>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,55%); --soft: hsl(280,28%,95%); }
+.ch02 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,55%); --soft: hsl(210,28%,95%); }
+.ch03 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,55%); --soft: hsl(140,28%,95%); }
+.ch04 { --accent: hsl(70,78%,25%);  --accent2: hsl(70,58%,55%);  --soft: hsl(70,28%,95%); }
+.ch05 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,55%);   --soft: hsl(0,28%,95%); }
+.toc ol a::before { content: "10." counter(tocnum) " "; }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>10. プロセス共有</h1>
+		<p class="lead">同じ PC で 1 本のサーバーを、複数のホストから使う</p>
+		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
+	</div>
+</div>
+
+<div class="wrap">
+
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="09-タスク.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>09. タスク</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+	<a href="11-ハンズオン-ビルド実行.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>11. ハンズオン② ビルド実行</a>
+</div>
+<!-- /AUTO:nav -->
+
+<div class="toc">
+	<h2>この資料の内容</h2>
+	<ol>
+		<li class="ch01"><a href="#ch01">なぜ 1 本にまとめたいか</a></li>
+		<li class="ch02"><a href="#ch02">3 つのやり方</a></li>
+		<li class="ch03"><a href="#ch03">localhost の HTTP</a></li>
+		<li class="ch04"><a href="#ch04">stdio ブリッジ</a></li>
+		<li class="ch05"><a href="#ch05">常駐させる</a></li>
+	</ol>
+</div>
+
+<section class="ch01" id="ch01">
+<h1>なぜ 1 本にまとめたいか</h1>
+
+<p>stdio ではホストが子プロセスを起こします。<strong>ホストが 3 つあれば、同じサーバーが 3 つ立ちます</strong>。ウィンドウを 2 枚開けば 2 倍になります。</p>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">困ること</th><th>中身</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">資源</td><td>Node のプロセスが 1 本あたり数十 MB。10 本立てば無視できない</td></tr>
+		<tr><td class="nowrap">記憶が分かれる</td><td>記憶の中に持った状態は共有されない。片方で覚えたことを他方は知らない</td></tr>
+		<tr><td class="nowrap">重い初期化</td><td>索引の構築や接続の確立を、起動のたびに繰り返す</td></tr>
+		<tr><td class="nowrap">外部の上限</td><td>API のレート制限や DB の接続数を、プロセスの数だけ食う</td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ホストが増えるほどプロセスが増える">
+	<defs>
+		<linearGradient id="g-10-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="450" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">stdio のまま、ホストを 3 つ・ウィンドウを 2 枚ずつ使うと</text>
+
+	<g>
+		<rect x="40" y="50" width="120" height="30" rx="6" fill="url(#g-10-1a)"/>
+		<text x="100" y="70" text-anchor="middle" font-size="11" fill="#fff">Claude Code ①</text>
+		<rect x="40" y="88" width="120" height="30" rx="6" fill="url(#g-10-1a)"/>
+		<text x="100" y="108" text-anchor="middle" font-size="11" fill="#fff">Claude Code ②</text>
+		<rect x="40" y="126" width="120" height="30" rx="6" fill="url(#g-10-1a)"/>
+		<text x="100" y="146" text-anchor="middle" font-size="11" fill="#fff">Codex ①</text>
+		<rect x="40" y="164" width="120" height="30" rx="6" fill="url(#g-10-1a)"/>
+		<text x="100" y="184" text-anchor="middle" font-size="11" fill="#fff">Codex ②</text>
+	</g>
+
+	<g stroke="#4a5568" stroke-width="1.4">
+		<line x1="160" y1="65" x2="280" y2="65"/>
+		<line x1="160" y1="103" x2="280" y2="103"/>
+		<line x1="160" y1="141" x2="280" y2="141"/>
+		<line x1="160" y1="179" x2="280" y2="179"/>
+	</g>
+
+	<g>
+		<rect x="280" y="50" width="150" height="30" rx="6" fill="#97a1ae"/>
+		<text x="355" y="70" text-anchor="middle" font-size="11" fill="#fff">node 50 MB</text>
+		<rect x="280" y="88" width="150" height="30" rx="6" fill="#97a1ae"/>
+		<text x="355" y="108" text-anchor="middle" font-size="11" fill="#fff">node 50 MB</text>
+		<rect x="280" y="126" width="150" height="30" rx="6" fill="#97a1ae"/>
+		<text x="355" y="146" text-anchor="middle" font-size="11" fill="#fff">node 50 MB</text>
+		<rect x="280" y="164" width="150" height="30" rx="6" fill="#97a1ae"/>
+		<text x="355" y="184" text-anchor="middle" font-size="11" fill="#fff">node 50 MB</text>
+	</g>
+
+	<text x="355" y="220" text-anchor="middle" font-size="12" font-weight="700" fill="#a51f22">同じものが 4 つ。状態は共有されない</text>
+
+	<path d="M 450 120 L 530 120" stroke="#4a5568" stroke-width="2"/>
+	<path d="M 525 114 L 535 120 L 525 126 Z" fill="#4a5568"/>
+
+	<rect x="560" y="95" width="300" height="50" rx="8" fill="#1d7a3c"/>
+	<text x="710" y="118" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">1 本にまとめたい</text>
+	<text x="710" y="137" text-anchor="middle" font-size="11" fill="#fff">記憶も接続も 1 つで済む</text>
+
+	<text x="710" y="180" text-anchor="middle" font-size="11" fill="#4a5568">ただし、起動と終了を自分で見る必要が出てくる</text>
+</svg>
+<figcaption>状態を持たないサーバーなら、増えても実害は小さい。共有が効くのは「重い」か「覚える」サーバー。</figcaption>
+</figure>
+
+<div class="callout">
+	<p><strong>まず、本当に共有が要るか考えてください。</strong>メモサーバーのように状態をファイルに持つなら、プロセスが増えても結果は揃います。<strong>共有が効くのは、起動が重いか、記憶の中に状態を持つ場合</strong>です。</p>
+</div>
+</section>
+
+<section class="ch02" id="ch02">
+<h1>3 つのやり方</h1>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">やり方</th><th>仕組み</th><th>難所</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">localhost の HTTP</td><td>常駐を 1 本立て、各ホストは HTTP で繋ぐ</td><td>ホスト側の設定を HTTP に変える必要がある</td></tr>
+		<tr><td class="nowrap">stdio ブリッジ</td><td>各ホストには軽い stdio のプロセスを起こさせ、それが常駐へ中継する</td><td>ブリッジを自分で書く</td></tr>
+		<tr><td class="nowrap">名前付きパイプ</td><td>stdio と同じ形式をパイプで運ぶ</td><td>Windows 固有。SDK に既製品が無い</td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="3つの共有方式の比較">
+	<defs>
+		<linearGradient id="g-10-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/><stop offset="1" stop-color="hsl(280,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="g-10-2b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="g-10-2c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(30,78%,25%)"/><stop offset="1" stop-color="hsl(30,58%,55%)"/>
+		</linearGradient>
+		<marker id="m-10-2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<text x="40" y="30" font-size="13" font-weight="700" fill="#1c2330">① localhost の HTTP</text>
+	<rect x="40" y="42" width="130" height="32" rx="6" fill="url(#g-10-2a)"/>
+	<text x="105" y="63" text-anchor="middle" font-size="11" fill="#fff">ホスト</text>
+	<line x1="170" y1="58" x2="320" y2="58" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-10-2a)"/>
+	<text x="245" y="51" text-anchor="middle" font-size="10" fill="#4a5568">HTTP</text>
+	<rect x="320" y="42" width="180" height="32" rx="6" fill="#1d7a3c"/>
+	<text x="410" y="63" text-anchor="middle" font-size="11" fill="#fff">常駐サーバー :3333</text>
+	<text x="530" y="63" font-size="11" fill="#4a5568">設定を HTTP に変える</text>
+
+	<text x="40" y="120" font-size="13" font-weight="700" fill="#1c2330">② stdio ブリッジ</text>
+	<rect x="40" y="132" width="130" height="32" rx="6" fill="url(#g-10-2b)"/>
+	<text x="105" y="153" text-anchor="middle" font-size="11" fill="#fff">ホスト</text>
+	<line x1="170" y1="148" x2="220" y2="148" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-10-2a)"/>
+	<text x="195" y="141" text-anchor="middle" font-size="10" fill="#4a5568">stdio</text>
+	<rect x="220" y="132" width="100" height="32" rx="6" fill="#b8620a"/>
+	<text x="270" y="153" text-anchor="middle" font-size="11" fill="#fff">ブリッジ</text>
+	<line x1="320" y1="148" x2="370" y2="148" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-10-2a)"/>
+	<text x="345" y="141" text-anchor="middle" font-size="10" fill="#4a5568">HTTP</text>
+	<rect x="370" y="132" width="180" height="32" rx="6" fill="#1d7a3c"/>
+	<text x="460" y="153" text-anchor="middle" font-size="11" fill="#fff">常駐サーバー :3333</text>
+	<text x="580" y="153" font-size="11" fill="#1d7a3c">設定は stdio のまま</text>
+
+	<text x="40" y="210" font-size="13" font-weight="700" fill="#1c2330">③ 名前付きパイプ</text>
+	<rect x="40" y="222" width="130" height="32" rx="6" fill="url(#g-10-2c)"/>
+	<text x="105" y="243" text-anchor="middle" font-size="11" fill="#fff">ホスト</text>
+	<line x1="170" y1="238" x2="220" y2="238" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-10-2a)"/>
+	<rect x="220" y="222" width="100" height="32" rx="6" fill="#b8620a"/>
+	<text x="270" y="243" text-anchor="middle" font-size="11" fill="#fff">ブリッジ</text>
+	<line x1="320" y1="238" x2="370" y2="238" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-10-2a)"/>
+	<text x="345" y="231" text-anchor="middle" font-size="10" fill="#4a5568">パイプ</text>
+	<rect x="370" y="222" width="180" height="32" rx="6" fill="#1d7a3c"/>
+	<text x="460" y="243" text-anchor="middle" font-size="11" fill="#fff">常駐サーバー</text>
+	<text x="580" y="243" font-size="11" fill="#4a5568">ポートを使わずに済む</text>
+
+	<text x="450" y="285" text-anchor="middle" font-size="11" fill="#4a5568">仕様は「独自の運び方を作るなら、stdio と同じ改行区切りを使え」と勧めている</text>
+</svg>
+<figcaption>②は①の上に薄い層を足しただけ。ホスト側の設定を変えたくないときに効く。</figcaption>
+</figure>
+</section>
+
+<section class="ch03" id="ch03">
+<h1>localhost の HTTP</h1>
+
+<p><a href="07-HTTPに載せ替える.html">07 章</a>で作ったものが、そのまま使えます。1 本立てて、各ホストから繋ぐだけです。</p>
+
+<pre><code class="language-powershell"># 常駐させる（1 回だけ）
+$env:PORT = "3333"
+node docs/samples/07-http/server.mjs</code></pre>
+
+<pre><code class="language-powershell"># 各ホストから繋ぐ
+claude mcp add --transport http memo http://localhost:3333/mcp
+codex mcp add memo --url http://localhost:3333/mcp</code></pre>
+
+<h2>外から叩かれないようにする</h2>
+
+<p><code>listen(PORT)</code> はすべてのネットワークで待ち受けます。同じ PC だけに限るなら、明示します。</p>
+
+<pre><code class="language-javascript">// 127.0.0.1 に限ると、外のマシンからは繋がらない
+http.listen(PORT, '127.0.0.1', () =&gt; { /* ... */ });</code></pre>
+
+<div class="callout">
+	<p><strong>認証の無いサーバーを外へ出さないでください。</strong>MCP サーバーはツールを実行する仕組みです。誰でも叩ける場所に置けば、誰でもコマンドを走らせられます。共有はあくまで<strong>同じ PC の中</strong>に留めるのが、この章の前提です。</p>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="待ち受けるアドレスの違い">
+	<defs>
+		<linearGradient id="g-10-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="40" y="40" width="380" height="140" rx="9" fill="#ffffff" stroke="#a51f22" stroke-width="2"/>
+	<text x="230" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#a51f22">listen(3333)</text>
+	<text x="230" y="94" text-anchor="middle" font-size="12" fill="#1c2330">すべてのネットワークで待つ</text>
+	<text x="230" y="122" text-anchor="middle" font-size="12" fill="#1c2330">同じ LAN の誰でも繋がる</text>
+	<text x="230" y="152" text-anchor="middle" font-size="12" font-weight="700" fill="#a51f22">ツールを実行できてしまう</text>
+
+	<rect x="480" y="40" width="380" height="140" rx="9" fill="#ffffff" stroke="#1d7a3c" stroke-width="2"/>
+	<text x="670" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#1d7a3c">listen(3333, '127.0.0.1')</text>
+	<text x="670" y="94" text-anchor="middle" font-size="12" fill="#1c2330">同じ PC の中だけ</text>
+	<text x="670" y="122" text-anchor="middle" font-size="12" fill="#1c2330">外からは繋がらない</text>
+	<text x="670" y="152" text-anchor="middle" font-size="12" font-weight="700" fill="#1d7a3c">共有の用途にはこれで足りる</text>
+</svg>
+<figcaption>1 引数の <code>listen</code> は既定で全方位に開く。共有目的なら必ず絞る。</figcaption>
+</figure>
+</section>
+
+<section class="ch04" id="ch04">
+<h1>stdio ブリッジ</h1>
+
+<p>「ホスト側の設定は stdio のままにしたい」「HTTP を知らない人にも配りたい」。そのときはブリッジを挟みます。</p>
+
+<p>やることは単純です。<strong>stdin で受けた行を HTTP に投げ、返ってきたものを stdout に書く</strong>だけ。<a href="samples/10-shared/bridge.mjs">samples/10-shared/bridge.mjs</a> の全文は 70 行ほどです。</p>
+
+<pre><code class="language-javascript">const TARGET = process.env.MCP_TARGET ?? 'http://localhost:3333/mcp';
+
+async function forward(line) {
+	const res = await fetch(TARGET, {
+		method: 'POST',
+		headers: {
+			'content-type': 'application/json',
+			// どちらの形で返してもよい、と伝える
+			accept: 'application/json, text/event-stream',
+		},
+		body: line,
+	});
+
+	// 通知を中継したときは本文が無い（202 が返る）
+	if (res.status === 202) return;
+
+	const body = await res.text();
+	for (const message of extractMessages(res.headers.get('content-type') ?? '', body)) {
+		send(message);
+	}
+}
+
+rl.on('line', (line) =&gt; {
+	if (!line.trim()) return;
+	forward(line).catch((err) =&gt; { /* エラーを返す（後述） */ });
+});</code></pre>
+
+<h2>失敗したときに固まらせない</h2>
+
+<p>本体が落ちていると <code>fetch</code> が失敗します。<strong>何も返さないとホストは待ち続けます</strong>。エラーを返して知らせます。</p>
+
+<pre><code class="language-javascript">forward(line).catch((err) =&gt; {
+	log('中継に失敗:', err.message);
+
+	// 応答を待っているホストを固まらせないよう、エラーを返す。
+	// 通知（id 無し）には返さない
+	let id;
+	try { id = JSON.parse(line).id; } catch { /* 壊れた行は無視 */ }
+	if (id === undefined) return;
+
+	send(JSON.stringify({
+		jsonrpc: '2.0',
+		id,
+		error: { code: -32603, message: `本体へ中継できない: ${err.message}` },
+	}));
+});</code></pre>
+
+<h2>確かめる</h2>
+
+<p>2 本のブリッジから同じ本体を見ていることを、テストで確かめました。</p>
+
+<pre><code class="language-javascript">test('2 本のブリッジが同じ本体を見ている（片方で書いた内容が他方で読める）', async () =&gt; {
+	const a = await connect(sample('10-shared/bridge.mjs'), { env: { MCP_TARGET: TARGET } });
+	const b = await connect(sample('10-shared/bridge.mjs'), { env: { MCP_TARGET: TARGET } });
+
+	try {
+		const mark = `共有の確認 ${Date.now()}`;
+		await a.callTool({ name: 'memo_add', arguments: { text: mark } });
+
+		// 別のブリッジから探しても見つかる
+		const found = await b.callTool({ name: 'memo_search', arguments: { query: '共有の確認' } });
+		assert.match(textOf(found), new RegExp(mark));
+	} finally {
+		await a.close();
+		await b.close();
+	}
+});</code></pre>
+
+<pre><code class="language-text">✔ ブリッジ越しでもツールの一覧が取れる (843.454ms)
+✔ 2 本のブリッジが同じ本体を見ている（片方で書いた内容が他方で読める） (353.484ms)
+✔ 本体が落ちているときは接続の時点で失敗する（固まらない） (151.9163ms)</code></pre>
+
+<figure>
+<svg viewBox="0 0 900 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ブリッジは薄い中継役">
+	<defs>
+		<linearGradient id="g-10-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-10-4a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="30" y="45" width="140" height="40" rx="7" fill="url(#g-10-4a)"/>
+	<text x="100" y="70" text-anchor="middle" font-size="11" fill="#fff">Claude Code</text>
+	<rect x="30" y="135" width="140" height="40" rx="7" fill="url(#g-10-4a)"/>
+	<text x="100" y="160" text-anchor="middle" font-size="11" fill="#fff">Codex</text>
+
+	<line x1="170" y1="65" x2="240" y2="65" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-10-4a)"/>
+	<line x1="170" y1="155" x2="240" y2="155" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-10-4a)"/>
+
+	<rect x="240" y="45" width="150" height="40" rx="7" fill="#b8620a"/>
+	<text x="315" y="63" text-anchor="middle" font-size="11" fill="#fff">ブリッジ</text>
+	<text x="315" y="78" text-anchor="middle" font-size="10" fill="#fff">軽い・状態を持たない</text>
+	<rect x="240" y="135" width="150" height="40" rx="7" fill="#b8620a"/>
+	<text x="315" y="153" text-anchor="middle" font-size="11" fill="#fff">ブリッジ</text>
+	<text x="315" y="168" text-anchor="middle" font-size="10" fill="#fff">軽い・状態を持たない</text>
+
+	<line x1="390" y1="65" x2="560" y2="100" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-10-4a)"/>
+	<line x1="390" y1="155" x2="560" y2="120" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-10-4a)"/>
+
+	<rect x="560" y="85" width="300" height="50" rx="8" fill="#1d7a3c"/>
+	<text x="710" y="107" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">本体 1 本</text>
+	<text x="710" y="125" text-anchor="middle" font-size="11" fill="#fff">重い初期化はここで 1 回だけ</text>
+
+	<text x="450" y="205" text-anchor="middle" font-size="11" fill="#4a5568">ブリッジ側には何も置かない。置くと共有の意味が薄れる</text>
+</svg>
+<figcaption>ブリッジは中身を持たない。だから何本立ててもよい。</figcaption>
+</figure>
+</section>
+
+<section class="ch05" id="ch05">
+<h1>常駐させる</h1>
+
+<p>共有の形にすると、<strong>本体を誰が起こすか</strong>という問題が出ます。stdio ではホストがやってくれていた仕事です。</p>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">やり方</th><th>向く場面</th><th>注意</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">手で起動</td><td>試すとき</td><td>閉じ忘れ・起動し忘れが起きる</td></tr>
+		<tr><td class="nowrap">スタートアップ</td><td>自分の PC</td><td>ログオンしないと動かない</td></tr>
+		<tr><td class="nowrap">Windows サービス</td><td>常に動かしたい</td><td>ユーザープロファイルを見られない場合がある</td></tr>
+		<tr><td class="nowrap">ブリッジが起こす</td><td>起動忘れを無くしたい</td><td>同時に起きたときの競合を自分で捌く</td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="stdioと共有で誰が起動を持つかが変わる">
+	<defs>
+		<linearGradient id="g-10-5a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="g-10-5b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(30,78%,25%)"/><stop offset="1" stop-color="hsl(30,58%,55%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="225" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">stdio</text>
+	<rect x="50" y="45" width="350" height="150" rx="9" fill="url(#g-10-5a)"/>
+	<text x="225" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">ホストが全部やる</text>
+	<text x="225" y="110" text-anchor="middle" font-size="12" fill="#fff">起動する</text>
+	<text x="225" y="134" text-anchor="middle" font-size="12" fill="#fff">終了させる</text>
+	<text x="225" y="158" text-anchor="middle" font-size="12" fill="#fff">落ちたら起こし直す</text>
+	<text x="225" y="182" text-anchor="middle" font-size="11" fill="#fff">こちらは何もしなくてよい</text>
+
+	<text x="675" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">共有</text>
+	<rect x="500" y="45" width="350" height="150" rx="9" fill="url(#g-10-5b)"/>
+	<text x="675" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">自分が持つ</text>
+	<text x="675" y="110" text-anchor="middle" font-size="12" fill="#fff">起動する仕掛けを用意する</text>
+	<text x="675" y="134" text-anchor="middle" font-size="12" fill="#fff">落ちたことに気づく手立てを持つ</text>
+	<text x="675" y="158" text-anchor="middle" font-size="12" fill="#fff">更新するとき、繋いでいる全員に影響</text>
+	<text x="675" y="182" text-anchor="middle" font-size="11" fill="#fff">ここが共有の代償</text>
+
+	<text x="450" y="230" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">1 本にまとめる利得と、面倒を見る手間を秤にかける</text>
+</svg>
+<figcaption>資源の節約と引き換えに、運用の仕事が増える。小さなサーバーなら stdio のままが楽。</figcaption>
+</figure>
+
+<h2>選び方</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">状況</th><th>お勧め</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">状態を持たない・起動が軽い</td><td><strong>共有しない。</strong>stdio のままでよい</td></tr>
+		<tr><td class="nowrap">起動が重い（索引・接続）</td><td>localhost の HTTP</td></tr>
+		<tr><td class="nowrap">設定を変えたくない・配りたい</td><td>stdio ブリッジ</td></tr>
+		<tr><td class="nowrap">ポートを使いたくない</td><td>名前付きパイプ（自分で書く）</td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>次の章へ</h2>
+
+<p>最後に、ここまでのものを 1 つにまとめます。コマンドを実行し、進み具合を知らせ、終わったら画面にも出すサーバーを作ります。</p>
+</section>
+
+</div>
+
+<footer>
+	<div class="inner">
+<!-- AUTO:nav -->
+<div class="nav">
+	<a href="09-タスク.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>09. タスク</a>
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+	<a href="11-ハンズオン-ビルド実行.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>11. ハンズオン② ビルド実行</a>
+</div>
+<!-- /AUTO:nav -->
+	</div>
+</footer>
+
+</body>
+</html>
