@@ -1,0 +1,753 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MCP Server 学習資料 計画</title>
+<style>
+:root {
+	--navy1: #12224d;
+	--navy2: #2f5fbf;
+	--ink: #1c2330;
+	--ink-soft: #4a5568;
+	--line: #d9dfe8;
+	--code-bg: #f4f6fa;
+	--link: #1a4fa0;
+	--accent: var(--navy1);
+	--accent2: var(--navy2);
+	--soft: #f2f5fb;
+}
+
+.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,55%); --soft: hsl(280,28%,95%); }
+.ch02 { --accent: hsl(224,78%,25%); --accent2: hsl(224,58%,55%); --soft: hsl(224,28%,95%); }
+.ch03 { --accent: hsl(168,78%,25%); --accent2: hsl(168,58%,55%); --soft: hsl(168,28%,95%); }
+.ch04 { --accent: hsl(112,78%,25%); --accent2: hsl(112,58%,55%); --soft: hsl(112,28%,95%); }
+.ch05 { --accent: hsl(56,78%,25%);  --accent2: hsl(56,58%,55%);  --soft: hsl(56,28%,95%); }
+.ch06 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,55%);   --soft: hsl(0,28%,95%); }
+
+* { box-sizing: border-box; }
+
+body {
+	margin: 0;
+	background: #ffffff;
+	color: var(--ink, #1c2330);
+	font-family: "Segoe UI", "Yu Gothic UI", "Meiryo", sans-serif;
+	font-size: 15.5px;
+	line-height: 1.85;
+}
+
+.titlebar {
+	background: linear-gradient(135deg, var(--navy1, #12224d), var(--navy2, #2f5fbf));
+	color: #fff;
+	padding: 34px 30px 30px;
+}
+.titlebar .inner { max-width: 1600px; margin: 0 auto; }
+.titlebar h1 {
+	font-size: 1.9em;
+	margin: 0 0 8px;
+	color: #fff;
+}
+.titlebar .lead { font-size: 0.95em; color: #d7e2f8; margin: 0 0 6px; }
+.titlebar .date { font-size: 0.88em; color: #b9caeb; }
+
+.wrap { max-width: 1600px; margin: 0 auto; padding: 0 30px; }
+
+section {
+	background: linear-gradient(180deg, var(--soft, #f2f5fb), #ffffff 55%);
+	border: 1px solid var(--line, #d9dfe8);
+	border-radius: 12px;
+	padding: 4px 26px 26px;
+	margin: 34px 0;
+}
+
+section h1 {
+	background: linear-gradient(100deg, var(--accent, #12224d), var(--accent2, #2f5fbf));
+	color: #fff;
+	font-size: 1.45em;
+	padding: 14px 20px;
+	margin: 26px 0 20px;
+	border-radius: 10px;
+	box-shadow: 0 3px 10px rgba(20,30,60,0.18);
+}
+
+h2 {
+	background: linear-gradient(90deg, var(--soft, #f2f5fb), #ffffff);
+	color: var(--accent, #12224d);
+	font-size: 1.16em;
+	padding: 6px 12px;
+	margin: 30px 0 12px;
+	border-left: 6px solid var(--accent, #12224d);
+	border-radius: 0 6px 6px 0;
+}
+
+h3 {
+	color: var(--accent, #12224d);
+	background: transparent;
+	font-size: 1.02em;
+	margin: 20px 0 8px;
+	padding-bottom: 3px;
+	border-bottom: 2px dotted var(--accent2, #2f5fbf);
+	display: inline-block;
+}
+
+a { color: var(--link, #1a4fa0); background: transparent; }
+
+code {
+	background: var(--code-bg, #f4f6fa);
+	color: #17335f;
+	border: 1px solid var(--line, #d9dfe8);
+	border-radius: 4px;
+	padding: 1px 5px;
+	font-family: "Consolas", "Cascadia Mono", monospace;
+	font-size: 0.92em;
+}
+
+pre {
+	background: var(--code-bg, #f4f6fa);
+	color: var(--ink, #1c2330);
+	border: 1px solid var(--line, #d9dfe8);
+	border-left: 5px solid var(--accent2, #2f5fbf);
+	border-radius: 0 8px 8px 0;
+	padding: 13px 16px;
+	overflow-x: auto;
+	font-size: 0.92em;
+	line-height: 1.6;
+}
+pre code { background: none; border: none; padding: 0; color: inherit; }
+
+.tablewrap { overflow-x: auto; margin: 14px 0; }
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+	background: #ffffff;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 2px 6px rgba(20,30,60,0.10);
+	font-size: 0.96em;
+}
+th {
+	background: linear-gradient(100deg, var(--accent, #12224d), var(--accent2, #2f5fbf));
+	color: #fff;
+	text-align: left;
+	padding: 9px 12px;
+	border: 1px solid var(--line, #d9dfe8);
+}
+td {
+	background: #ffffff;
+	color: var(--ink, #1c2330);
+	padding: 9px 12px;
+	border: 1px solid var(--line, #d9dfe8);
+	vertical-align: top;
+}
+tr:nth-child(even) td { background: #fafbfe; }
+td.num { text-align: right; }
+td.nowrap, th.nowrap { white-space: nowrap; }
+
+.badge {
+	display: inline-block;
+	padding: 1px 9px;
+	border-radius: 11px;
+	font-size: 0.82em;
+	font-weight: 700;
+	color: #fff;
+	background: linear-gradient(100deg, #5a6472, #97a1ae);
+	white-space: nowrap;
+	margin-right: 6px;
+}
+.b-ok   { background: linear-gradient(100deg, #1d7a3c, #45b56c); color: #fff; }
+.b-ng   { background: linear-gradient(100deg, #a51f22, #e05a5c); color: #fff; }
+.b-warn { background: linear-gradient(100deg, #b8620a, #f0a548); color: #fff; }
+.b-none { background: linear-gradient(100deg, #5a6472, #97a1ae); color: #fff; }
+
+.callout {
+	background: linear-gradient(180deg, var(--soft, #f2f5fb), #ffffff);
+	color: var(--ink, #1c2330);
+	border: 1px solid var(--line, #d9dfe8);
+	border-left: 6px solid var(--accent, #12224d);
+	border-radius: 0 8px 8px 0;
+	padding: 12px 18px;
+	margin: 16px 0;
+}
+.callout strong { color: var(--accent, #12224d); background: transparent; }
+.callout code { background: var(--code-bg, #f4f6fa); }
+
+.toc {
+	background: #ffffff;
+	border: 1px solid var(--line, #d9dfe8);
+	border-radius: 12px;
+	padding: 18px 24px 24px;
+	margin: 30px 0;
+}
+.toc h2 {
+	background: transparent;
+	color: var(--navy1, #12224d);
+	border-left: 6px solid var(--navy1, #12224d);
+	margin-top: 6px;
+}
+.toc ol {
+	list-style: none;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	padding: 0;
+	margin: 0;
+	counter-reset: tocnum;
+}
+.toc li { counter-increment: tocnum; }
+.toc ol a {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: normal;
+	width: 310px;
+	max-width: 100%;
+	background: linear-gradient(100deg, var(--accent, #12224d), var(--accent2, #2f5fbf));
+	color: #fff;
+	text-decoration: none;
+	font-weight: 700;
+	padding: 8px 14px;
+	border-radius: 8px;
+	line-height: 1.45;
+}
+.toc ol a::before { content: counter(tocnum) ". "; }
+
+.opts { margin: 10px 0 0; }
+.opt {
+	background: #ffffff;
+	color: var(--ink, #1c2330);
+	border: 1px solid var(--line, #d9dfe8);
+	border-left: 5px solid var(--accent2, #2f5fbf);
+	border-radius: 0 8px 8px 0;
+	padding: 10px 16px;
+	margin: 8px 0;
+}
+.opt .tag {
+	display: inline-block;
+	background: linear-gradient(100deg, var(--accent, #12224d), var(--accent2, #2f5fbf));
+	color: #fff;
+	font-weight: 700;
+	border-radius: 6px;
+	padding: 0 10px;
+	margin-right: 8px;
+}
+.opt .why { color: var(--ink-soft, #4a5568); background: transparent; font-size: 0.94em; }
+
+a.homelink {
+	display: inline-block;
+	background: linear-gradient(100deg, var(--navy1, #12224d), var(--navy2, #2f5fbf));
+	color: #fff;
+	text-decoration: none;
+	font-weight: 700;
+	padding: 0 12px;
+	border-radius: 8px;
+	line-height: 1.9;
+}
+.nav { margin: 26px 0 0; }
+
+figure { margin: 20px 0; }
+figcaption {
+	color: var(--ink-soft, #4a5568);
+	background: transparent;
+	font-size: 0.9em;
+	margin-top: 6px;
+}
+svg { max-width: 100%; height: auto; }
+
+footer {
+	background: linear-gradient(135deg, var(--navy1, #12224d), var(--navy2, #2f5fbf));
+	color: #fff;
+	margin-top: 40px;
+	padding: 18px 30px 0;
+}
+footer .inner {
+	max-width: 1600px;
+	margin: 0 auto;
+	padding-bottom: 18px;
+	font-size: 0.9em;
+	color: #d7e2f8;
+}
+footer .inner a.homelink {
+	background: rgba(255,255,255,0.16);
+	color: #fff;
+	border: 1px solid rgba(255,255,255,0.45);
+}
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>MCP Server 学習資料 計画</h1>
+		<p class="lead">Claude Code・Codex・Antigravity CLI 向けの MCP Server を、いちから作れるようになるための資料をどう組み立てるか</p>
+		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
+	</div>
+</div>
+
+<div class="wrap">
+
+<p class="nav"><a class="homelink" href="../../README.html">⌂ MCP Server 学習資料</a></p>
+
+<div class="toc">
+	<h2>目次</h2>
+	<ol>
+		<li class="ch01"><a href="#ch01">この資料で何を作るか</a></li>
+		<li class="ch02"><a href="#ch02">前提の実測と仕様の現状</a></li>
+		<li class="ch03"><a href="#ch03">参考資料から引き継ぐ方針</a></li>
+		<li class="ch04"><a href="#ch04">資料の構成案</a></li>
+		<li class="ch05"><a href="#ch05">決めたこと</a></li>
+		<li class="ch06"><a href="#ch06">作業の進め方</a></li>
+	</ol>
+</div>
+
+<section class="ch01" id="ch01">
+<h1>この資料で何を作るか</h1>
+
+<h2>目的</h2>
+<p>MCP（Model Context Protocol）Server を <strong>いちから自分で書けるようになる</strong>ための学習資料を作る。読んで終わりではなく、手元で動く MCP Server を持ち帰り、Claude Code・Codex・Antigravity CLI から実際に呼び出せる状態にする。</p>
+
+<h2>対象読者</h2>
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">項目</th><th>内容</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">MCP の知識</td><td><strong>まったく無い</strong>ことを前提にする。「MCP という言葉は聞いたことがある」程度から始める</td></tr>
+		<tr><td class="nowrap">JavaScript</td><td>文法は十分に知っている。<code>async</code>／<code>await</code>・モジュール・クラスの説明は不要</td></tr>
+		<tr><td class="nowrap">AI コーディング CLI</td><td>Claude Code・Codex を「とりあえず使える」水準。設定ファイルの場所や MCP の登録方法は知らない前提</td></tr>
+		<tr><td class="nowrap">サーバー開発</td><td>HTTP・プロセス・標準入出力の概念は分かるが、JSON-RPC は知らないかもしれない前提</td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>ゴール</h2>
+<ul>
+	<li>MCP が<strong>何を運ぶ規約</strong>なのかを、ホスト・クライアント・サーバーの関係で説明できる</li>
+	<li>stdio の MCP Server を自分で書き、Claude Code に登録して呼び出せる</li>
+	<li>同じサーバーを Streamable HTTP に載せ替えられる</li>
+	<li>詰まったときに<strong>どこを見れば分かるか</strong>（ログ・仕様書・SDK の型定義）が分かる</li>
+</ul>
+
+<h2>想定時間</h2>
+<p><strong>120 分</strong>。読み物として通読するのではなく、手を動かしながら進む前提で時間を配分する。配分案は第 4 章に置く。</p>
+<p>当初は 90 分・本編 8 章で見積もっていたが、Tasks 拡張（論点 6-B）と stdio ブリッジ（論点 7-B）まで扱うと決めたため、本編 11 章・120 分に改めた。章を 2 部に割らず、通しの 1 本として構成する。</p>
+
+<div class="callout">
+	<p><strong>この資料が扱わないもの</strong>：MCP Client（ホスト側）の実装、LLM そのものの仕組み、TypeScript の型システム（別資料に譲る）。</p>
+</div>
+</section>
+
+<section class="ch02" id="ch02">
+<h1>前提の実測と仕様の現状</h1>
+
+<h2>実行環境（2026-09-07 時点の実測値）</h2>
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">対象</th><th class="nowrap">バージョン</th><th>確認方法</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">Node.js</td><td class="nowrap">v26.8.1</td><td><code>node --version</code></td></tr>
+		<tr><td class="nowrap">npm</td><td class="nowrap">11.19.0</td><td><code>npm --version</code></td></tr>
+		<tr><td class="nowrap">@modelcontextprotocol/sdk</td><td class="nowrap">1.30.0</td><td><code>npm view @modelcontextprotocol/sdk version</code></td></tr>
+		<tr><td class="nowrap">MCP 仕様（最新）</td><td class="nowrap">2026-07-28</td><td>仕様サイトの最新リビジョン</td></tr>
+		<tr><td class="nowrap">MCP 仕様（<strong>資料の基準</strong>）</td><td class="nowrap">2025-11-25</td><td>Claude Code が実際に喋る版。次節で実測した</td></tr>
+		<tr><td class="nowrap">Claude Code</td><td class="nowrap">2.1.263</td><td><code>claude --version</code></td></tr>
+		<tr><td class="nowrap">Codex</td><td class="nowrap">0.153.4</td><td><code>codex --version</code></td></tr>
+		<tr><td class="nowrap">Antigravity</td><td class="nowrap">1.107.0</td><td><code>antigravity --version</code></td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>ステップ 0 の実測結果（資料の前提が決まった）</h2>
+
+<p>3 つの CLI に接続させて、届いた <code>initialize</code> を記録した。<strong>最新の 2026-07-28 を喋る CLI は無かった。</strong></p>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">ホスト</th><th class="nowrap">版</th><th class="nowrap">名乗った能力</th><th class="nowrap">tasks</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">Claude Code 2.1.263</td><td class="nowrap">2025-11-25</td><td><code>roots</code> ・ <code>elicitation</code></td><td class="nowrap"><span class="badge b-ng">非対応</span></td></tr>
+		<tr><td class="nowrap">Codex 0.153.4</td><td class="nowrap">2025-06-18</td><td><code>elicitation</code>（form ・ url）</td><td class="nowrap"><span class="badge b-none">未確認</span></td></tr>
+		<tr><td class="nowrap">Antigravity 1.107.0</td><td class="nowrap">—</td><td>—</td><td class="nowrap"><span class="badge b-none">未確認</span></td></tr>
+	</tbody>
+</table>
+</div>
+
+<div class="callout">
+	<p><strong>この結果を受けて、資料は 2025-11-25 を基準にした（論点 2 の A）。</strong>2025-11-25 は 2026-07-28 とは作りが違い、<strong>接続ごとの状態を持ち、サーバーからクライアントへリクエストを送れる</strong>（sampling・roots・elicitation）。タスクもコア仕様に入っている。以下に残した 2026-07-28 の記述は<strong>将来の変更点</strong>として読むこと。</p>
+</div>
+
+<div class="callout">
+	<p><strong>Tasks は Claude Code では使われなかった。</strong>サーバー側で <code>capabilities.tasks</code> を名乗り、ツールに <code>taskSupport: 'optional'</code> を付けても、<code>task</code> を付けずに普通に呼んでくる。仕様どおりの動きであり、09 章にはこの実測をそのまま書いた。</p>
+</div>
+
+<h2>仕様 2026-07-28 で押さえるべき点（将来の変更）</h2>
+
+<h3>標準トランスポートは 2 つ</h3>
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">トランスポート</th><th>内容</th><th class="nowrap">位置づけ</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">stdio</td><td>クライアントが起動した子プロセスの標準入出力に、改行区切りの JSON-RPC を流す</td><td class="nowrap"><span class="badge b-ok">標準</span></td></tr>
+		<tr><td class="nowrap">Streamable HTTP</td><td>1 つのエンドポイントへの HTTP POST。応答は JSON か、そのリクエスト専用の SSE ストリーム</td><td class="nowrap"><span class="badge b-ok">標準</span></td></tr>
+		<tr><td class="nowrap">HTTP+SSE（旧）</td><td>旧リビジョンの方式。後方互換として扱われ、標準の一覧からは外れている</td><td class="nowrap"><span class="badge b-warn">互換のみ</span></td></tr>
+		<tr><td class="nowrap">カスタム</td><td>TCP・Unix ドメインソケット・名前付きパイプなど。<strong>stdio と同じ改行区切りのフレーミングを再利用することが推奨</strong></td><td class="nowrap"><span class="badge b-none">任意</span></td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ホスト・クライアント・サーバーの関係と2つのトランスポート">
+	<defs>
+		<linearGradient id="g-p01-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/>
+			<stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<linearGradient id="g-p01-2b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(280,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="g-p01-2c" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(112,78%,25%)"/>
+			<stop offset="1" stop-color="hsl(112,58%,55%)"/>
+		</linearGradient>
+		<marker id="m-p01-2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="20" y="30" width="250" height="240" rx="12" fill="#ffffff" stroke="#d9dfe8"/>
+	<text x="145" y="55" text-anchor="middle" font-size="15" font-weight="700" fill="#1c2330">ホスト（AI CLI）</text>
+	<text x="145" y="74" text-anchor="middle" font-size="12" fill="#4a5568">Claude Code / Codex / Antigravity</text>
+
+	<rect x="45" y="95" width="200" height="52" rx="8" fill="url(#g-p01-2b)"/>
+	<text x="145" y="119" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">MCP クライアント A</text>
+	<text x="145" y="137" text-anchor="middle" font-size="11" fill="#fff">サーバー 1 本につき 1 つ</text>
+
+	<rect x="45" y="163" width="200" height="52" rx="8" fill="url(#g-p01-2b)"/>
+	<text x="145" y="187" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">MCP クライアント B</text>
+	<text x="145" y="205" text-anchor="middle" font-size="11" fill="#fff">サーバー 1 本につき 1 つ</text>
+
+	<line x1="270" y1="121" x2="560" y2="121" stroke="#4a5568" stroke-width="2" marker-end="url(#m-p01-2a)" marker-start="url(#m-p01-2a)"/>
+	<text x="415" y="110" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">stdio</text>
+	<text x="415" y="141" text-anchor="middle" font-size="11" fill="#4a5568">子プロセスの標準入出力・改行区切り JSON-RPC</text>
+
+	<line x1="270" y1="189" x2="560" y2="189" stroke="#4a5568" stroke-width="2" marker-end="url(#m-p01-2a)" marker-start="url(#m-p01-2a)"/>
+	<text x="415" y="178" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">Streamable HTTP</text>
+	<text x="415" y="209" text-anchor="middle" font-size="11" fill="#4a5568">単一エンドポイントへの POST・応答は JSON か SSE</text>
+
+	<rect x="560" y="95" width="320" height="52" rx="8" fill="url(#g-p01-2c)"/>
+	<text x="720" y="119" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">MCP サーバー（子プロセス）</text>
+	<text x="720" y="137" text-anchor="middle" font-size="11" fill="#fff">ホストごとに 1 本ずつ起動される</text>
+
+	<rect x="560" y="163" width="320" height="52" rx="8" fill="url(#g-p01-2c)"/>
+	<text x="720" y="187" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">MCP サーバー（常駐）</text>
+	<text x="720" y="205" text-anchor="middle" font-size="11" fill="#fff">複数のホストから 1 本を共有できる</text>
+
+	<text x="450" y="255" text-anchor="middle" font-size="12" fill="#4a5568">サーバーが提供するもの: Tools（実行する関数） / Resources（読ませるデータ） / Prompts（定型の指示）</text>
+</svg>
+<figcaption>ホスト・クライアント・サーバーの関係。プロセスを共有できるかどうかはトランスポートの選択で決まる。</figcaption>
+</figure>
+
+<h3>サーバーからクライアントへ「リクエスト」は送れない</h3>
+<p>2026-07-28 では、運べるメッセージの向きが次の 4 つに限定されている。</p>
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">向き</th><th class="nowrap">リクエスト</th><th class="nowrap">通知</th><th class="nowrap">レスポンス</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">クライアント → サーバー</td><td class="nowrap"><span class="badge b-ok">可</span></td><td class="nowrap"><span class="badge b-ok">可</span></td><td class="nowrap"><span class="badge b-ng">不可</span></td></tr>
+		<tr><td class="nowrap">サーバー → クライアント</td><td class="nowrap"><span class="badge b-ng">不可</span></td><td class="nowrap"><span class="badge b-ok">可</span></td><td class="nowrap"><span class="badge b-ok">可</span></td></tr>
+	</tbody>
+</table>
+</div>
+
+<div class="callout">
+	<p><strong>「push 通知を送りたい」はここに直撃する。</strong>旧リビジョンではサーバーがクライアントへリクエストを投げられたが、現行仕様では <code>Servers MUST NOT initiate JSON-RPC requests</code> と明記され、<strong>通知とレスポンスだけ</strong>になった。何をどこまで実現できるかは第 5 章の論点 6 に表でまとめている。</p>
+</div>
+
+<h3>通知はクライアントが張ったストリームに流れる</h3>
+<p>サーバーが勝手に送りつけるのではなく、<strong>通知には必ず流し込む先が要る</strong>。先は 2 通りある。</p>
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">流し先</th><th>作られ方</th><th>送れる通知</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">処理中のリクエスト</td><td>クライアントのリクエストを処理している間だけ開いている</td><td><code>notifications/progress</code>・<code>notifications/message</code></td></tr>
+		<tr><td class="nowrap">購読ストリーム</td><td>クライアントが <code>subscriptions/listen</code> を送ると、<strong>その応答が長寿命の通知ストリームになる</strong></td><td>一覧の変化・資源の更新・<code>notifications/tasks</code> など</td></tr>
+	</tbody>
+</table>
+</div>
+<p>どちらも<strong>起点はクライアント</strong>である。接続が無い相手へサーバーから届ける経路は無い。</p>
+
+<h3>問いかけは「入力が要る」という結果で表す</h3>
+<p>サーバーが利用者に尋ねたいとき（確認・選択・sampling）は、リクエストを送るのではなく <code>InputRequiredResult</code> を<strong>結果として返す</strong>。クライアントは答えを <code>inputResponses</code> に添えて同じリクエストを送り直す。これを Multi Round-Trip Requests（MRTR）と呼ぶ。Tasks 拡張では、これがタスクの <code>input_required</code> 状態と <code>tasks/update</code> に対応する。</p>
+
+<h3>ステートレスになった</h3>
+<p>旧リビジョンは <code>initialize</code> ハンドシェイクで接続ごとのセッションを張っていたが、現行仕様では<strong>リクエスト 1 本が自己完結</strong>し、プロトコルバージョンとクライアント能力は毎回 <code>_meta.io.modelcontextprotocol/*</code> に載る。これは<strong>プロセス共有と相性がよい</strong>（論点 7 で扱う）。</p>
+
+<div class="callout">
+	<p><strong>各 CLI が実際に喋るリビジョンは未確認。</strong>Claude Code・Codex・Antigravity CLI が 2026-07-28 に追随しているとは限らない。これは資料の内容を左右するため、<strong>執筆前に実測する</strong>（第 6 章 ステップ 0）。</p>
+</div>
+</section>
+
+<section class="ch03" id="ch03">
+<h1>参考資料から引き継ぐ方針</h1>
+
+<p>既存の <a href="https://lightspeedc.com/20260828-typescript-learn/">TypeScript 学習資料</a>・<a href="https://lightspeedc.com/20260822-powershell-pwsh-learn/">PowerShell 学習資料</a> と同じ作りにする。読み手が同じシリーズとして読めることを優先する。</p>
+
+<h2>踏襲する形</h2>
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">項目</th><th>内容</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">ファイル構成</td><td><code>docs/</code> に本編 <code>01-〜.html</code>、付録 <code>A1-〜.html</code>、構成案 <code>ZZ-構成.html</code>。root に <code>README.html</code></td></tr>
+		<tr><td class="nowrap">番号体系</td><td>「資料番号.章番号」（資料 03 の章は <code>03.1</code>・<code>03.2</code>…）</td></tr>
+		<tr><td class="nowrap">ナビゲーション</td><td>本文先頭とフッターの両方に <strong>前へ・次へ・目次</strong> のバッジ。付録は目次のみ</td></tr>
+		<tr><td class="nowrap">色</td><td>資料ごとに通し色相（280°→0°）。章見出しは資料内で虹色</td></tr>
+		<tr><td class="nowrap">公開</td><td>GitHub Pages（public）。<code>index.html</code> から <code>README.html</code> へリダイレクト</td></tr>
+		<tr><td class="nowrap">Markdown</td><td>HTML を正とし、html2md で生成。SVG は <code>images/</code> へ切り出す</td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>執筆原則（この資料向けに読み替えたもの）</h2>
+<p>TypeScript 資料は「同じ処理の JavaScript を並べる」「理由を先に説明する」「短い実行例で終わる」を原則にしていた。MCP は言語ではなく<strong>プロトコル</strong>なので、次のように置き換える。</p>
+<ol>
+	<li><strong>生の JSON-RPC を先に見せ、SDK は後から出す。</strong>SDK から入ると「何が起きているか分からないまま動く」状態になり、詰まったときに調べられない</li>
+	<li><strong>理由を先に説明する。</strong>「なぜ stdout にログを書いてはいけないのか」を、規約ではなく壊れ方で示す</li>
+	<li><strong>各節は動かして終わる。</strong>節の終わりに必ず実行結果を貼る。出力は実測を貼り、書き起こさない</li>
+	<li><strong>ホストごとの差はバッジで示す。</strong><span class="badge b-none">Claude Code</span><span class="badge b-none">Codex</span><span class="badge b-none">Antigravity</span> の 3 つで登録方法が違うため、設定ファイルの話は必ずバッジを添える</li>
+	<li><strong>エラーメッセージは実際に出るものを載せる。</strong>英語なら英語のまま載せ、訳を添える</li>
+</ol>
+</section>
+
+<section class="ch04" id="ch04">
+<h1>資料の構成案</h1>
+
+<p>本編 11 章＋付録 3 本（TypeScript 版の A4 は本編を書き終えてから）。120 分で本編を通せる分量にする。ハンズオンを 2 つに割り、前半で作ったサーバーを後半で育てる形にする。</p>
+
+<h2>本編</h2>
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">番号</th><th class="nowrap">タイトル</th><th>扱う内容</th><th class="nowrap">目安</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">01</td><td class="nowrap">背景</td><td>MCP が無かった頃は何をしていたか。なぜ規約が要ったか。ホスト・クライアント・サーバーの関係。LSP との類似</td><td class="nowrap num">8 分</td></tr>
+		<tr><td class="nowrap">02</td><td class="nowrap">最小のサーバー</td><td>JSON-RPC を手で書いて標準入出力に流す。SDK を使わず、初期化とツール 1 個の応答だけを返す。<strong>ここで中身を見せておく</strong></td><td class="nowrap num">15 分</td></tr>
+		<tr><td class="nowrap">03</td><td class="nowrap">SDK で書き直す</td><td>02 と同じものを <code>@modelcontextprotocol/sdk</code> で書く。何が省けたかを対比する</td><td class="nowrap num">10 分</td></tr>
+		<tr><td class="nowrap">04</td><td class="nowrap">ホストに登録する</td><td>Claude Code・Codex・Antigravity CLI それぞれの登録方法。設定ファイルの場所と書式。動かないときの切り分け</td><td class="nowrap num">12 分</td></tr>
+		<tr><td class="nowrap">05</td><td class="nowrap">Tools・Resources・Prompts</td><td>3 種類の提供物の違いと使い分け。入力スキーマの書き方。エラーの返し方</td><td class="nowrap num">13 分</td></tr>
+		<tr><td class="nowrap">06</td><td class="nowrap">ハンズオン① メモサーバー</td><td>お題 A。メモを検索・追記するサーバーを 01〜05 の内容で作りきる。<strong>以降の章はこれを育てる</strong></td><td class="nowrap num">12 分</td></tr>
+		<tr><td class="nowrap">07</td><td class="nowrap">Streamable HTTP</td><td>06 のサーバーを HTTP に載せ替える。stdio との違い、いつどちらを選ぶか</td><td class="nowrap num">12 分</td></tr>
+		<tr><td class="nowrap">08</td><td class="nowrap">通知で結果を伝える</td><td>進捗通知とログ通知。<code>subscriptions/listen</code> の仕組み。サーバー起点でできること・できないことの線。OS のトースト通知という枠外の手</td><td class="nowrap num">10 分</td></tr>
+		<tr><td class="nowrap">09</td><td class="nowrap">Tasks 拡張</td><td>長い処理を投げて後から結果を取る。<code>tasks/get</code> によるポーリングと <code>notifications/tasks</code> による push。拡張の合意が要ること</td><td class="nowrap num">10 分</td></tr>
+		<tr><td class="nowrap">10</td><td class="nowrap">プロセス共有</td><td>同一 PC で 1 本のサーバーを共有する 3 方式の比較。localhost HTTP と stdio ブリッジを実装する</td><td class="nowrap num">8 分</td></tr>
+		<tr><td class="nowrap">11</td><td class="nowrap">ハンズオン② ビルド実行サーバー</td><td>お題 B。開発コマンドを実行し、終わったら知らせ、複数のホストで共有する。07〜10 の総仕上げ</td><td class="nowrap num">10 分</td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>付録</h2>
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">番号</th><th class="nowrap">タイトル</th><th>扱う内容</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">A1</td><td class="nowrap">逆引き</td><td>「〜したい」から引く。ツールを増やす／ログを見る／登録を消す／バージョンを確かめる</td></tr>
+		<tr><td class="nowrap">A2</td><td class="nowrap">詰まったとき</td><td>症状から原因へ。サーバーが起動しない・ツールが見えない・応答が返らない・stdout 汚染</td></tr>
+		<tr><td class="nowrap">A3</td><td class="nowrap">C# で書く</td><td><code>csc.exe</code> で単一 exe にする構成。Node.js を入れられない相手へ配るときの選択肢</td></tr>
+		<tr><td class="nowrap">A4</td><td class="nowrap">TypeScript で書く</td><td>本編のサーバーを TypeScript に置き換える。<strong>本編を書き終えた後に着手する</strong>（論点 1 の C）</td></tr>
+	</tbody>
+</table>
+</div>
+
+<div class="callout">
+	<p><strong>02 章を SDK より先に置くのがこの構成の肝。</strong>SDK から入ると <code>server.tool(...)</code> を書けば動いてしまい、登録が効かないときに「どこまで届いているか」を確かめる手段が無くなる。手で JSON-RPC を 1 往復させておくと、以降すべての章で切り分けができる。</p>
+</div>
+</section>
+
+<section class="ch05" id="ch05">
+<h1>決めたこと</h1>
+
+<p>資料を書き始める前に決めた項目。<strong>採った案を見出しのバッジで示し、案とその理由は残す</strong>。後から「なぜこうしたか」を辿れるようにするため。</p>
+
+<h2>決定の一覧</h2>
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">論点</th><th class="nowrap">採用</th><th>内容</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">1. 実装言語</td><td class="nowrap"><span class="badge b-ok">A + C</span></td><td>本編は JavaScript（ESM・<code>.mjs</code>）。TypeScript 版は本編を書き終えてから付録 A4 として足す</td></tr>
+		<tr><td class="nowrap">2. 仕様リビジョン</td><td class="nowrap"><span class="badge b-ok">A</span></td><td>3 つの CLI が実際に喋るリビジョンに合わせる。<strong>各章を書きながら CLI で検証する</strong></td></tr>
+		<tr><td class="nowrap">3. C#</td><td class="nowrap"><span class="badge b-ok">A</span></td><td>付録 A3 に 1 本。本編は Node.js のみ</td></tr>
+		<tr><td class="nowrap">4. ハンズオン</td><td class="nowrap"><span class="badge b-ok">A + B</span></td><td>2 題とも扱う。06 章でメモサーバー（A）、11 章でビルド実行サーバー（B）</td></tr>
+		<tr><td class="nowrap">5. 実測範囲</td><td class="nowrap"><span class="badge b-ok">A</span></td><td>Claude Code で全章を実測。Codex・Antigravity は登録方法と疎通のみ</td></tr>
+		<tr><td class="nowrap">6. push 通知</td><td class="nowrap"><span class="badge b-ok">A + B</span></td><td>できること・できないことを示し、進捗通知と OS トースト通知を実装（08 章）。Tasks 拡張も実装まで踏み込む（09 章）</td></tr>
+		<tr><td class="nowrap">7. プロセス共有</td><td class="nowrap"><span class="badge b-ok">A + B</span></td><td>3 方式を図で比較し、localhost HTTP と stdio ブリッジの両方を実装（10 章）</td></tr>
+		<tr><td class="nowrap">8. リポジトリ</td><td class="nowrap"><span class="badge b-ok">A</span></td><td><code>20260907-ai-mcp-servers-learn</code>・public・Pages は <code>develop</code> の <code>/</code></td></tr>
+		<tr><td class="nowrap">9. サンプル置き場</td><td class="nowrap"><span class="badge b-ok">A</span></td><td><code>docs/samples/</code></td></tr>
+		<tr><td class="nowrap">構成</td><td class="nowrap"><span class="badge b-ok">B</span></td><td>本編 11 章・120 分。2 部に割らず通しの 1 本にする</td></tr>
+	</tbody>
+</table>
+</div>
+
+<div class="callout">
+	<p><strong>6 と 7 で B を足したことで、当初の 90 分・8 章には収まらなくなった。</strong>Tasks 拡張と stdio ブリッジがそれぞれ 1 章分の分量になるため、本編を 11 章・120 分に改めている。</p>
+</div>
+
+<h2>1. 実装言語 <span class="badge b-ok">A + C</span></h2>
+<div class="opts">
+	<div class="opt"><span class="tag">A</span><strong>JavaScript（ESM・<code>.mjs</code>）</strong>で本編を書き、TypeScript 版は付録にしない<br><span class="why">ビルド手順が 1 つも要らず、90 分でハンズオンまで届く。TypeScript の型は別資料に譲れる。読者の JS 知識は十分にある</span></div>
+	<div class="opt"><span class="tag">B</span><strong>TypeScript</strong>で本編を書く<br><span class="why">SDK の型定義がそのまま効き、ツールの入力スキーマを型から起こせる。ただし <code>tsconfig</code> と実行方法の説明で 10 分以上取られる</span></div>
+	<div class="opt"><span class="tag">C</span>本編は JavaScript、<strong>付録に TypeScript 版</strong>を置く<br><span class="why">両方に届くが、付録 1 本分の執筆と保守が増える</span></div>
+</div>
+
+<h2>2. 対象とする仕様リビジョン <span class="badge b-ok">A</span></h2>
+<div class="opts">
+	<div class="opt"><span class="tag">A</span><strong>3 つの CLI が実際に喋るリビジョンに合わせる</strong>（ステップ 0 で実測して決める）<br><span class="why">読者が手元で動かせることを最優先する。動かない資料は価値が無い</span></div>
+	<div class="opt"><span class="tag">B</span><strong>2026-07-28（最新）に合わせ</strong>、旧リビジョンとの差分を付録に置く<br><span class="why">仕様として正しいが、CLI 側が追随していない場合ハンズオンが動かない</span></div>
+</div>
+
+<h2>3. C#（<code>csc.exe</code>）の扱い <span class="badge b-ok">A</span></h2>
+<div class="opts">
+	<div class="opt"><span class="tag">A</span><strong>付録 A3 に 1 本</strong>置く。本編は Node.js のみ<br><span class="why">90 分の本編に入れると 2 言語分の説明で膨らむ。配布形態の選択肢として付録が適所</span></div>
+	<div class="opt"><span class="tag">B</span><strong>扱わない</strong><br><span class="why">最も軽いが、「Node.js を入れられない環境へ配る」という実務の要求に答えられない</span></div>
+	<div class="opt"><span class="tag">C</span><strong>本編に対比として入れる</strong><br><span class="why">stdio の本質が言語に依らないことを示せるが、90 分には収まらない</span></div>
+</div>
+
+<h2>4. ハンズオンのお題 <span class="badge b-ok">A + B</span></h2>
+<div class="opts">
+	<div class="opt"><span class="tag">A</span><strong>プロジェクト内のメモを検索・追記するサーバー</strong>（Tools 2 個＋Resources 1 個）<br><span class="why">外部サービスに依存せず、Tools と Resources の違いを 1 つの題材で見せられる。ネットワークが無くても動く</span></div>
+	<div class="opt"><span class="tag">B</span><strong>ローカルの開発コマンドを実行するサーバー</strong>（ビルド・テストの起動）<br><span class="why">実務に直結するが、コマンド実行は権限と安全性の話が必要になり脱線する</span></div>
+	<div class="opt"><span class="tag">C</span><strong>公開 API を叩くサーバー</strong>（天気・為替など）<br><span class="why">分かりやすいが、API キーやネットワークの有無で勉強会が止まる</span></div>
+</div>
+
+<h2>5. 動作確認をどこまで実測するか <span class="badge b-ok">A</span></h2>
+<div class="opts">
+	<div class="opt"><span class="tag">A</span><strong>Claude Code で全章を実測</strong>し、Codex・Antigravity は<strong>登録方法と疎通のみ</strong>実測<br><span class="why">確認の手間と資料の信頼性が釣り合う。差が出るのは主に登録方法なので、そこを押さえれば足りる</span></div>
+	<div class="opt"><span class="tag">B</span><strong>3 つとも全章で実測</strong><br><span class="why">最も確実だが、章ごとに 3 回確認することになり作業量が 3 倍近くなる</span></div>
+	<div class="opt"><span class="tag">C</span><strong>Claude Code のみ実測</strong>し、他は仕様の記述に留める<br><span class="why">最も軽いが、「3 つの CLI 向け」という目的から外れる</span></div>
+</div>
+
+<h2>6. push 通知で何を実現するか <span class="badge b-ok">A + B</span></h2>
+<p>実現したいことは<strong>「処理が終わった結果を伝える」</strong>と決まった。現行仕様ではサーバーからリクエストを送れないため（第 2 章参照）、目的の側から手段を並べ直す。</p>
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">やりたいこと</th><th>現行仕様での実現手段</th><th class="nowrap">可否</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">進捗を伝えたい</td><td><code>notifications/progress</code> を送る。<strong>そのリクエストを処理している間だけ</strong></td><td class="nowrap"><span class="badge b-ok">可</span></td></tr>
+		<tr><td class="nowrap">ログを出したい</td><td><code>notifications/message</code> を送る。同じく処理中だけ</td><td class="nowrap"><span class="badge b-ok">可</span></td></tr>
+		<tr><td class="nowrap">一覧や資源の変化を伝えたい</td><td>クライアントが <code>subscriptions/listen</code> で張ったストリームへ通知を流す</td><td class="nowrap"><span class="badge b-ok">可</span></td></tr>
+		<tr><td class="nowrap">処理の途中で利用者に尋ねたい</td><td><code>InputRequiredResult</code> を返し、クライアントが答えを添えて再送する（MRTR）</td><td class="nowrap"><span class="badge b-ok">可</span></td></tr>
+		<tr><td class="nowrap">長い処理を投げて後で結果を取りたい</td><td>Tasks 拡張。<code>tasks/get</code> でポーリングする</td><td class="nowrap"><span class="badge b-warn">拡張</span></td></tr>
+		<tr><td class="nowrap">長い処理の完了を push したい</td><td>Tasks 拡張 ＋ <code>subscriptions/listen</code> で <code>notifications/tasks</code> を受ける</td><td class="nowrap"><span class="badge b-warn">拡張</span></td></tr>
+		<tr><td class="nowrap">人に確実に気づかせたい</td><td>サーバープロセスが OS のトースト通知・音・メールを直接出す。<strong>MCP の枠外</strong></td><td class="nowrap"><span class="badge b-ok">可</span></td></tr>
+		<tr><td class="nowrap">何も呼ばれていないのに会話へ割り込みたい</td><td>—。通知が届いてもホストが会話に出すかは実装次第で、仕様は保証しない</td><td class="nowrap"><span class="badge b-ng">不可</span></td></tr>
+	</tbody>
+</table>
+</div>
+<div class="opts">
+	<div class="opt"><span class="tag">A</span><strong>「できること・できないこと」を 07 章で示す</strong>に留め、実装は進捗通知の 1 例だけ<br><span class="why">未経験者向けの 90 分にはこれが上限。不可の線を知ることが最も価値がある</span></div>
+	<div class="opt"><span class="tag">B</span><strong>Tasks 拡張まで踏み込む</strong><br><span class="why">「長い処理を投げて後で取る」に答えられるが、CLI 側の対応状況に左右され、未経験者には重い</span></div>
+	<div class="opt"><span class="tag">C</span><strong>07 章から外し、付録に回す</strong><br><span class="why">本編が軽くなるが、検討中の主題が資料に載らない</span></div>
+</div>
+
+<div class="callout">
+	<p><strong>08 章と 09 章に分けて扱う。</strong>08 章で表の前半（進捗通知・<code>subscriptions/listen</code>・OS トースト）と「できないことの線」を示し、09 章で Tasks 拡張を実装する。<code>subscriptions/listen</code> はコア仕様のパターンで、<strong>クライアントのリクエストへの応答が長寿命の通知ストリームになる</strong>のが要点。これが MCP における push の実体になる。</p>
+</div>
+
+<div class="callout">
+	<p><strong>Tasks への対応状況は実測が要る。</strong>公式のクライアント対応表には Tasks の列がまだ無く（MCP Apps・OAuth 系のみ）、Claude Code も表に載っていない。09 章の実装が 3 つの CLI で動くかはステップ 0 で確かめる。<strong>動かない場合も、動かないことを実測として書く</strong>。</p>
+</div>
+
+<h2>7. プロセス共有をどう扱うか <span class="badge b-ok">A + B</span></h2>
+<p>stdio はホストが子プロセスを起動するため、<strong>ホストの数だけサーバーが立つ</strong>。同一 PC で 1 本を共有したい場合の構成。</p>
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">方式</th><th>内容</th><th>難所</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">localhost の HTTP</td><td>常駐サーバーを 1 本立て、各ホストは Streamable HTTP で繋ぐ</td><td>常駐の起動・終了と、待ち受けポートの扱い</td></tr>
+		<tr><td class="nowrap">stdio ブリッジ</td><td>各ホストには軽い stdio のプロセスを起こさせ、それが常駐本体へ中継する</td><td>ブリッジ自身の実装。ただしホスト側の設定は stdio のまま済む</td></tr>
+		<tr><td class="nowrap">名前付きパイプ</td><td>stdio と同じフレーミングをパイプで運ぶ（仕様が推奨する再利用の形）</td><td>Windows 固有。SDK の既製品が無い</td></tr>
+	</tbody>
+</table>
+</div>
+<div class="opts">
+	<div class="opt"><span class="tag">A</span><strong>07 章で 3 方式を図で比較</strong>し、実装は <strong>localhost HTTP のみ</strong><br><span class="why">06 章の Streamable HTTP がそのまま使えるため、新しい説明がほとんど要らない</span></div>
+	<div class="opt"><span class="tag">B</span><strong>stdio ブリッジまで実装</strong>する<br><span class="why">ホスト側の設定を変えずに共有できる実用的な形だが、章 1 本分の分量になる</span></div>
+	<div class="opt"><span class="tag">C</span><strong>付録に回す</strong><br><span class="why">本編が 90 分に収まりやすくなるが、検討中の主題が本編から外れる</span></div>
+</div>
+
+<h2>8. リポジトリと公開 <span class="badge b-ok">A</span></h2>
+<div class="opts">
+	<div class="opt"><span class="tag">A</span>リポジトリ名は<strong>フォルダ名と同じ <code>20260907-ai-mcp-servers-learn</code></strong>、public、GitHub Pages を <code>develop</code> ブランチの <code>/</code> で公開<br><span class="why">既存の学習資料と同じ形。<code>lightspeedc.com/20260907-ai-mcp-servers-learn/</code> に並ぶ</span></div>
+	<div class="opt"><span class="tag">B</span>MCP と分かる名前に変える（<code>20260907-mcp-server-learn</code> 等）<br><span class="why">検索で見つけやすいが、既にフォルダを作った後なので付け替えが要る</span></div>
+</div>
+
+<h2>9. サンプルコードの置き場 <span class="badge b-ok">A</span></h2>
+<div class="opts">
+	<div class="opt"><span class="tag">A</span><strong><code>docs/samples/</code></strong> に置く（資料と同じ側）<br><span class="why">共通ルールどおり。読者が資料からの相対パスで辿れる</span></div>
+	<div class="opt"><span class="tag">B</span>root の <code>samples/</code> に置く<br><span class="why">実行はしやすいが、資料と離れる</span></div>
+</div>
+</section>
+
+<section class="ch06" id="ch06">
+<h1>作業の進め方</h1>
+
+<h2>手順</h2>
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">ステップ</th><th>内容</th><th class="nowrap">成果物</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">0</td><td><strong>3 つの CLI の実測</strong> <span class="badge b-ok">済</span>。結果は第 2 章に記載。<strong>資料の基準は 2025-11-25 に決まった</strong></td><td class="nowrap">第 2 章</td></tr>
+		<tr><td class="nowrap">1</td><td>構成案を読者向けに書く</td><td class="nowrap"><code>docs/ZZ-構成.html</code></td></tr>
+		<tr><td class="nowrap">2</td><td>サンプルコードを先に書いて動かす。<strong>資料の本文は動いたものから起こす</strong></td><td class="nowrap"><code>docs/samples/</code></td></tr>
+		<tr><td class="nowrap">3</td><td>本編 11 章を書く</td><td class="nowrap"><code>docs/01-〜11-</code></td></tr>
+		<tr><td class="nowrap">4</td><td>付録 3 本を書く</td><td class="nowrap"><code>docs/A1-〜A3-</code></td></tr>
+		<tr><td class="nowrap">5</td><td>README とナビゲーションを整える</td><td class="nowrap"><code>README.html</code></td></tr>
+		<tr><td class="nowrap">6</td><td>コントラスト比の実測、Markdown 生成と検査</td><td class="nowrap">検査結果</td></tr>
+		<tr><td class="nowrap">7</td><td>GitHub リポジトリ作成・push・Pages 公開</td><td class="nowrap">公開 URL</td></tr>
+		<tr><td class="nowrap">8</td><td>TypeScript 版の付録を足す（論点 1 の C）。公開の後でよい</td><td class="nowrap"><code>docs/A4-</code></td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>この計画で守ること</h2>
+<ul>
+	<li><strong>コードは動かしてから載せる。</strong>出力は実行結果を貼る</li>
+	<li><strong>バージョンは <code>--version</code> で実測する。</strong>記憶で書かない</li>
+	<li><strong>各章に図を 1 点以上入れる。</strong>付録 A1・A2 は引くための資料なので除く</li>
+	<li><strong>ステップ 0 の結果で構成が変わったら、実装より先にこの計画書を直す</strong></li>
+</ul>
+</section>
+
+</div>
+
+<footer>
+	<div class="inner"><a class="homelink" href="../../README.html">⌂ MCP Server 学習資料</a></div>
+</footer>
+
+</body>
+</html>
