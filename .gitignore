@@ -1,0 +1,33 @@
+# 一時ファイル・セッションログ
+tmp/
+etc/
+
+# ビルド出力・配布物
+dist/
+_releases/
+
+# 依存パッケージ
+node_modules/
+
+# ビルドで作られるもの（build.cmd で作り直せる）
+*.exe
+*.pdb
+
+# サンプルが作るデータ
+docs/samples/**/memo.jsonl
+docs/samples/**/*.log
+
+# 先頭 _ のフォルダは全階層で管理外
+_*/
+**/_*/
+
+# Claude Code（共有するものだけ名指しで許可）
+.claude/*
+!.claude/settings.json
+!.claude/commands/
+!.claude/agents/
+!.claude/skills/
+
+# OS・エディタ
+Thumbs.db
+.DS_Store
