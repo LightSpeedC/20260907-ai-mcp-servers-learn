@@ -1,0 +1,351 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZZ. 構成</title>
+<style>
+/* css/style.css が読めなかったときの代替色 */
+.titlebar, section h1, th, a.doclink, .badge { background: #12224d; color: #fff; }
+</style>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,55%); --soft: hsl(280,28%,95%); }
+.ch02 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,55%); --soft: hsl(210,28%,95%); }
+.ch03 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,55%); --soft: hsl(140,28%,95%); }
+.ch04 { --accent: hsl(70,78%,25%);  --accent2: hsl(70,58%,55%);  --soft: hsl(70,28%,95%); }
+.ch05 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,55%);   --soft: hsl(0,28%,95%); }
+.toc ol a::before { content: "ZZ." counter(tocnum) " "; }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>ZZ. 構成</h1>
+		<p class="lead">この資料をどう組み立てたか</p>
+		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
+	</div>
+</div>
+
+<div class="wrap">
+
+<!-- AUTO:nav -->
+<div class="nav">
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+</div>
+<!-- /AUTO:nav -->
+
+<div class="toc">
+	<h2>この資料の内容</h2>
+	<ol>
+		<li class="ch01"><a href="#ch01">対象読者</a></li>
+		<li class="ch02"><a href="#ch02">章立ての意図</a></li>
+		<li class="ch03"><a href="#ch03">書き方の原則</a></li>
+		<li class="ch04"><a href="#ch04">確かめた環境</a></li>
+		<li class="ch05"><a href="#ch05">読み方</a></li>
+	</ol>
+</div>
+
+<section class="ch01" id="ch01">
+<h1>対象読者</h1>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">項目</th><th>前提</th><th>理由</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">MCP</td><td>まったく知らない</td><td>用語から説明する。既に知っている人は 02 章から読める</td></tr>
+		<tr><td class="nowrap">JavaScript</td><td>文法は分かる</td><td><code>async</code>／<code>await</code>・モジュール・分割代入は説明しない</td></tr>
+		<tr><td class="nowrap">AI コーディング CLI</td><td>使ったことがある</td><td>ただし MCP の登録は初めての前提</td></tr>
+		<tr><td class="nowrap">サーバー開発</td><td>プロセスと標準入出力が分かる</td><td>JSON-RPC は知らない前提で説明する</td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>到達点</h2>
+
+<ul>
+	<li>MCP が何を運ぶ規約かを、ホスト・クライアント・サーバーの関係で説明できる</li>
+	<li>stdio のサーバーを書き、3 つの CLI のどれにでも登録できる</li>
+	<li>同じサーバーを HTTP に載せ替え、1 本を共有できる</li>
+	<li><strong>できないことの線が引ける</strong>（何を諦め、何を別の手で解くか判断できる）</li>
+	<li>詰まったときに、どこを見れば分かるかが分かる</li>
+</ul>
+
+<figure>
+<svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="読者の出発点と到達点">
+	<defs>
+		<linearGradient id="g-ZZ-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-ZZ-1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="40" y="60" width="250" height="100" rx="9" fill="#e8ecf3" stroke="#d9dfe8"/>
+	<text x="165" y="90" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">出発点</text>
+	<text x="165" y="114" text-anchor="middle" font-size="11" fill="#4a5568">JS は書ける</text>
+	<text x="165" y="136" text-anchor="middle" font-size="11" fill="#4a5568">MCP は知らない</text>
+
+	<line x1="290" y1="110" x2="610" y2="110" stroke="#4a5568" stroke-width="2" marker-end="url(#m-ZZ-1a)"/>
+	<text x="450" y="98" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">120 分</text>
+	<text x="450" y="132" text-anchor="middle" font-size="11" fill="#4a5568">手を動かしながら 11 章</text>
+
+	<rect x="610" y="60" width="250" height="100" rx="9" fill="url(#g-ZZ-1a)"/>
+	<text x="735" y="90" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">到達点</text>
+	<text x="735" y="114" text-anchor="middle" font-size="11" fill="#fff">自分のサーバーが動いている</text>
+	<text x="735" y="136" text-anchor="middle" font-size="11" fill="#fff">限界も分かっている</text>
+</svg>
+<figcaption>読み物ではなく、手を動かす前提で組んである。</figcaption>
+</figure>
+</section>
+
+<section class="ch02" id="ch02">
+<h1>章立ての意図</h1>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">章</th><th>役割</th><th class="nowrap">目安</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">01 背景</td><td>用語を揃える。<strong>版が 1 つでない</strong>ことを最初に伝える</td><td class="nowrap num">8 分</td></tr>
+		<tr><td class="nowrap">02 最小のサーバー</td><td><strong>この資料の要。</strong>SDK 抜きで書き、中身を見せる</td><td class="nowrap num">15 分</td></tr>
+		<tr><td class="nowrap">03 SDK で書き直す</td><td>02 と同じものを短く書き、何が省けたかを対比する</td><td class="nowrap num">10 分</td></tr>
+		<tr><td class="nowrap">04 ホストに登録する</td><td>3 つの CLI の違い。<strong>切り分けの方法</strong>もここ</td><td class="nowrap num">12 分</td></tr>
+		<tr><td class="nowrap">05 3 つの提供物</td><td>Tools・Resources・Prompts の使い分けと失敗の返し方</td><td class="nowrap num">13 分</td></tr>
+		<tr><td class="nowrap">06 ハンズオン①</td><td>ここまでを使って作りきる。以降の章はこれを育てる</td><td class="nowrap num">12 分</td></tr>
+		<tr><td class="nowrap">07 HTTP に載せ替える</td><td>中身を変えずに運び方だけ変える</td><td class="nowrap num">12 分</td></tr>
+		<tr><td class="nowrap">08 通知で伝える</td><td><strong>できることとできないことの線を引く</strong></td><td class="nowrap num">10 分</td></tr>
+		<tr><td class="nowrap">09 タスク</td><td>新しい仕組みと、まだ使われていない現実</td><td class="nowrap num">10 分</td></tr>
+		<tr><td class="nowrap">10 プロセス共有</td><td>1 本にまとめる方法と、その代償</td><td class="nowrap num">8 分</td></tr>
+		<tr><td class="nowrap">11 ハンズオン②</td><td>危ないものを、危なくない形にして出す</td><td class="nowrap num">10 分</td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>02 章を SDK より先に置いた理由</h2>
+
+<p>SDK から始めれば 20 行で動きます。それでも先に手書きを挟むのは、<strong>動かないときに切り分けられなくなる</strong>からです。</p>
+
+<p>登録したのにツールが出てこない。このとき「プロセスは起きているか」「初期化まで進んだか」「一覧は渡ったか」を確かめられるかどうかで、解決までの時間が変わります。02 章で 1 往復させておけば、以降どの章で詰まっても同じやり方で調べられます。</p>
+
+<figure>
+<svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="章の依存関係">
+	<defs>
+		<linearGradient id="g-ZZ-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-ZZ-2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="30" y="100" width="110" height="44" rx="7" fill="url(#g-ZZ-2a)"/>
+	<text x="85" y="128" text-anchor="middle" font-size="12" fill="#fff">01→05</text>
+
+	<line x1="140" y1="122" x2="200" y2="122" stroke="#4a5568" stroke-width="2" marker-end="url(#m-ZZ-2a)"/>
+
+	<rect x="200" y="100" width="130" height="44" rx="7" fill="#1d7a3c"/>
+	<text x="265" y="122" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">06 メモ</text>
+	<text x="265" y="138" text-anchor="middle" font-size="10" fill="#fff">ハンズオン①</text>
+
+	<line x1="330" y1="112" x2="400" y2="70" stroke="#4a5568" stroke-width="2" marker-end="url(#m-ZZ-2a)"/>
+	<line x1="330" y1="132" x2="400" y2="170" stroke="#4a5568" stroke-width="2" marker-end="url(#m-ZZ-2a)"/>
+
+	<rect x="400" y="48" width="130" height="44" rx="7" fill="url(#g-ZZ-2a)"/>
+	<text x="465" y="76" text-anchor="middle" font-size="12" fill="#fff">07 HTTP</text>
+
+	<rect x="400" y="150" width="130" height="44" rx="7" fill="url(#g-ZZ-2a)"/>
+	<text x="465" y="178" text-anchor="middle" font-size="12" fill="#fff">08 通知</text>
+
+	<line x1="530" y1="70" x2="600" y2="105" stroke="#4a5568" stroke-width="2" marker-end="url(#m-ZZ-2a)"/>
+	<line x1="530" y1="172" x2="600" y2="139" stroke="#4a5568" stroke-width="2" marker-end="url(#m-ZZ-2a)"/>
+
+	<rect x="600" y="100" width="130" height="44" rx="7" fill="url(#g-ZZ-2a)"/>
+	<text x="665" y="122" text-anchor="middle" font-size="12" fill="#fff">09 タスク</text>
+	<text x="665" y="138" text-anchor="middle" font-size="10" fill="#fff">10 共有</text>
+
+	<line x1="730" y1="122" x2="790" y2="122" stroke="#4a5568" stroke-width="2" marker-end="url(#m-ZZ-2a)"/>
+
+	<rect x="790" y="100" width="90" height="44" rx="7" fill="#1d7a3c"/>
+	<text x="835" y="122" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">11</text>
+	<text x="835" y="138" text-anchor="middle" font-size="10" fill="#fff">総仕上げ</text>
+
+	<text x="450" y="230" text-anchor="middle" font-size="11" fill="#4a5568">06 で作ったものを 07〜10 で育て、11 で別の題材に当てはめる</text>
+</svg>
+<figcaption>ハンズオンを 2 つに分け、間に応用の章を挟んである。</figcaption>
+</figure>
+</section>
+
+<section class="ch03" id="ch03">
+<h1>書き方の原則</h1>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">原則</th><th>中身</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">生のものを先に</td><td>SDK より先に JSON-RPC を見せる。抽象の下に何があるかを知ってから使う</td></tr>
+		<tr><td class="nowrap">理由を先に</td><td>「<code>console.log</code> は禁止」ではなく「なぜ壊れるか」から書く</td></tr>
+		<tr><td class="nowrap">動かして終わる</td><td>各節は実行結果で終える。<strong>出力は実際に動かしたものを貼る</strong></td></tr>
+		<tr><td class="nowrap">実測を書く</td><td>版・大きさ・所要時間はコマンドで確かめた値を書く</td></tr>
+		<tr><td class="nowrap">できないことも書く</td><td>できることだけ並べると、できないことに時間を溶かす</td></tr>
+		<tr><td class="nowrap">ホストの差はバッジで</td><td>3 つの CLI で違う箇所は明示する</td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>載せているコードは全部動かしてある</h2>
+
+<p>資料に出てくるサーバーは <a href="samples/">docs/samples/</a> に置いてあり、テストで検証しています。</p>
+
+<pre><code class="language-powershell">node --test --test-concurrency=1 tests/</code></pre>
+
+<pre><code class="language-text">ℹ tests 32
+ℹ pass 32
+ℹ fail 0</code></pre>
+
+<div class="callout">
+	<p><strong>出力は実際に動かしたものです。</strong>この資料に貼ってある実行結果・エラーメッセージ・所要時間は、書き起こしではなく実行して得たものを写しています。バージョン番号も <code>--version</code> で確かめた値です。</p>
+</div>
+
+<h2>図について</h2>
+
+<p>各章に図を 1 点以上入れています。引くための付録（A1・A2）は除きます。図はすべて SVG で、章のアクセント色を継いでいます。</p>
+</section>
+
+<section class="ch04" id="ch04">
+<h1>確かめた環境</h1>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">対象</th><th class="nowrap">版</th><th>確かめ方</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">OS</td><td class="nowrap">Windows 11</td><td>—</td></tr>
+		<tr><td class="nowrap">Node.js</td><td class="nowrap">v26.8.1</td><td><code>node --version</code></td></tr>
+		<tr><td class="nowrap">npm</td><td class="nowrap">11.19.0</td><td><code>npm --version</code></td></tr>
+		<tr><td class="nowrap">@modelcontextprotocol/sdk</td><td class="nowrap">1.30.0</td><td><code>npm view @modelcontextprotocol/sdk version</code></td></tr>
+		<tr><td class="nowrap">zod</td><td class="nowrap">4.5.4</td><td><code>npm ls zod</code></td></tr>
+		<tr><td class="nowrap">Claude Code</td><td class="nowrap">2.1.263</td><td><code>claude --version</code></td></tr>
+		<tr><td class="nowrap">Codex</td><td class="nowrap">0.153.4</td><td><code>codex --version</code></td></tr>
+		<tr><td class="nowrap">Antigravity</td><td class="nowrap">1.107.0</td><td><code>antigravity --version</code></td></tr>
+		<tr><td class="nowrap">.NET Framework</td><td class="nowrap">4.0.30319</td><td><code>csc.exe</code> の置き場</td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>どこまで実測したか</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">対象</th><th>範囲</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">Claude Code</td><td><span class="badge b-ok">全章</span>登録・呼び出し・進捗通知・elicitation・タスクの非対応まで確認</td></tr>
+		<tr><td class="nowrap">Codex</td><td><span class="badge b-warn">一部</span>接続と <code>protocolVersion</code> の確認まで</td></tr>
+		<tr><td class="nowrap">Antigravity</td><td><span class="badge b-none">未</span>登録コマンドの書式のみ</td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ホストごとに喋る版が違う実測結果">
+	<defs>
+		<linearGradient id="g-ZZ-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(280,78%,25%)"/><stop offset="1" stop-color="hsl(280,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="g-ZZ-4b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="60" y="50" width="360" height="110" rx="9" fill="url(#g-ZZ-4a)"/>
+	<text x="240" y="80" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">Claude Code 2.1.263</text>
+	<text x="240" y="106" text-anchor="middle" font-size="12" fill="#fff">protocolVersion: 2025-11-25</text>
+	<text x="240" y="130" text-anchor="middle" font-size="11" fill="#fff">roots ・ elicitation</text>
+	<text x="240" y="150" text-anchor="middle" font-size="11" fill="#fff">tasks は名乗らない</text>
+
+	<rect x="480" y="50" width="360" height="110" rx="9" fill="url(#g-ZZ-4b)"/>
+	<text x="660" y="80" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">Codex 0.153.4</text>
+	<text x="660" y="106" text-anchor="middle" font-size="12" fill="#fff">protocolVersion: 2025-06-18</text>
+	<text x="660" y="130" text-anchor="middle" font-size="11" fill="#fff">elicitation（form ・ url）</text>
+	<text x="660" y="150" text-anchor="middle" font-size="11" fill="#fff">roots は名乗らない</text>
+
+	<text x="450" y="192" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">2026-09-07 時点。版が上がれば変わるので、自分の環境で確かめる</text>
+</svg>
+<figcaption>この違いに気づかず片方に合わせると、もう片方で動かなくなる。</figcaption>
+</figure>
+</section>
+
+<section class="ch05" id="ch05">
+<h1>読み方</h1>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">目的</th><th>読む順</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">ひととおり身に付けたい</td><td>01 から順に。120 分</td></tr>
+		<tr><td class="nowrap">とにかく動かしたい</td><td>03 → 04 → 06。35 分</td></tr>
+		<tr><td class="nowrap">中身を理解したい</td><td>01 → 02 → 08。33 分</td></tr>
+		<tr><td class="nowrap">共有の構成を知りたい</td><td>07 → 10。20 分</td></tr>
+		<tr><td class="nowrap">通知の限界を知りたい</td><td>08 → 09。20 分</td></tr>
+		<tr><td class="nowrap">配る方法を知りたい</td><td><a href="A3-単一exeにする.html">A3</a></td></tr>
+		<tr><td class="nowrap">詰まった</td><td><a href="A2-詰まったとき.html">A2</a></td></tr>
+		<tr><td class="nowrap">書き方を忘れた</td><td><a href="A1-逆引き.html">A1</a></td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>手を動かす準備</h2>
+
+<pre><code class="language-powershell">git clone &lt;このリポジトリ&gt;
+cd 20260907-ai-mcp-servers-learn
+npm install
+node --test --test-concurrency=1 tests/</code></pre>
+
+<p>テストが全件通れば、資料に出てくるサーバーはすべて手元で動きます。</p>
+
+<h2>参考にした資料</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">資料</th><th>使い方</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap"><a href="https://modelcontextprotocol.io/specification/2025-11-25/">MCP 仕様 2025-11-25</a></td><td><strong>これが正。</strong>この資料と食い違ったら仕様に従う</td></tr>
+		<tr><td class="nowrap"><a href="https://modelcontextprotocol.io/specification/">MCP 仕様（最新）</a></td><td>先の変更を知りたいとき。今のホストは追いついていない</td></tr>
+		<tr><td class="nowrap">SDK の型定義</td><td><code>node_modules/@modelcontextprotocol/sdk/dist/esm/**/*.d.ts</code></td></tr>
+	</tbody>
+</table>
+</div>
+
+<div class="callout">
+	<p><strong>仕様のページは日付で分かれています。</strong>検索から辿り着いたページの URL に入っている日付を確かめてください。<code>2026-07-28</code> のページは、この資料が扱う <code>2025-11-25</code> とは作りが違います。</p>
+</div>
+</section>
+
+</div>
+
+<footer>
+	<div class="inner">
+<!-- AUTO:nav -->
+<div class="nav">
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+</div>
+<!-- /AUTO:nav -->
+	</div>
+</footer>
+
+</body>
+</html>

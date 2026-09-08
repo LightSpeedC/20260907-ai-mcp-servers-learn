@@ -1,0 +1,439 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A3. 単一 exe にする</title>
+<style>
+/* css/style.css が読めなかったときの代替色 */
+.titlebar, section h1, th, a.doclink, .badge { background: #12224d; color: #fff; }
+</style>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,55%); --soft: hsl(280,28%,95%); }
+.ch02 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,55%); --soft: hsl(210,28%,95%); }
+.ch03 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,55%); --soft: hsl(140,28%,95%); }
+.ch04 { --accent: hsl(70,78%,25%);  --accent2: hsl(70,58%,55%);  --soft: hsl(70,28%,95%); }
+.ch05 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,55%);   --soft: hsl(0,28%,95%); }
+.toc ol a::before { content: "A3." counter(tocnum) " "; }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>A3. 単一 exe にする</h1>
+		<p class="lead">Node.js を入れられない相手へ配る。C# ＋ csc.exe</p>
+		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
+	</div>
+</div>
+
+<div class="wrap">
+
+<!-- AUTO:nav -->
+<div class="nav">
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+</div>
+<!-- /AUTO:nav -->
+
+<div class="toc">
+	<h2>この資料の内容</h2>
+	<ol>
+		<li class="ch01"><a href="#ch01">なぜ exe にするか</a></li>
+		<li class="ch02"><a href="#ch02">書く</a></li>
+		<li class="ch03"><a href="#ch03">ビルドする</a></li>
+		<li class="ch04"><a href="#ch04">動かす</a></li>
+		<li class="ch05"><a href="#ch05">Node 版との違い</a></li>
+	</ol>
+</div>
+
+<section class="ch01" id="ch01">
+<h1>なぜ exe にするか</h1>
+
+<p>Node.js 版は、渡す相手にも Node.js が要ります。それが難しい場面があります。</p>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">場面</th><th>事情</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">社内の共有 PC</td><td>ランタイムを勝手に入れられない</td></tr>
+		<tr><td class="nowrap">相手が開発者でない</td><td><code>npm install</code> を頼めない</td></tr>
+		<tr><td class="nowrap">版がばらばら</td><td>入っている Node.js の版が揃わない</td></tr>
+		<tr><td class="nowrap">起動を速くしたい</td><td>多数のプロセスが立つとき</td></tr>
+	</tbody>
+</table>
+</div>
+
+<p><strong>.NET Framework 4.x は Windows 10・11 に最初から入っています。</strong>そのコンパイラ（<code>csc.exe</code>）も同梱されているので、追加で何も入れずに exe を作れます。</p>
+
+<figure>
+<svg viewBox="0 0 900 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Node版とexe版で配るものが違う">
+	<defs>
+		<linearGradient id="g-A3-1a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(0,78%,25%)"/><stop offset="1" stop-color="hsl(0,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="g-A3-1b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+	</defs>
+
+	<text x="225" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">Node.js 版</text>
+	<rect x="60" y="45" width="330" height="150" rx="9" fill="url(#g-A3-1a)"/>
+	<text x="225" y="76" text-anchor="middle" font-size="12" fill="#fff">server.mjs</text>
+	<text x="225" y="100" text-anchor="middle" font-size="12" fill="#fff">＋ package.json</text>
+	<text x="225" y="124" text-anchor="middle" font-size="12" fill="#fff">＋ node_modules（数十 MB）</text>
+	<text x="225" y="148" text-anchor="middle" font-size="12" fill="#fff">＋ Node.js 本体</text>
+	<text x="225" y="176" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">相手側に用意が要る</text>
+
+	<text x="675" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2330">C# 版</text>
+	<rect x="510" y="45" width="330" height="150" rx="9" fill="url(#g-A3-1b)"/>
+	<text x="675" y="90" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">mcp-server.exe</text>
+	<text x="675" y="118" text-anchor="middle" font-size="12" fill="#fff">7,680 バイト（実測）</text>
+	<text x="675" y="150" text-anchor="middle" font-size="12" fill="#fff">これ 1 つ</text>
+	<text x="675" y="176" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">.NET Framework は OS 同梱</text>
+</svg>
+<figcaption>この章のサンプルをビルドすると、実測 7,680 バイトの exe が 1 つできる。</figcaption>
+</figure>
+
+<div class="callout">
+	<p><strong>MCP は言語に依りません。</strong>やることは「標準入出力で改行区切りの JSON をやりとりする」だけです。<a href="02-最小のサーバー.html">02 章</a>で手書きしたものを、そのまま C# に移すだけで動きます。</p>
+</div>
+</section>
+
+<section class="ch02" id="ch02">
+<h1>書く</h1>
+
+<p>全文は <a href="samples/A3-csharp/Server.cs">samples/A3-csharp/Server.cs</a> にあります。要点だけ見ます。</p>
+
+<h2>文字コードを間違えない</h2>
+
+<pre><code class="language-csharp">// BOM を付けない UTF-8 にする。BOM を出すと相手が JSON として読めない
+var utf8 = new UTF8Encoding(false);
+var input = new StreamReader(Console.OpenStandardInput(), utf8);
+_out = new StreamWriter(Console.OpenStandardOutput(), utf8);
+_out.AutoFlush = true;</code></pre>
+
+<div class="callout">
+	<p><strong>ここが最大の落とし穴です。</strong><code>new UTF8Encoding(true)</code> や既定の設定だと、最初の出力に BOM（<code>EF BB BF</code>）が付きます。相手はそれを JSON の一部として読もうとして失敗します。<strong>しかも 1 通目だけが壊れる</strong>ので、原因に気づきにくくなります。</p>
+</div>
+
+<p><code>AutoFlush = true</code> も要ります。付けないと応答が溜まったまま送られず、相手は待ち続けます。</p>
+
+<h2>JSON を扱う</h2>
+
+<p>.NET Framework には <code>JavaScriptSerializer</code> が入っています。参照を 1 つ足すだけで使えます。</p>
+
+<pre><code class="language-csharp">using System.Web.Script.Serialization;
+
+static readonly JavaScriptSerializer Json = new JavaScriptSerializer();
+
+// 読む: Dictionary&lt;string, object&gt; になる
+var request = (Dictionary&lt;string, object&gt;)Json.DeserializeObject(line);
+
+// 書く
+_out.Write(Json.Serialize(message));</code></pre>
+
+<h2>受け取って返す</h2>
+
+<pre><code class="language-csharp">string line;
+while ((line = input.ReadLine()) != null)
+{
+	if (line.Trim().Length == 0) continue;
+	Log("受信: " + line);
+
+	Dictionary&lt;string, object&gt; request;
+	try
+	{
+		request = (Dictionary&lt;string, object&gt;)Json.DeserializeObject(line);
+	}
+	catch
+	{
+		Log("JSON として読めなかった行を捨てた");
+		continue;
+	}
+
+	// id が無いものは通知。応答してはいけない
+	if (!request.ContainsKey("id"))
+	{
+		Log("通知: " + Get(request, "method"));
+		continue;
+	}
+
+	Handle(request);
+}</code></pre>
+
+<p>ログは stderr へ出します。Node 版と同じ約束です。</p>
+
+<pre><code class="language-csharp">// stdout は JSON-RPC 専用。ログは stderr へ出す
+static void Log(string message)
+{
+	Console.Error.WriteLine("[csharp] " + message);
+}</code></pre>
+
+<figure>
+<svg viewBox="0 0 900 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="言語が違っても構造は同じ">
+	<defs>
+		<linearGradient id="g-A3-2a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+	</defs>
+
+	<rect x="40" y="40" width="380" height="140" rx="9" fill="#ffffff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="230" y="66" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">JavaScript</text>
+	<text x="60" y="94" font-size="11" fill="#1c2330" font-family="monospace">rl.on('line', ...)</text>
+	<text x="60" y="118" font-size="11" fill="#1c2330" font-family="monospace">JSON.parse(line)</text>
+	<text x="60" y="142" font-size="11" fill="#1c2330" font-family="monospace">process.stdout.write(...)</text>
+	<text x="60" y="166" font-size="11" fill="#1c2330" font-family="monospace">console.error(...)</text>
+
+	<rect x="480" y="40" width="380" height="140" rx="9" fill="url(#g-A3-2a)"/>
+	<text x="670" y="66" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">C#</text>
+	<text x="500" y="94" font-size="11" fill="#fff" font-family="monospace">input.ReadLine()</text>
+	<text x="500" y="118" font-size="11" fill="#fff" font-family="monospace">Json.DeserializeObject(line)</text>
+	<text x="500" y="142" font-size="11" fill="#fff" font-family="monospace">_out.Write(...)</text>
+	<text x="500" y="166" font-size="11" fill="#fff" font-family="monospace">Console.Error.WriteLine(...)</text>
+
+	<path d="M 430 110 L 470 110" stroke="#4a5568" stroke-width="2"/>
+	<text x="450" y="102" text-anchor="middle" font-size="14" fill="#4a5568">≡</text>
+</svg>
+<figcaption>1 対 1 で移せる。プロトコルの側に言語の都合は無い。</figcaption>
+</figure>
+</section>
+
+<section class="ch03" id="ch03">
+<h1>ビルドする</h1>
+
+<pre><code class="language-batch">"%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /optimize /utf8output ^
+	/out:mcp-server.exe /r:System.Web.Extensions.dll Server.cs</code></pre>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">オプション</th><th>意味</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap"><code>/optimize</code></td><td>最適化する</td></tr>
+		<tr><td class="nowrap"><code>/utf8output</code></td><td>コンパイラのメッセージを UTF-8 で出す。日本語のエラーが化けない</td></tr>
+		<tr><td class="nowrap"><code>/out:</code></td><td>できる exe の名前</td></tr>
+		<tr><td class="nowrap"><code>/r:</code></td><td>参照する DLL。<code>JavaScriptSerializer</code> に要る</td></tr>
+	</tbody>
+</table>
+</div>
+
+<p>ダブルクリックで作れるよう <a href="samples/A3-csharp/build.cmd">build.cmd</a> を置いてあります。64 ビット版が無ければ 32 ビット版を探すようにしています。</p>
+
+<pre><code class="language-batch">set CSC=%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe
+if not exist "%CSC%" set CSC=%WINDIR%\Microsoft.NET\Framework\v4.0.30319\csc.exe
+if not exist "%CSC%" (
+	echo csc.exe が見つかりません。.NET Framework 4.x が入っているか確認してください
+	pause
+	exit /b 1
+)</code></pre>
+
+<p>実行するとこうなります。</p>
+
+<pre><code class="language-text">できた: mcp-server.exe (7,680 バイト)</code></pre>
+
+<figure>
+<svg viewBox="0 0 900 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ソースからexeまでの流れ">
+	<defs>
+		<linearGradient id="g-A3-3a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-A3-3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="50" y="60" width="180" height="60" rx="8" fill="url(#g-A3-3a)"/>
+	<text x="140" y="86" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Server.cs</text>
+	<text x="140" y="106" text-anchor="middle" font-size="11" fill="#fff">1 ファイル</text>
+
+	<line x1="230" y1="90" x2="320" y2="90" stroke="#4a5568" stroke-width="2" marker-end="url(#m-A3-3a)"/>
+	<text x="275" y="82" text-anchor="middle" font-size="11" fill="#4a5568">csc.exe</text>
+
+	<rect x="320" y="60" width="230" height="60" rx="8" fill="#ffffff" stroke="#d9dfe8" stroke-width="2"/>
+	<text x="435" y="86" text-anchor="middle" font-size="12" fill="#1c2330">OS に最初から入っている</text>
+	<text x="435" y="106" text-anchor="middle" font-size="11" fill="#4a5568">追加のインストール不要</text>
+
+	<line x1="550" y1="90" x2="640" y2="90" stroke="#4a5568" stroke-width="2" marker-end="url(#m-A3-3a)"/>
+
+	<rect x="640" y="60" width="210" height="60" rx="8" fill="#1d7a3c"/>
+	<text x="745" y="86" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">mcp-server.exe</text>
+	<text x="745" y="106" text-anchor="middle" font-size="11" fill="#fff">7,680 バイト</text>
+
+	<text x="450" y="160" text-anchor="middle" font-size="11" fill="#4a5568">ビルド環境の用意が要らないのが、この方法の値打ち</text>
+</svg>
+<figcaption>SDK も NuGet もパッケージマネージャも使わない。ソース 1 枚とコンパイラだけ。</figcaption>
+</figure>
+</section>
+
+<section class="ch04" id="ch04">
+<h1>動かす</h1>
+
+<pre><code class="language-powershell">@(
+'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"手","version":"1.0"}}}'
+'{"jsonrpc":"2.0","method":"notifications/initialized"}'
+'{"jsonrpc":"2.0","id":2,"method":"tools/list"}'
+'{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"add","arguments":{"a":2,"b":3}}}'
+) -join "`n" | ./mcp-server.exe</code></pre>
+
+<p>実際の出力です。</p>
+
+<pre><code class="language-text">[csharp] 起動した
+[csharp] 受信: {"jsonrpc":"2.0","id":1,"method":"initialize",...}
+{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-11-25","capabilities":{"tools":{}},"serverInfo":{"name":"csharp","version":"1.0.0"}}}
+[csharp] 受信: {"jsonrpc":"2.0","method":"notifications/initialized"}
+[csharp] 通知: notifications/initialized
+[csharp] 受信: {"jsonrpc":"2.0","id":2,"method":"tools/list"}
+{"jsonrpc":"2.0","id":2,"result":{"tools":[{"name":"add","description":"2 つの数を足す",...}]}}
+[csharp] 受信: {"jsonrpc":"2.0","id":3,"method":"tools/call",...}
+{"jsonrpc":"2.0","id":3,"result":{"content":[{"type":"text","text":"5"}]}}</code></pre>
+
+<h2>登録する</h2>
+
+<pre><code class="language-powershell">claude mcp add csharp -- docs/samples/A3-csharp/mcp-server.exe</code></pre>
+
+<p>コマンドが exe になるだけで、あとは Node 版と同じです。</p>
+
+<h2>テストも同じ道具で書ける</h2>
+
+<p>クライアント側は Node のままでよいので、Node 版と同じテストの仕組みが使えます。</p>
+
+<pre><code class="language-javascript">test('C# 版でも日本語が壊れない', { skip }, async () =&gt; {
+	const client = await connect(EXE, { command: EXE });
+
+	try {
+		// BOM を付けずに UTF-8 で書き出しているかの確認でもある
+		const { tools } = await client.listTools();
+		assert.equal(tools[0].description, '2 つの数を足す');
+
+		const result = await client.callTool({ name: 'add', arguments: { a: 'あ', b: 3 } });
+		assert.equal(result.isError, true);
+		assert.match(textOf(result), /数値を渡してください/);
+	} finally {
+		await client.close();
+	}
+});</code></pre>
+
+<pre><code class="language-text">✔ C# 版でもツールの一覧と実行が通る (128.4249ms)
+✔ C# 版でも日本語が壊れない (104.3658ms)
+✔ C# 版でも小数を扱える (101.7517ms)</code></pre>
+
+<figure>
+<svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="サーバーの言語が変わってもクライアントは同じ">
+	<defs>
+		<linearGradient id="g-A3-4a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
+		</linearGradient>
+		<marker id="m-A3-4a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+		</marker>
+	</defs>
+
+	<rect x="60" y="65" width="230" height="70" rx="9" fill="url(#g-A3-4a)"/>
+	<text x="175" y="94" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">テスト（Node）</text>
+	<text x="175" y="116" text-anchor="middle" font-size="11" fill="#fff">1 つで両方を検証できる</text>
+
+	<line x1="290" y1="85" x2="600" y2="60" stroke="#4a5568" stroke-width="2" marker-end="url(#m-A3-4a)"/>
+	<line x1="290" y1="115" x2="600" y2="140" stroke="#4a5568" stroke-width="2" marker-end="url(#m-A3-4a)"/>
+
+	<rect x="600" y="35" width="240" height="50" rx="8" fill="#1d7a3c"/>
+	<text x="720" y="65" text-anchor="middle" font-size="12" fill="#fff">server.mjs（Node）</text>
+
+	<rect x="600" y="120" width="240" height="50" rx="8" fill="#1d7a3c"/>
+	<text x="720" y="150" text-anchor="middle" font-size="12" fill="#fff">mcp-server.exe（C#）</text>
+
+	<text x="450" y="190" text-anchor="middle" font-size="11" fill="#4a5568">同じ応答を返すことを、同じテストで確かめられる</text>
+</svg>
+<figcaption>2 つの実装を並行して持つときも、検証は 1 か所で済む。</figcaption>
+</figure>
+</section>
+
+<section class="ch05" id="ch05">
+<h1>Node 版との違い</h1>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">項目</th><th class="nowrap">Node ＋ SDK</th><th class="nowrap">C# ＋ csc.exe</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">配るもの</td><td>ソース ＋ node_modules ＋ ランタイム</td><td><strong>exe 1 つ</strong></td></tr>
+		<tr><td class="nowrap">大きさ</td><td>数十 MB</td><td>7,680 バイト（実測）</td></tr>
+		<tr><td class="nowrap">入力の検証</td><td>SDK が zod で行う</td><td><strong>自分で書く</strong></td></tr>
+		<tr><td class="nowrap">JSON-RPC の組み立て</td><td>SDK が行う</td><td><strong>自分で書く</strong></td></tr>
+		<tr><td class="nowrap">HTTP に載せる</td><td>差し替えるだけ</td><td>自分で書く</td></tr>
+		<tr><td class="nowrap">タスク・通知</td><td>SDK に用意がある</td><td>自分で書く</td></tr>
+		<tr><td class="nowrap">仕様の追随</td><td>SDK の更新に乗れる</td><td><strong>自分で追う</strong></td></tr>
+		<tr><td class="nowrap">直しやすさ</td><td>再起動だけ</td><td>ビルドし直して配り直す</td></tr>
+	</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="配りやすさと作りやすさの釣り合い">
+	<defs>
+		<linearGradient id="g-A3-5a" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(140,78%,25%)"/><stop offset="1" stop-color="hsl(140,58%,55%)"/>
+		</linearGradient>
+		<linearGradient id="g-A3-5b" x1="0" y1="1" x2="0" y2="0">
+			<stop offset="0" stop-color="hsl(30,78%,25%)"/><stop offset="1" stop-color="hsl(30,58%,55%)"/>
+		</linearGradient>
+	</defs>
+
+	<line x1="80" y1="180" x2="840" y2="180" stroke="#4a5568" stroke-width="2"/>
+	<text x="460" y="212" text-anchor="middle" font-size="12" fill="#4a5568">配りやすさ</text>
+	<line x1="80" y1="180" x2="80" y2="40" stroke="#4a5568" stroke-width="2"/>
+	<text x="40" y="110" text-anchor="middle" font-size="12" fill="#4a5568" transform="rotate(-90 40 110)">作りやすさ</text>
+
+	<circle cx="250" cy="70" r="12" fill="url(#g-A3-5a)"/>
+	<text x="275" y="66" font-size="13" font-weight="700" fill="#1c2330">Node ＋ SDK</text>
+	<text x="275" y="86" font-size="11" fill="#4a5568">機能は全部使える。配るのが重い</text>
+
+	<circle cx="690" cy="145" r="12" fill="url(#g-A3-5b)"/>
+	<text x="500" y="141" font-size="13" font-weight="700" fill="#1c2330" text-anchor="end">C# ＋ csc.exe</text>
+	<text x="500" y="161" font-size="11" fill="#4a5568" text-anchor="end">配るのは楽。全部自分で書く</text>
+
+	<line x1="262" y1="82" x2="678" y2="133" stroke="#97a1ae" stroke-width="2" stroke-dasharray="6 4"/>
+</svg>
+<figcaption>どちらが上ではなく、何を優先するかの選択。</figcaption>
+</figure>
+
+<h2>選び方</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">状況</th><th>お勧め</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">自分と同僚が使う</td><td><strong>Node ＋ SDK。</strong>作るのが速い</td></tr>
+		<tr><td class="nowrap">開発者でない相手に配る</td><td>C# ＋ csc.exe</td></tr>
+		<tr><td class="nowrap">ツールが 1〜2 個だけ</td><td>C# でも負担は小さい</td></tr>
+		<tr><td class="nowrap">通知やタスクを使う</td><td>Node ＋ SDK。自前で書くと大仕事になる</td></tr>
+		<tr><td class="nowrap">両方要る</td><td>中身を分けておき、入り口だけ 2 つ作る</td></tr>
+	</tbody>
+</table>
+</div>
+
+<div class="callout">
+	<p><strong>まず Node ＋ SDK で作り、必要になってから移すのが現実的です。</strong>プロトコルは同じなので、動くものができてからの移植は難しくありません。<strong>最初から C# で書くと、仕様の理解と実装の両方を同時にやることになります。</strong></p>
+</div>
+</section>
+
+</div>
+
+<footer>
+	<div class="inner">
+<!-- AUTO:nav -->
+<div class="nav">
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+</div>
+<!-- /AUTO:nav -->
+	</div>
+</footer>
+
+</body>
+</html>

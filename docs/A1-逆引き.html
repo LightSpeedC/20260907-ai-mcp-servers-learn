@@ -1,0 +1,301 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A1. 逆引き</title>
+<style>
+/* css/style.css が読めなかったときの代替色 */
+.titlebar, section h1, th, a.doclink, .badge { background: #12224d; color: #fff; }
+</style>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.ch01 { --accent: hsl(280,78%,25%); --accent2: hsl(280,58%,55%); --soft: hsl(280,28%,95%); }
+.ch02 { --accent: hsl(210,78%,25%); --accent2: hsl(210,58%,55%); --soft: hsl(210,28%,95%); }
+.ch03 { --accent: hsl(140,78%,25%); --accent2: hsl(140,58%,55%); --soft: hsl(140,28%,95%); }
+.ch04 { --accent: hsl(70,78%,25%);  --accent2: hsl(70,58%,55%);  --soft: hsl(70,28%,95%); }
+.ch05 { --accent: hsl(0,78%,25%);   --accent2: hsl(0,58%,55%);   --soft: hsl(0,28%,95%); }
+.toc ol a::before { content: "A1." counter(tocnum) " "; }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+	<div class="inner">
+		<h1>A1. 逆引き</h1>
+		<p class="lead">「〜したい」から引く</p>
+		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
+	</div>
+</div>
+
+<div class="wrap">
+
+<!-- AUTO:nav -->
+<div class="nav">
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+</div>
+<!-- /AUTO:nav -->
+
+<div class="toc">
+	<h2>この資料の内容</h2>
+	<ol>
+		<li class="ch01"><a href="#ch01">作る</a></li>
+		<li class="ch02"><a href="#ch02">登録する・確かめる</a></li>
+		<li class="ch03"><a href="#ch03">入力と出力</a></li>
+		<li class="ch04"><a href="#ch04">伝える</a></li>
+		<li class="ch05"><a href="#ch05">運ぶ</a></li>
+	</ol>
+</div>
+
+<section class="ch01" id="ch01">
+<h1>作る</h1>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">したいこと</th><th>やり方</th><th class="nowrap">詳しく</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">SDK を入れる</td><td><code>npm install @modelcontextprotocol/sdk</code></td><td class="nowrap"><a href="03-SDKで書き直す.html">03</a></td></tr>
+		<tr><td class="nowrap">サーバーを作る</td><td><code>new McpServer({ name, version })</code></td><td class="nowrap"><a href="03-SDKで書き直す.html">03</a></td></tr>
+		<tr><td class="nowrap">stdio に繋ぐ</td><td><code>await server.connect(new StdioServerTransport())</code></td><td class="nowrap"><a href="03-SDKで書き直す.html">03</a></td></tr>
+		<tr><td class="nowrap">ツールを足す</td><td><code>server.registerTool(name, config, handler)</code></td><td class="nowrap"><a href="03-SDKで書き直す.html">03</a></td></tr>
+		<tr><td class="nowrap">読ませるデータを足す</td><td><code>server.registerResource(name, uri, config, handler)</code></td><td class="nowrap"><a href="05-3つの提供物.html">05</a></td></tr>
+		<tr><td class="nowrap">URI に変数を入れる</td><td><code>new ResourceTemplate('note://{date}', { list: undefined })</code></td><td class="nowrap"><a href="05-3つの提供物.html">05</a></td></tr>
+		<tr><td class="nowrap">定型の指示を足す</td><td><code>server.registerPrompt(name, config, handler)</code></td><td class="nowrap"><a href="05-3つの提供物.html">05</a></td></tr>
+		<tr><td class="nowrap">SDK を使わずに書く</td><td><code>readline</code> で 1 行ずつ読み、<code>process.stdout.write</code> で返す</td><td class="nowrap"><a href="02-最小のサーバー.html">02</a></td></tr>
+		<tr><td class="nowrap">C# で書く</td><td><code>csc.exe</code> ＋ <code>System.Web.Extensions.dll</code></td><td class="nowrap"><a href="A3-単一exeにする.html">A3</a></td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>ひな形</h2>
+
+<pre><code class="language-javascript">import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { z } from 'zod';
+
+const server = new McpServer({ name: 'my-server', version: '1.0.0' });
+
+server.registerTool(
+	'my_tool',
+	{
+		title: '表示名',
+		description: 'いつ使うかを書く。モデルはこれを読んで呼ぶ',
+		inputSchema: { arg: z.string().describe('引数の説明') },
+	},
+	async ({ arg }) =&gt; ({ content: [{ type: 'text', text: `受け取った: ${arg}` }] }),
+);
+
+await server.connect(new StdioServerTransport());</code></pre>
+</section>
+
+<section class="ch02" id="ch02">
+<h1>登録する・確かめる</h1>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">したいこと</th><th>やり方</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">Claude Code に登録</td><td><code>claude mcp add --scope project 名前 -- node server.mjs</code></td></tr>
+		<tr><td class="nowrap">Codex に登録</td><td><code>codex mcp add 名前 -- node server.mjs</code></td></tr>
+		<tr><td class="nowrap">Antigravity に登録</td><td><code>antigravity --add-mcp '{"name":"名前","command":"node","args":["server.mjs"]}'</code></td></tr>
+		<tr><td class="nowrap">HTTP のサーバーを登録</td><td><code>claude mcp add --transport http 名前 http://localhost:3333/mcp</code></td></tr>
+		<tr><td class="nowrap">環境変数を渡す</td><td><code>claude mcp add 名前 -e KEY=値 -- node server.mjs</code></td></tr>
+		<tr><td class="nowrap">一覧を見る</td><td><code>claude mcp list</code> ／ <code>codex mcp list</code></td></tr>
+		<tr><td class="nowrap">詳細を見る</td><td><code>claude mcp get 名前</code></td></tr>
+		<tr><td class="nowrap">消す</td><td><code>claude mcp remove 名前</code> ／ <code>codex mcp remove 名前</code></td></tr>
+		<tr><td class="nowrap">設定を汚さずに試す</td><td><code>codex exec -c 'mcp_servers.名前={command="node", args=["server.mjs"]}' "..."</code></td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>手で叩く</h2>
+
+<pre><code class="language-powershell">@(
+'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"手","version":"1.0"}}}'
+'{"jsonrpc":"2.0","method":"notifications/initialized"}'
+'{"jsonrpc":"2.0","id":2,"method":"tools/list"}'
+) -join "`n" | node server.mjs</code></pre>
+
+<h2>版を確かめる</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">対象</th><th class="nowrap">コマンド</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">Node.js</td><td class="nowrap"><code>node --version</code></td></tr>
+		<tr><td class="nowrap">SDK</td><td class="nowrap"><code>npm view @modelcontextprotocol/sdk version</code></td></tr>
+		<tr><td class="nowrap">Claude Code</td><td class="nowrap"><code>claude --version</code></td></tr>
+		<tr><td class="nowrap">Codex</td><td class="nowrap"><code>codex --version</code></td></tr>
+		<tr><td class="nowrap">Antigravity</td><td class="nowrap"><code>antigravity --version</code></td></tr>
+		<tr><td class="nowrap">ホストが喋る MCP の版</td><td class="nowrap"><a href="04-ホストに登録する.html">観測用サーバー</a>のログを見る</td></tr>
+	</tbody>
+</table>
+</div>
+</section>
+
+<section class="ch03" id="ch03">
+<h1>入力と出力</h1>
+
+<h2>入力の形（zod）</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">したいこと</th><th class="nowrap">書き方</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">文字列</td><td class="nowrap"><code>z.string()</code></td></tr>
+		<tr><td class="nowrap">空を禁じる</td><td class="nowrap"><code>z.string().min(1)</code></td></tr>
+		<tr><td class="nowrap">整数</td><td class="nowrap"><code>z.number().int()</code></td></tr>
+		<tr><td class="nowrap">範囲</td><td class="nowrap"><code>z.number().min(1).max(50)</code></td></tr>
+		<tr><td class="nowrap">真偽</td><td class="nowrap"><code>z.boolean()</code></td></tr>
+		<tr><td class="nowrap">省略できる</td><td class="nowrap"><code>z.string().optional()</code></td></tr>
+		<tr><td class="nowrap">既定値</td><td class="nowrap"><code>z.number().default(10)</code></td></tr>
+		<tr><td class="nowrap">選択肢</td><td class="nowrap"><code>z.enum(['a', 'b'])</code></td></tr>
+		<tr><td class="nowrap">配列</td><td class="nowrap"><code>z.array(z.string())</code></td></tr>
+		<tr><td class="nowrap">説明を足す</td><td class="nowrap"><code>.describe('説明')</code></td></tr>
+		<tr><td class="nowrap">引数なし</td><td class="nowrap"><code>inputSchema: {}</code></td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>返し方</h2>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">したいこと</th><th class="nowrap">書き方</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">文字列を返す</td><td class="nowrap"><code>{ content: [{ type: 'text', text: '...' }] }</code></td></tr>
+		<tr><td class="nowrap">失敗を返す</td><td class="nowrap"><code>{ content: [...], isError: true }</code></td></tr>
+		<tr><td class="nowrap">複数行</td><td class="nowrap"><code>text</code> の中で <code>\n</code> で繋ぐ</td></tr>
+		<tr><td class="nowrap">Resource を返す</td><td class="nowrap"><code>{ contents: [{ uri: uri.href, text: '...' }] }</code></td></tr>
+		<tr><td class="nowrap">Prompt を返す</td><td class="nowrap"><code>{ messages: [{ role: 'user', content: { type: 'text', text: '...' } }] }</code></td></tr>
+	</tbody>
+</table>
+</div>
+
+<div class="callout">
+	<p><strong>失敗は <code>isError</code> で返します。</strong>例外を投げると JSON-RPC のエラーになり、モデルは理由を読めません。詳しくは <a href="05-3つの提供物.html">05 章</a>。</p>
+</div>
+</section>
+
+<section class="ch04" id="ch04">
+<h1>伝える</h1>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">したいこと</th><th>やり方</th><th class="nowrap">詳しく</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">進捗を送る</td><td><code>extra.sendNotification({ method: 'notifications/progress', params: {...} })</code></td><td class="nowrap"><a href="08-通知で伝える.html">08</a></td></tr>
+		<tr><td class="nowrap">進捗の宛先を得る</td><td><code>extra._meta?.progressToken</code></td><td class="nowrap"><a href="08-通知で伝える.html">08</a></td></tr>
+		<tr><td class="nowrap">利用者に尋ねる</td><td><code>extra.sendRequest({ method: 'elicitation/create', params: {...} }, schema)</code></td><td class="nowrap"><a href="08-通知で伝える.html">08</a></td></tr>
+		<tr><td class="nowrap">画面に出す</td><td>PowerShell 5.1 経由でトースト</td><td class="nowrap"><a href="08-通知で伝える.html">08</a></td></tr>
+		<tr><td class="nowrap">ログを出す</td><td><code>console.error(...)</code>（stdio のとき <code>console.log</code> は禁止）</td><td class="nowrap"><a href="02-最小のサーバー.html">02</a></td></tr>
+		<tr><td class="nowrap">長い処理を投げる</td><td><code>server.experimental.tasks.registerToolTask(...)</code></td><td class="nowrap"><a href="09-タスク.html">09</a></td></tr>
+		<tr><td class="nowrap">ツールの一覧が変わったと知らせる</td><td><code>server.sendToolListChanged()</code></td><td class="nowrap">—</td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>進捗を送る（そのまま使える形）</h2>
+
+<pre><code class="language-javascript">async ({ seconds }, extra) =&gt; {
+	const token = extra._meta?.progressToken;
+
+	for (let i = 1; i &lt;= seconds; i++) {
+		await sleep(1000);
+		if (token === undefined) continue;
+		await extra.sendNotification({
+			method: 'notifications/progress',
+			params: { progressToken: token, progress: i, total: seconds, message: `${i}/${seconds}` },
+		});
+	}
+
+	return { content: [{ type: 'text', text: '終わった' }] };
+}</code></pre>
+
+<div class="callout">
+	<p><strong>できないこと。</strong>何も呼ばれていないときに、サーバーから会話へ割り込むことはできません。人に知らせたいなら OS の通知など MCP の外の手を使います。<a href="08-通知で伝える.html">08 章</a>に線が引いてあります。</p>
+</div>
+</section>
+
+<section class="ch05" id="ch05">
+<h1>運ぶ</h1>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">したいこと</th><th>やり方</th><th class="nowrap">詳しく</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">HTTP にする</td><td><code>new StreamableHTTPServerTransport({ sessionIdGenerator: undefined })</code></td><td class="nowrap"><a href="07-HTTPに載せ替える.html">07</a></td></tr>
+		<tr><td class="nowrap">同じ PC に限る</td><td><code>http.listen(PORT, '127.0.0.1')</code></td><td class="nowrap"><a href="10-プロセス共有.html">10</a></td></tr>
+		<tr><td class="nowrap">1 本を共有する</td><td>HTTP で常駐 ＋ stdio ブリッジ</td><td class="nowrap"><a href="10-プロセス共有.html">10</a></td></tr>
+		<tr><td class="nowrap">HTTP を手で叩く</td><td><code>Accept: application/json, text/event-stream</code> を忘れない</td><td class="nowrap"><a href="07-HTTPに載せ替える.html">07</a></td></tr>
+		<tr><td class="nowrap">SSE の本文を解く</td><td><code>data:</code> で始まる行を取り出す</td><td class="nowrap"><a href="07-HTTPに載せ替える.html">07</a></td></tr>
+	</tbody>
+</table>
+</div>
+
+<h2>テストから呼ぶ</h2>
+
+<pre><code class="language-javascript">import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+
+const transport = new StdioClientTransport({
+	command: process.execPath,
+	args: ['server.mjs'],
+	env: { ...process.env, MEMO_FILE: '...' },
+	stderr: 'ignore',
+});
+
+const client = new Client({ name: 'tests', version: '1.0.0' }, { capabilities: {} });
+await client.connect(transport);
+
+const { tools } = await client.listTools();
+const result = await client.callTool({ name: 'add', arguments: { a: 2, b: 3 } });
+
+await client.close();</code></pre>
+
+<div class="tablewrap">
+<table>
+	<thead>
+		<tr><th class="nowrap">クライアント側の操作</th><th class="nowrap">書き方</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="nowrap">ツールの一覧</td><td class="nowrap"><code>client.listTools()</code></td></tr>
+		<tr><td class="nowrap">ツールを呼ぶ</td><td class="nowrap"><code>client.callTool({ name, arguments })</code></td></tr>
+		<tr><td class="nowrap">進捗を受ける</td><td class="nowrap"><code>client.callTool(params, undefined, { onprogress })</code></td></tr>
+		<tr><td class="nowrap">Resource を読む</td><td class="nowrap"><code>client.readResource({ uri })</code></td></tr>
+		<tr><td class="nowrap">Prompt を取る</td><td class="nowrap"><code>client.getPrompt({ name, arguments })</code></td></tr>
+		<tr><td class="nowrap">尋ねられたら答える</td><td class="nowrap"><code>client.setRequestHandler(ElicitRequestSchema, handler)</code></td></tr>
+		<tr><td class="nowrap">相手の名乗りを見る</td><td class="nowrap"><code>client.getServerVersion()</code></td></tr>
+	</tbody>
+</table>
+</div>
+</section>
+
+</div>
+
+<footer>
+	<div class="inner">
+<!-- AUTO:nav -->
+<div class="nav">
+	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
+</div>
+<!-- /AUTO:nav -->
+	</div>
+</footer>
+
+</body>
+</html>
