@@ -1,0 +1,14 @@
+{
+	"name": "mcp-servers-learn",
+	"version": "1.0.0",
+	"private": true,
+	"description": "MCP Server 学習資料のサンプルとテスト",
+	"license": "MIT",
+	"scripts": {
+		"test": "node --test --test-concurrency=1 tests/"
+	},
+	"dependencies": {
+		"@modelcontextprotocol/sdk": "^1.30.0",
+		"zod": "^4.5.4"
+	}
+}

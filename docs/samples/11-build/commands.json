@@ -1,0 +1,17 @@
+{
+	"test": {
+		"description": "テストを全件実行する",
+		"command": "node",
+		"args": ["--test", "tests/"]
+	},
+	"version": {
+		"description": "Node.js の版を表示する",
+		"command": "node",
+		"args": ["--version"]
+	},
+	"slow": {
+		"description": "3 秒かかる処理（進捗の確認用）",
+		"command": "node",
+		"args": ["-e", "let i=0; const t=setInterval(()=>{console.log(++i);if(i===3){clearInterval(t)}},1000)"]
+	}
+}

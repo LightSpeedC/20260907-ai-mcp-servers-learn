@@ -1,0 +1,16 @@
+{
+	"mcpServers": {
+		"memo": {
+			"command": "node",
+			"args": ["docs/samples/06-memo/server.mjs"]
+		},
+		"build": {
+			"command": "node",
+			"args": ["docs/samples/11-build/server.mjs"]
+		},
+		"probe": {
+			"command": "node",
+			"args": ["docs/samples/02-minimal/probe.mjs"]
+		}
+	}
+}
