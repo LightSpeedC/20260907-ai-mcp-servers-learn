@@ -6,7 +6,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
-import { connect, sample, textOf } from './helpers/client.mjs';
+import { connect, sample, textOf } from './helpers/client.ts';
 
 const EXE = sample('A3-csharp/mcp-server.exe');
 const skip = existsSync(EXE) ? false : 'mcp-server.exe が無い（build.cmd を実行すると作られる）';

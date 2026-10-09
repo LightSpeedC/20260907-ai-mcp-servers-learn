@@ -40,7 +40,7 @@ if (-not (Test-Path -LiteralPath (Join-Path $root 'node_modules'))) {
 
 # 絞り込みがあればファイル単位、無ければ tests フォルダごと
 $targets = if ($Filter) {
-	$found = @(Get-ChildItem -LiteralPath $testDir -Filter "*$Filter*.test.mjs")
+	$found = @(Get-ChildItem -LiteralPath $testDir -Filter "*$Filter*.test.ts")
 	if ($found.Count -eq 0) { throw "$Filter に当たるテストがありません" }
 	$found | ForEach-Object { $_.FullName }
 } else {
@@ -64,10 +64,34 @@ try {
 	Pop-Location
 }
 
-Write-Host ''
-if ($code -eq 0) {
-	Write-Host '全件通りました' -ForegroundColor Green
-} else {
-	Write-Host "失敗があります（終了コード $code）" -ForegroundColor Red
+if ($code -ne 0) {
+	Write-Host ''
+	Write-Host "node で失敗があります（終了コード $code）" -ForegroundColor Red
 	exit $code
 }
+
+# bun が入っていれば、bun でも通ることを確かめる
+if (Get-Command bun -ErrorAction SilentlyContinue) {
+	Write-Host ''
+	# $targets は 1 件だと配列でなく文字列になる。@targets と書くと
+	# 文字列にはスプラッティングが効かず何も渡らない（bun がカレント配下を探し始める）。
+	# node と同じく、配列を組んでから渡す
+	$bunArgs = @('test') + $targets
+	if ($bunArgs.Count -lt 2) { throw 'bun に渡す対象が空です' }
+	Write-Host "実行: bun test （$(@($targets).Count) 件）"
+	Push-Location $root
+	try {
+		& bun @bunArgs
+		$code = $LASTEXITCODE
+	} finally {
+		Pop-Location
+	}
+	if ($code -ne 0) {
+		Write-Host ''
+		Write-Host "bun で失敗があります（終了コード $code）" -ForegroundColor Red
+		exit $code
+	}
+}
+
+Write-Host ''
+Write-Host '全件通りました' -ForegroundColor Green

@@ -3,42 +3,30 @@
 
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
+import type { ChildProcess } from 'node:child_process';
 import { rm } from 'node:fs/promises';
-import { connect, sample, textOf, tmp } from './helpers/client.mjs';
+import { connect, sample, startHttpMemo, textOf, tmp } from './helpers/client.ts';
 
 const PORT = 3399;
+const TARGET = `http://localhost:${PORT}/mcp`;
 const MEMO_FILE = tmp('memo-shared.jsonl');
 
-let http;
+let http: ChildProcess | undefined;
 
-/** 本体（HTTP のメモサーバー）を起こし、応答できるようになるまで待つ */
 before(async () => {
 	await rm(MEMO_FILE, { force: true });
-
-	http = spawn(process.execPath, [sample('07-http/server.mjs')], {
-		env: { ...process.env, PORT: String(PORT), MEMO_FILE },
-		stdio: 'ignore',
-	});
-
-	// 待ち受けが始まるまで叩いて確かめる
-	for (let i = 0; i < 40; i++) {
-		try {
-			await fetch(`http://localhost:${PORT}/mcp`, { method: 'POST' });
-			return;
-		} catch {
-			await new Promise((r) => setTimeout(r, 250));
-		}
-	}
-	throw new Error('本体が起動しなかった');
+	http = await startHttpMemo(PORT, MEMO_FILE);
 });
 
 after(() => http?.kill());
 
+/** 中継先は環境変数ではなく --target で渡す */
+function bridge() {
+	return connect(sample('10-shared/bridge.mjs'), { args: ['--target', TARGET] });
+}
+
 test('ブリッジ越しでもツールの一覧が取れる', async () => {
-	const client = await connect(sample('10-shared/bridge.mjs'), {
-		env: { MCP_TARGET: `http://localhost:${PORT}/mcp` },
-	});
+	const client = await bridge();
 
 	try {
 		const { tools } = await client.listTools();
@@ -49,12 +37,8 @@ test('ブリッジ越しでもツールの一覧が取れる', async () => {
 });
 
 test('2 本のブリッジが同じ本体を見ている（片方で書いた内容が他方で読める）', async () => {
-	const a = await connect(sample('10-shared/bridge.mjs'), {
-		env: { MCP_TARGET: `http://localhost:${PORT}/mcp` },
-	});
-	const b = await connect(sample('10-shared/bridge.mjs'), {
-		env: { MCP_TARGET: `http://localhost:${PORT}/mcp` },
-	});
+	const a = await bridge();
+	const b = await bridge();
 
 	try {
 		const mark = `共有の確認 ${Date.now()}`;
@@ -75,7 +59,7 @@ test('本体が落ちているときは接続の時点で失敗する（固ま�
 	await assert.rejects(
 		() => connect(sample('10-shared/bridge.mjs'), {
 			// 誰も待ち受けていないポート
-			env: { MCP_TARGET: 'http://localhost:3397/mcp' },
+			args: ['--target', 'http://localhost:3397/mcp'],
 		}),
 		/中継できない/,
 	);

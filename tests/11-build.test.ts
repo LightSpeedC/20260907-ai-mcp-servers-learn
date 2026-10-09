@@ -3,7 +3,7 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { connect, sample, textOf } from './helpers/client.mjs';
+import { connect, sample, textOf } from './helpers/client.ts';
 
 test('実行できるコマンドの一覧を読める', async () => {
 	const client = await connect(sample('11-build/server.mjs'));

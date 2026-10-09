@@ -1,13 +1,19 @@
 // メモサーバーの Streamable HTTP 版
 //
 // 中身（memo-tools.mjs）は stdio 版とまったく同じ。繋ぎ先だけが違う。
-// 待ち受けポートは環境変数 PORT で変えられる（既定 3333）。
+// 待ち受けポートは引数 --port で変えられる（既定 3333）。
+// 環境変数にしないのは、tasklist 等のプロセス一覧に出ず、どれがどのポートか見分けられないため。
 
 import { createServer } from 'node:http';
+import { parseArgs } from 'node:util';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { createMemoServer } from '../06-memo/memo-tools.mjs';
 
-const PORT = Number(process.env.PORT ?? 3333);
+const { values } = parseArgs({ options: { port: { type: 'string', default: '3333' } } });
+const PORT = Number(values.port);
+
+// プロセス一覧のウィンドウタイトルにもポートを出す
+process.title = `memo-http:${PORT}`;
 
 const http = createServer(async (req, res) => {
 	// MCP のエンドポイントは 1 つ。ここに POST が来る

@@ -5,7 +5,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { ElicitRequestSchema } from '@modelcontextprotocol/sdk/types.js';
-import { connect, sample, textOf } from './helpers/client.mjs';
+import { connect, sample, textOf } from './helpers/client.ts';
 
 test('progressToken を渡すと進捗が届く', async () => {
 	const client = await connect(sample('08-notify/server.mjs'));

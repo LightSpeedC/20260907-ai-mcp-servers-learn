@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { CallToolResultSchema } from '@modelcontextprotocol/sdk/types.js';
-import { connect, sample } from './helpers/client.mjs';
+import { connect, sample } from './helpers/client.ts';
 
 const TASK_CAPS = {
 	tasks: { list: {}, cancel: {}, requests: { tools: { call: {} } } },

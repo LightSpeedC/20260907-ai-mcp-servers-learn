@@ -2,7 +2,7 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { connect, sample, textOf } from './helpers/client.mjs';
+import { connect, sample, textOf } from './helpers/client.ts';
 
 test('SDK 版は手書き版と同じ結果を返す', async () => {
 	const client = await connect(sample('03-sdk/server.mjs'));

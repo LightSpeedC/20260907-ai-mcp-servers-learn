@@ -3,7 +3,7 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { connect, sample, textOf } from './helpers/client.mjs';
+import { connect, sample, textOf } from './helpers/client.ts';
 
 test('SDK 無しのサーバーでも initialize から tools/call まで通る', async () => {
 	const client = await connect(sample('02-minimal/server.mjs'));

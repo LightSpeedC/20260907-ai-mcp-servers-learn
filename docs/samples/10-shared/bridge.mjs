@@ -6,11 +6,18 @@
 //   Claude Code ──stdio──▶ bridge ──HTTP──▶ 常駐サーバー
 //   Codex       ──stdio──▶ bridge ──┘
 //
-// 中継先は環境変数 MCP_TARGET で指定する（既定 http://localhost:3333/mcp）。
+// 中継先は引数 --target で指定する（既定 http://localhost:3333/mcp）。
+// 環境変数にしないのは、プロセス一覧に出ず、どのブリッジがどこへ繋いでいるか見分けられないため。
 
 import { createInterface } from 'node:readline';
+import { parseArgs } from 'node:util';
 
-const TARGET = process.env.MCP_TARGET ?? 'http://localhost:3333/mcp';
+const { values } = parseArgs({
+	options: { target: { type: 'string', default: 'http://localhost:3333/mcp' } },
+});
+const TARGET = values.target;
+
+process.title = `memo-bridge:${new URL(TARGET).port || '80'}`;
 
 // stdout は JSON-RPC 専用。ログは stderr へ
 function log(...args) {

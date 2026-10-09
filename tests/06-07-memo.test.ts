@@ -3,11 +3,11 @@
 
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
+import type { ChildProcess } from 'node:child_process';
 import { rm } from 'node:fs/promises';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
-import { connect, sample, textOf, tmp } from './helpers/client.mjs';
+import { connect, sample, startHttpMemo, textOf, tmp } from './helpers/client.ts';
 
 const STDIO_FILE = tmp('memo-stdio.jsonl');
 const HTTP_FILE = tmp('memo-http-test.jsonl');
@@ -70,25 +70,11 @@ test('何度実行しても同じ結果になる（前の実行が残らない�
 
 // ── ここから HTTP 版 ──────────────────────────────────────
 
-let http;
+let http: ChildProcess | undefined;
 
 before(async () => {
 	await rm(HTTP_FILE, { force: true });
-
-	http = spawn(process.execPath, [sample('07-http/server.mjs')], {
-		env: { ...process.env, PORT: String(PORT), MEMO_FILE: HTTP_FILE },
-		stdio: 'ignore',
-	});
-
-	for (let i = 0; i < 40; i++) {
-		try {
-			await fetch(`http://localhost:${PORT}/mcp`, { method: 'POST' });
-			return;
-		} catch {
-			await new Promise((r) => setTimeout(r, 250));
-		}
-	}
-	throw new Error('HTTP のサーバーが起動しなかった');
+	http = await startHttpMemo(PORT, HTTP_FILE);
 });
 
 after(() => http?.kill());
