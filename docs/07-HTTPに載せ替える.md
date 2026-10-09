@@ -2,7 +2,7 @@
 
 同じサーバーを Streamable HTTP で動かす
 
-> 📅 作成: 2026-09-07 / 更新: 2026-09-07
+> 📅 作成: 2026-09-07 / 更新: 2026-10-09
 
 [06. ハンズオン① メモサーバー](06-ハンズオン-メモサーバー.md)
 
@@ -41,10 +41,15 @@
 
 ```javascript
 import { createServer } from 'node:http';
+import { parseArgs } from 'node:util';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { createMemoServer } from '../06-memo/memo-tools.mjs';
 
-const PORT = Number(process.env.PORT ?? 3333);
+const { values } = parseArgs({ options: { port: { type: 'string', default: '3333' } } });
+const PORT = Number(values.port);
+
+// プロセス一覧のウィンドウタイトルにもポートを出す
+process.title = `memo-http:${PORT}`;
 
 const http = createServer(async (req, res) => {
 	// MCP のエンドポイントは 1 つ。ここに POST が来る
@@ -114,13 +119,14 @@ http.listen(PORT, () => {
 ## 4. 動かす
 
 ```powershell
-$env:PORT = "3333"
-node docs/samples/07-http/server.mjs
+node docs/samples/07-http/server.mjs --port 3333
 ```
 
 ```text
 メモサーバー（HTTP）: http://localhost:3333/mcp
 ```
+
+ポートは**環境変数ではなく引数**で渡します。常駐させると、同じサーバーを本番用・試験用と複数立てることがあります。引数ならプロセス一覧（`tasklist` やタスクマネージャー）のコマンドラインに出るので、どれがどのポートかを見分けて止められます。環境変数は一覧に出ません。
 
 ### 叩いてみる
 

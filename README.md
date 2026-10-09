@@ -2,7 +2,7 @@
 
 Claude Code・Codex・Antigravity CLI から呼び出せる MCP Server を、いちから自分で書けるようになるための資料
 
-> 📅 作成: 2026-09-07 / 更新: 2026-09-07
+> 📅 作成: 2026-09-07 / 更新: 2026-10-09
 
 MCP（Model Context Protocol）を知らないところから始めて、120 分で自分の MCP Server を書き、AI コーディング CLI に登録して呼び出せるところまで進みます。JavaScript の文法は知っている前提で、MCP の側だけを扱います。<br>載せてあるコードはすべて動かして確かめたものです。
 
@@ -66,7 +66,7 @@ npm install
 node --test --test-concurrency=1 tests/
 ```
 
-`tools/40_test/run-tests.cmd` をダブルクリックしても同じことができます。
+`tools/40_test/run-tests.cmd` をダブルクリックしても同じことができます。bun が入っていれば、続けて `bun test` でも流します。テストは TypeScript で書いてあり、Node.js・bun ともそのまま実行できます。
 
 ### 対象環境
 
@@ -90,15 +90,20 @@ node --test --test-concurrency=1 tests/
 | `tests/` | サンプルを検証するテスト |
 | `tools/40_test/` | テストの実行ランチャー |
 | `notes/` | 作る側のための管理ドキュメント |
+| `AGENTS.md` | AI エージェントにローカルルールを読ませる入口 |
 
 ### 作る側の資料
 
 [MCP Server 学習資料 計画](notes/10_plan/p260907-01-MCP学習資料.md)
+
+[課題](notes/40_issues/issues.md)
+
+[ローカルルール](notes/90_rules/local-rules.md)
 
 ### 参考にした資料
 
 | 資料 | 関係 |
 |---|---|
 | [MCP 仕様 2025-11-25](https://modelcontextprotocol.io/specification/2025-11-25/) | 本資料の根拠。迷ったらこちらが正 |
-| [TypeScript 学習資料](https://lightspeedc.com/20260828-typescript-learn/) | 構成と書き方を揃えている。型の話はこちらに譲る |
-| [PowerShell 学習資料](https://lightspeedc.com/20260822-powershell-pwsh-learn/) | 構成と書き方を揃えている |
+| TypeScript 学習資料 | 構成と書き方を揃えている。型の話はこちらに譲る |
+| PowerShell 学習資料 | 構成と書き方を揃えている |

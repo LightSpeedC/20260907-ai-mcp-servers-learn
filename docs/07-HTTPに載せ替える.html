@@ -24,7 +24,7 @@
 	<div class="inner">
 		<h1>07. HTTP に載せ替える</h1>
 		<p class="lead">同じサーバーを Streamable HTTP で動かす</p>
-		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
+		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-10-09</div>
 	</div>
 </div>
 
@@ -141,10 +141,15 @@
 <p><a href="samples/07-http/server.mjs">samples/07-http/server.mjs</a> の全文です。<strong><code>memo-tools.mjs</code> はそのまま使います</strong>。</p>
 
 <pre><code class="language-javascript">import { createServer } from 'node:http';
+import { parseArgs } from 'node:util';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { createMemoServer } from '../06-memo/memo-tools.mjs';
 
-const PORT = Number(process.env.PORT ?? 3333);
+const { values } = parseArgs({ options: { port: { type: 'string', default: '3333' } } });
+const PORT = Number(values.port);
+
+// プロセス一覧のウィンドウタイトルにもポートを出す
+process.title = `memo-http:${PORT}`;
 
 const http = createServer(async (req, res) =&gt; {
 	// MCP のエンドポイントは 1 つ。ここに POST が来る
@@ -302,10 +307,11 @@ http.listen(PORT, () =&gt; {
 <section class="ch04" id="ch04">
 <h1>動かす</h1>
 
-<pre><code class="language-powershell">$env:PORT = "3333"
-node docs/samples/07-http/server.mjs</code></pre>
+<pre><code class="language-powershell">node docs/samples/07-http/server.mjs --port 3333</code></pre>
 
 <pre><code class="language-text">メモサーバー（HTTP）: http://localhost:3333/mcp</code></pre>
+
+<p>ポートは<strong>環境変数ではなく引数</strong>で渡します。常駐させると、同じサーバーを本番用・試験用と複数立てることがあります。引数ならプロセス一覧（<code>tasklist</code> やタスクマネージャー）のコマンドラインに出るので、どれがどのポートかを見分けて止められます。環境変数は一覧に出ません。</p>
 
 <h2>叩いてみる</h2>
 

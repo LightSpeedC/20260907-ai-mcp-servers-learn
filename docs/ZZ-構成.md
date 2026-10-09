@@ -112,8 +112,8 @@ node --test --test-concurrency=1 tests/
 | 対象 | 範囲 |
 |---|---|
 | Claude Code | ✅ **全章** 登録・呼び出し・進捗通知・elicitation・タスクの非対応まで確認 |
-| Codex | ⚠ **一部** 接続と `protocolVersion` の確認まで |
-| Antigravity | **未** 登録コマンドの書式のみ |
+| Codex | ⚠️ **一部** 接続と `protocolVersion` の確認まで |
+| Antigravity | ⬜ **未** 登録コマンドの書式のみ |
 
 ![ホストごとに喋る版が違う実測結果](images/ZZ-構成-fig03.svg)
 

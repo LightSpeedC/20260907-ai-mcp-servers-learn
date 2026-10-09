@@ -249,7 +249,7 @@ svg { max-width: 100%; height: auto; }
 	<div class="inner">
 		<h1>MCP Server 学習資料</h1>
 		<p class="lead">Claude Code・Codex・Antigravity CLI から呼び出せる MCP Server を、いちから自分で書けるようになるための資料</p>
-		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
+		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-10-09</div>
 	</div>
 </div>
 
@@ -354,7 +354,7 @@ svg { max-width: 100%; height: auto; }
 
 <pre><code class="language-powershell">node --test --test-concurrency=1 tests/</code></pre>
 
-<p><code>tools/40_test/run-tests.cmd</code> をダブルクリックしても同じことができます。</p>
+<p><code>tools/40_test/run-tests.cmd</code> をダブルクリックしても同じことができます。bun が入っていれば、続けて <code>bun test</code> でも流します。テストは TypeScript で書いてあり、Node.js・bun ともそのまま実行できます。</p>
 
 <h2>対象環境</h2>
 
@@ -392,12 +392,15 @@ svg { max-width: 100%; height: auto; }
 		<tr><td class="nowrap"><code>tests/</code></td><td>サンプルを検証するテスト</td></tr>
 		<tr><td class="nowrap"><code>tools/40_test/</code></td><td>テストの実行ランチャー</td></tr>
 		<tr><td class="nowrap"><code>notes/</code></td><td>作る側のための管理ドキュメント</td></tr>
+		<tr><td class="nowrap"><code>AGENTS.md</code></td><td>AI エージェントにローカルルールを読ませる入口</td></tr>
 	</tbody>
 </table>
 </div>
 
 <h2>作る側の資料</h2>
 <p><a class="doclink" href="notes/10_plan/p260907-01-MCP学習資料.html">MCP Server 学習資料 計画</a></p>
+<p><a class="doclink" href="notes/40_issues/issues.html">課題</a></p>
+<p><a class="doclink" href="notes/90_rules/local-rules.html">ローカルルール</a></p>
 
 <h2>参考にした資料</h2>
 <div class="tablewrap">
@@ -407,8 +410,8 @@ svg { max-width: 100%; height: auto; }
 	</thead>
 	<tbody>
 		<tr><td class="nowrap"><a href="https://modelcontextprotocol.io/specification/2025-11-25/">MCP 仕様 2025-11-25</a></td><td>本資料の根拠。迷ったらこちらが正</td></tr>
-		<tr><td class="nowrap"><a href="https://lightspeedc.com/20260828-typescript-learn/">TypeScript 学習資料</a></td><td>構成と書き方を揃えている。型の話はこちらに譲る</td></tr>
-		<tr><td class="nowrap"><a href="https://lightspeedc.com/20260822-powershell-pwsh-learn/">PowerShell 学習資料</a></td><td>構成と書き方を揃えている</td></tr>
+		<tr><td class="nowrap">TypeScript 学習資料</td><td>構成と書き方を揃えている。型の話はこちらに譲る</td></tr>
+		<tr><td class="nowrap">PowerShell 学習資料</td><td>構成と書き方を揃えている</td></tr>
 	</tbody>
 </table>
 </div>
