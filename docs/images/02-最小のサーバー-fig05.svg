@@ -13,7 +13,7 @@
 	<text x="760" y="72" font-size="12" font-weight="700" fill="#1d7a3c">読めた</text>
 
 	<rect x="80" y="95" width="740" height="34" rx="6" fill="#fdeaea" stroke="#a51f22" stroke-width="2"/>
-	<text x="100" y="117" font-size="12" fill="#a51f22" font-family="monospace">サーバーを起動しました</text>
+	<text x="100" y="117" font-size="12" fill="#a51f22" font-family="monospace">サーバを起動しました</text>
 	<text x="700" y="117" font-size="12" font-weight="700" fill="#a51f22">JSON として読めない</text>
 
 	<rect x="80" y="140" width="740" height="34" rx="6" fill="#f2f4f7" stroke="#97a1ae" stroke-width="2" stroke-dasharray="5 3"/>

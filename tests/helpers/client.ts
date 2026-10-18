@@ -1,6 +1,6 @@
 // テスト用の MCP クライアント。
 //
-// サンプルのサーバーを子プロセスとして起こし、SDK のクライアントで繋ぐ。
+// サンプルのサーバを子プロセスとして起こし、SDK のクライアントで繋ぐ。
 // 手で JSON-RPC を流し込むのと違い、応答を待って順に確かめられる。
 
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
@@ -28,7 +28,7 @@ export function tmp(name: string): string {
 export interface ConnectOptions {
 	/** 追加で渡す環境変数 */
 	env?: Record<string, string>;
-	/** サーバーに渡す起動引数（--port 等） */
+	/** サーバに渡す起動引数（--port 等） */
 	args?: string[];
 	/** クライアントが名乗る能力 */
 	capabilities?: ClientCapabilities;
@@ -37,9 +37,9 @@ export interface ConnectOptions {
 }
 
 /**
- * stdio のサーバーに繋いだクライアントを返す。
+ * stdio のサーバに繋いだクライアントを返す。
  *
- * @param serverPath サーバーの .mjs のパス（command を渡した場合は使わない）
+ * @param serverPath サーバの .mjs のパス（command を渡した場合は使わない）
  */
 export async function connect(serverPath: string, options: ConnectOptions = {}): Promise<Client> {
 	// exe を直接起動する場合はスクリプトのパスが要らない
@@ -51,7 +51,7 @@ export async function connect(serverPath: string, options: ConnectOptions = {}):
 		args,
 		// 環境変数を渡さないと既定の PATH すら無くなる
 		env: { ...process.env, ...(options.env ?? {}) } as Record<string, string>,
-		// サーバーの stderr はテストの出力に混ぜない
+		// サーバの stderr はテストの出力に混ぜない
 		stderr: 'ignore',
 	});
 
@@ -65,7 +65,7 @@ export async function connect(serverPath: string, options: ConnectOptions = {}):
 }
 
 /**
- * HTTP のメモサーバー（07 章）を起こし、応答できるようになるまで待つ。
+ * HTTP のメモサーバ（07 章）を起こし、応答できるようになるまで待つ。
  * ポートは環境変数ではなく --port で渡す（tasklist で見分けられるように）
  */
 export async function startHttpMemo(port: number, memoFile: string): Promise<ChildProcess> {
@@ -83,7 +83,7 @@ export async function startHttpMemo(port: number, memoFile: string): Promise<Chi
 		}
 	}
 	child.kill();
-	throw new Error('HTTP のサーバーが起動しなかった');
+	throw new Error('HTTP のサーバが起動しなかった');
 }
 
 /** ツールを呼んで、返ってきた文字列だけを取り出す */

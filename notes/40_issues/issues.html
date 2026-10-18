@@ -322,7 +322,7 @@ summary .no {
 	<thead><tr><th class="nowrap">状態</th><th>やること</th></tr></thead>
 	<tbody>
 		<tr><td class="nowrap"><span class="badge b-none">未</span></td><td>書き込み先と目的を示して許可を取る</td></tr>
-		<tr><td class="nowrap"><span class="badge b-none">未</span></td><td>Codex にメモサーバーを登録し、<code>memo_add</code>・<code>memo_search</code> を呼ばせる</td></tr>
+		<tr><td class="nowrap"><span class="badge b-none">未</span></td><td>Codex にメモサーバを登録し、<code>memo_add</code>・<code>memo_search</code> を呼ばせる</td></tr>
 		<tr><td class="nowrap"><span class="badge b-none">未</span></td><td>Antigravity でも同じことを行う</td></tr>
 		<tr><td class="nowrap"><span class="badge b-none">未</span></td><td>結果を 04 章と計画書に反映する</td></tr>
 	</tbody>
@@ -331,15 +331,15 @@ summary .no {
 </details>
 
 <details class="md-flat" open>
-<summary><span class="badge b-none">未</span><span class="no">i261009-02</span> テストランナーが他プロジェクトの .js を実行した件の影響を確かめる</summary>
-<p>ランチャーが <code>node --test</code> に対象を渡し損ね、カレント配下（プロジェクトの外を含む）を探して、他プロジェクトのファイルを実行しました。プロセスの残りと待ち受けは無いことを確かめています。書き込みは行っていません。</p>
+<summary><span class="badge b-none">未</span><span class="no">i261009-02</span> テストランナが他プロジェクトの .js を実行した件の影響を確かめる</summary>
+<p>ランチャが <code>node --test</code> に対象を渡し損ね、カレント配下（プロジェクトの外を含む）を探して、他プロジェクトのファイルを実行しました。プロセスの残りと待ち受けは無いことを確かめています。書き込みは行っていません。</p>
 <p>実行されたファイルが何かを書き換えていないかは、まだ確かめていません。<strong>確かめるには他プロジェクトを読むことになるので、対象と目的を示して許可を取ってから行う</strong>。</p>
 <div class="tablewrap">
 <table>
 	<thead><tr><th class="nowrap">状態</th><th>やること</th></tr></thead>
 	<tbody>
 		<tr><td class="nowrap"><span class="badge b-none">未</span></td><td>調べるかどうかを決める</td></tr>
-		<tr><td class="nowrap"><span class="badge b-ok">済</span></td><td>ランチャーを直し、対象を絶対パスの配列で渡す</td></tr>
+		<tr><td class="nowrap"><span class="badge b-ok">済</span></td><td>ランチャを直し、対象を絶対パスの配列で渡す</td></tr>
 		<tr><td class="nowrap"><span class="badge b-ok">済</span></td><td>共通ルールに「対象を渡すコマンドは、渡ったことを確かめてから実行する」を加える</td></tr>
 	</tbody>
 </table>
@@ -369,8 +369,8 @@ summary .no {
 <h1>ルールへの追従（2 件）</h1>
 
 <details class="md-flat">
-<summary><span class="badge b-ok">済</span><span class="no">i261009-04</span> HTTP サーバーとブリッジの識別情報を引数で渡す</summary>
-<p>07 章のサーバーはポートを、10 章のブリッジは中継先を、環境変数で受け取っていました。環境変数はプロセス一覧に出ないため、複数立てたときに見分けられません。</p>
+<summary><span class="badge b-ok">済</span><span class="no">i261009-04</span> HTTP サーバとブリッジの識別情報を引数で渡す</summary>
+<p>07 章のサーバはポートを、10 章のブリッジは中継先を、環境変数で受け取っていました。環境変数はプロセス一覧に出ないため、複数立てたときに見分けられません。</p>
 <div class="tablewrap">
 <table>
 	<thead><tr><th class="nowrap">状態</th><th>やること</th></tr></thead>
@@ -390,7 +390,7 @@ summary .no {
 	<thead><tr><th class="nowrap">状態</th><th>やること</th></tr></thead>
 	<tbody>
 		<tr><td class="nowrap"><span class="badge b-ok">済</span></td><td>テスト 8 本と helper を <code>.ts</code> にする</td></tr>
-		<tr><td class="nowrap"><span class="badge b-ok">済</span></td><td>ランチャーで <code>bun test</code> も流す</td></tr>
+		<tr><td class="nowrap"><span class="badge b-ok">済</span></td><td>ランチャで <code>bun test</code> も流す</td></tr>
 	</tbody>
 </table>
 </div>

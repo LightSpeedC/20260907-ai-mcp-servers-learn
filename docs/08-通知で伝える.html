@@ -23,7 +23,7 @@
 <div class="titlebar">
 	<div class="inner">
 		<h1>08. 通知で伝える</h1>
-		<p class="lead">処理の結果をサーバーから伝える方法と、その限界</p>
+		<p class="lead">処理の結果をサーバから伝える方法と、その限界</p>
 		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
 	</div>
 </div>
@@ -109,7 +109,7 @@
 </figure>
 
 <div class="callout">
-	<p><strong>なぜこうなっているのか。</strong>仕様には <code>Servers MUST NOT initiate JSON-RPC requests</code> と書かれています。やりとりを始めるのは常にクライアント側で、サーバーは応答と通知だけを返します。<a href="01-背景.html">01 章</a>で触れた非対称が、ここで効いてきます。</p>
+	<p><strong>なぜこうなっているのか。</strong>仕様には <code>Servers MUST NOT initiate JSON-RPC requests</code> と書かれています。やりとりを始めるのは常にクライアント側で、サーバは応答と通知だけを返します。<a href="01-背景.html">01 章</a>で触れた非対称が、ここで効いてきます。</p>
 </div>
 </section>
 
@@ -204,7 +204,7 @@
 <section class="ch03" id="ch03">
 <h1>利用者に尋ねる</h1>
 
-<p>サーバーからリクエストは送れない、と書きました。<strong>ただし例外があります</strong>。クライアントが「尋ねられる用意がある」と名乗っている場合です。</p>
+<p>サーバからリクエストは送れない、と書きました。<strong>ただし例外があります</strong>。クライアントが「尋ねられる用意がある」と名乗っている場合です。</p>
 
 <h2>相手が名乗っているか確かめる</h2>
 
@@ -264,7 +264,7 @@ return { content: [{ type: 'text', text: `こんにちは、${answer.content?.na
 	</defs>
 
 	<rect x="30" y="30" width="140" height="36" rx="7" fill="url(#g-08-3a)"/>
-	<text x="100" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">サーバー</text>
+	<text x="100" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">サーバ</text>
 	<line x1="100" y1="66" x2="100" y2="200" stroke="#d9dfe8" stroke-width="2"/>
 
 	<rect x="380" y="30" width="140" height="36" rx="7" fill="url(#g-08-3a)"/>
@@ -308,7 +308,7 @@ return { content: [{ type: 'text', text: `こんにちは、${answer.content?.na
 <section class="ch04" id="ch04">
 <h1>画面に出す（枠の外）</h1>
 
-<p>「ビルドが終わったら気づきたい」。この要望に<strong>最も確実に応えるのは、MCP の外側</strong>です。サーバーは普通のプロセスなので、OS の通知を出せます。</p>
+<p>「ビルドが終わったら気づきたい」。この要望に<strong>最も確実に応えるのは、MCP の外側</strong>です。サーバは普通のプロセスなので、OS の通知を出せます。</p>
 
 <pre><code class="language-javascript">await execFileAsync('powershell', [
 	'-NoProfile', '-ExecutionPolicy', 'Bypass',
@@ -349,7 +349,7 @@ $notifier.Show([Windows.UI.Notifications.ToastNotification]::new($xml))</code></
 	</defs>
 
 	<rect x="330" y="100" width="220" height="60" rx="9" fill="#1d7a3c"/>
-	<text x="440" y="126" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">MCP サーバー</text>
+	<text x="440" y="126" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">MCP サーバ</text>
 	<text x="440" y="146" text-anchor="middle" font-size="11" fill="#fff">ただのプロセス</text>
 
 	<line x1="330" y1="118" x2="180" y2="80" stroke="#4a5568" stroke-width="2" marker-end="url(#m-08-4a)"/>
@@ -379,7 +379,7 @@ $notifier.Show([Windows.UI.Notifications.ToastNotification]::new($xml))</code></
 <p>最後に、はっきり線を引きます。</p>
 
 <div class="callout">
-	<p><strong>誰も何も呼んでいないときに、サーバーから会話へ割り込むことはできません。</strong>これは実装の都合ではなく、仕様がそう決めています。通知には流し込む先が要り、その先はクライアントが開いたときにしか存在しません。</p>
+	<p><strong>誰も何も呼んでいないときに、サーバから会話へ割り込むことはできません。</strong>これは実装の都合ではなく、仕様がそう決めています。通知には流し込む先が要り、その先はクライアントが開いたときにしか存在しません。</p>
 </div>
 
 <figure>
@@ -400,7 +400,7 @@ $notifier.Show([Windows.UI.Notifications.ToastNotification]::new($xml))</code></
 	<line x1="210" y1="120" x2="320" y2="120" stroke="#4a5568" stroke-width="2" marker-end="url(#m-08-5a)"/>
 
 	<rect x="320" y="90" width="180" height="60" rx="9" fill="#1d7a3c"/>
-	<text x="410" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">サーバーは知る</text>
+	<text x="410" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">サーバは知る</text>
 	<text x="410" y="136" text-anchor="middle" font-size="11" fill="#fff">プロセスは動いている</text>
 
 	<line x1="500" y1="120" x2="640" y2="120" stroke="#a51f22" stroke-width="3" stroke-dasharray="8 5"/>
@@ -429,14 +429,14 @@ $notifier.Show([Windows.UI.Notifications.ToastNotification]::new($xml))</code></
 	<tbody>
 		<tr><td class="nowrap">ビルドの完了を知りたい</td><td>ツールの中で最後まで待ち、進捗を送る。終わったら OS の通知も出す</td></tr>
 		<tr><td class="nowrap">長すぎて待てない</td><td>タスクにする（<a href="09-タスク.html">09 章</a>）。ただし相手の対応が要る</td></tr>
-		<tr><td class="nowrap">溜まったものを伝えたい</td><td>サーバー側に溜めておき、<strong>次に呼ばれたとき</strong>に結果へ添える</td></tr>
+		<tr><td class="nowrap">溜まったものを伝えたい</td><td>サーバ側に溜めておき、<strong>次に呼ばれたとき</strong>に結果へ添える</td></tr>
 		<tr><td class="nowrap">今すぐ人に気づかせたい</td><td>OS の通知。MCP の外</td></tr>
 	</tbody>
 </table>
 </div>
 
 <div class="callout">
-	<p><strong>「次に呼ばれたときに伝える」は地味ですが確実です。</strong>サーバー側に未読の知らせを溜めておき、どのツールが呼ばれても結果の末尾に「※ 3 件の完了があります」と付ける。どのホストでも動き、対応状況にも左右されません。</p>
+	<p><strong>「次に呼ばれたときに伝える」は地味ですが確実です。</strong>サーバ側に未読の知らせを溜めておき、どのツールが呼ばれても結果の末尾に「※ 3 件の完了があります」と付ける。どのホストでも動き、対応状況にも左右されません。</p>
 </div>
 
 <h2>次の章へ</h2>

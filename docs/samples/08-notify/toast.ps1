@@ -4,7 +4,7 @@
 	Windows のトースト通知を 1 件出す。
 
 .DESCRIPTION
-	MCP サーバーから「処理が終わった」を人に知らせるために使う。
+	MCP サーバから「処理が終わった」を人に知らせるために使う。
 	WinRT の型を使うため Windows PowerShell 5.1 で実行する（pwsh 7 では型が見つからない）。
 
 .EXAMPLE

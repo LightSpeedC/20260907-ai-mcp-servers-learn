@@ -10,7 +10,7 @@
 	<rect width="100%" height="100%" fill="#ffffff"/>
 
 	<rect x="330" y="100" width="220" height="60" rx="9" fill="#1d7a3c"/>
-	<text x="440" y="126" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">MCP サーバー</text>
+	<text x="440" y="126" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">MCP サーバ</text>
 	<text x="440" y="146" text-anchor="middle" font-size="11" fill="#fff">ただのプロセス</text>
 
 	<line x1="330" y1="118" x2="180" y2="80" stroke="#4a5568" stroke-width="2" marker-end="url(#i2)"/>

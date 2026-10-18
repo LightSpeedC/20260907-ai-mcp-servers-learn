@@ -27,7 +27,7 @@
 	<text x="430" y="170" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">"2025-06-18"</text>
 
 	<rect x="620" y="85" width="240" height="50" rx="8" fill="#1d7a3c"/>
-	<text x="740" y="106" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">あなたのサーバー</text>
+	<text x="740" y="106" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">あなたのサーバ</text>
 	<text x="740" y="124" text-anchor="middle" font-size="11" fill="#fff">来た版に合わせて返す</text>
 
 	<text x="450" y="205" text-anchor="middle" font-size="11" fill="#4a5568">自分の対応版を押し付けず、相手が言ってきた版をそのまま返すのが安全</text>

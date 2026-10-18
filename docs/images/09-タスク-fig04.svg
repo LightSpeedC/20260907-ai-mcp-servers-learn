@@ -14,7 +14,7 @@
 	<line x1="100" y1="66" x2="100" y2="240" stroke="#d9dfe8" stroke-width="2"/>
 
 	<rect x="700" y="30" width="140" height="36" rx="7" fill="url(#i1)"/>
-	<text x="770" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">サーバー</text>
+	<text x="770" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">サーバ</text>
 	<line x1="770" y1="66" x2="770" y2="240" stroke="#d9dfe8" stroke-width="2"/>
 
 	<line x1="100" y1="95" x2="770" y2="95" stroke="#4a5568" stroke-width="1.8" marker-end="url(#i2)"/>

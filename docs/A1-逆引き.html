@@ -57,7 +57,7 @@
 	</thead>
 	<tbody>
 		<tr><td class="nowrap">SDK を入れる</td><td><code>npm install @modelcontextprotocol/sdk</code></td><td class="nowrap"><a href="03-SDKで書き直す.html">03</a></td></tr>
-		<tr><td class="nowrap">サーバーを作る</td><td><code>new McpServer({ name, version })</code></td><td class="nowrap"><a href="03-SDKで書き直す.html">03</a></td></tr>
+		<tr><td class="nowrap">サーバを作る</td><td><code>new McpServer({ name, version })</code></td><td class="nowrap"><a href="03-SDKで書き直す.html">03</a></td></tr>
 		<tr><td class="nowrap">stdio に繋ぐ</td><td><code>await server.connect(new StdioServerTransport())</code></td><td class="nowrap"><a href="03-SDKで書き直す.html">03</a></td></tr>
 		<tr><td class="nowrap">ツールを足す</td><td><code>server.registerTool(name, config, handler)</code></td><td class="nowrap"><a href="03-SDKで書き直す.html">03</a></td></tr>
 		<tr><td class="nowrap">読ませるデータを足す</td><td><code>server.registerResource(name, uri, config, handler)</code></td><td class="nowrap"><a href="05-3つの提供物.html">05</a></td></tr>
@@ -102,7 +102,7 @@ await server.connect(new StdioServerTransport());</code></pre>
 		<tr><td class="nowrap">Claude Code に登録</td><td><code>claude mcp add --scope project 名前 -- node server.mjs</code></td></tr>
 		<tr><td class="nowrap">Codex に登録</td><td><code>codex mcp add 名前 -- node server.mjs</code></td></tr>
 		<tr><td class="nowrap">Antigravity に登録</td><td><code>antigravity --add-mcp '{"name":"名前","command":"node","args":["server.mjs"]}'</code></td></tr>
-		<tr><td class="nowrap">HTTP のサーバーを登録</td><td><code>claude mcp add --transport http 名前 http://localhost:3333/mcp</code></td></tr>
+		<tr><td class="nowrap">HTTP のサーバを登録</td><td><code>claude mcp add --transport http 名前 http://localhost:3333/mcp</code></td></tr>
 		<tr><td class="nowrap">環境変数を渡す</td><td><code>claude mcp add 名前 -e KEY=値 -- node server.mjs</code></td></tr>
 		<tr><td class="nowrap">一覧を見る</td><td><code>claude mcp list</code> ／ <code>codex mcp list</code></td></tr>
 		<tr><td class="nowrap">詳細を見る</td><td><code>claude mcp get 名前</code></td></tr>
@@ -133,7 +133,7 @@ await server.connect(new StdioServerTransport());</code></pre>
 		<tr><td class="nowrap">Claude Code</td><td class="nowrap"><code>claude --version</code></td></tr>
 		<tr><td class="nowrap">Codex</td><td class="nowrap"><code>codex --version</code></td></tr>
 		<tr><td class="nowrap">Antigravity</td><td class="nowrap"><code>antigravity --version</code></td></tr>
-		<tr><td class="nowrap">ホストが喋る MCP の版</td><td class="nowrap"><a href="04-ホストに登録する.html">観測用サーバー</a>のログを見る</td></tr>
+		<tr><td class="nowrap">ホストが喋る MCP の版</td><td class="nowrap"><a href="04-ホストに登録する.html">観測用サーバ</a>のログを見る</td></tr>
 	</tbody>
 </table>
 </div>
@@ -225,7 +225,7 @@ await server.connect(new StdioServerTransport());</code></pre>
 }</code></pre>
 
 <div class="callout">
-	<p><strong>できないこと。</strong>何も呼ばれていないときに、サーバーから会話へ割り込むことはできません。人に知らせたいなら OS の通知など MCP の外の手を使います。<a href="08-通知で伝える.html">08 章</a>に線が引いてあります。</p>
+	<p><strong>できないこと。</strong>何も呼ばれていないときに、サーバから会話へ割り込むことはできません。人に知らせたいなら OS の通知など MCP の外の手を使います。<a href="08-通知で伝える.html">08 章</a>に線が引いてあります。</p>
 </div>
 </section>
 

@@ -1,11 +1,11 @@
-// 02 章「最小のサーバー」が仕様どおりに応答することを確かめる。
-// SDK を使わずに書いたサーバーなので、ここが通れば手書きの JSON-RPC が正しい。
+// 02 章「最小のサーバ」が仕様どおりに応答することを確かめる。
+// SDK を使わずに書いたサーバなので、ここが通れば手書きの JSON-RPC が正しい。
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { connect, sample, textOf } from './helpers/client.ts';
 
-test('SDK 無しのサーバーでも initialize から tools/call まで通る', async () => {
+test('SDK 無しのサーバでも initialize から tools/call まで通る', async () => {
 	const client = await connect(sample('02-minimal/server.mjs'));
 
 	try {
@@ -41,7 +41,7 @@ test('知らないメソッドは JSON-RPC のエラーで返る', async () => {
 	const client = await connect(sample('02-minimal/server.mjs'));
 
 	try {
-		// このサーバーは resources を持たないので method not found になる
+		// このサーバは resources を持たないので method not found になる
 		await assert.rejects(() => client.listResources());
 	} finally {
 		await client.close();

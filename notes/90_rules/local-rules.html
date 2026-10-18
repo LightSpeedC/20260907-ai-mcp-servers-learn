@@ -330,7 +330,7 @@ summary .no {
 	<li>テストごとにポートを分けてある（3397〜3399）。足すときは重ならない番号にする</li>
 </ul>
 
-<h2>ランチャーで対象を渡すときは配列を組む</h2>
+<h2>ランチャで対象を渡すときは配列を組む</h2>
 <ul>
 	<li><strong>Windows PowerShell 5.1 では、1 件だけの配列が代入で文字列に潰れる</strong>。そこへ <code>@変数</code> でスプラッティングすると何も渡らず、<code>node --test</code> も <code>bun test</code> もカレント配下を探し始める</li>
 	<li><strong>このプロジェクトで 2 回起きた</strong>。1 回目は node がプロジェクトの外のファイルまで実行し、2 回目は bun が <code>node_modules</code> の中のテストを 700 件ほど走らせた</li>

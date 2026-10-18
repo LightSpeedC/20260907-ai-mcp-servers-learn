@@ -31,6 +31,6 @@
 	<text x="802" y="93" text-anchor="middle" font-size="12" fill="#fff">使える</text>
 	<text x="802" y="111" text-anchor="middle" font-size="11" fill="#fff">mcp__memo__memo_add</text>
 
-	<text x="450" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">ツールの名前は mcp__&lt;サーバー名&gt;__&lt;ツール名&gt; になる</text>
-	<text x="450" y="192" text-anchor="middle" font-size="11" fill="#4a5568">同じツール名を持つサーバーが複数あっても、サーバー名で分かれる</text>
+	<text x="450" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">ツールの名前は mcp__&lt;サーバ名&gt;__&lt;ツール名&gt; になる</text>
+	<text x="450" y="192" text-anchor="middle" font-size="11" fill="#4a5568">同じツール名を持つサーバが複数あっても、サーバ名で分かれる</text>
 </svg>

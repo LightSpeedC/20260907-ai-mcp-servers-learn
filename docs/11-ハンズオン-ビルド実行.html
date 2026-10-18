@@ -66,7 +66,7 @@
 </div>
 
 <figure>
-<svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ビルド実行サーバーの流れ">
+<svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ビルド実行サーバの流れ">
 	<defs>
 		<linearGradient id="g-11-1a" x1="0" y1="1" x2="0" y2="0">
 			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
@@ -297,7 +297,7 @@ const { code, output } = await run(spec, (n, line) =&gt; {
 	<line x1="210" y1="110" x2="290" y2="110" stroke="#4a5568" stroke-width="2" marker-end="url(#m-11-3a)"/>
 
 	<rect x="290" y="60" width="200" height="100" rx="9" fill="url(#g-11-3a)"/>
-	<text x="390" y="88" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">サーバー</text>
+	<text x="390" y="88" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">サーバ</text>
 	<text x="390" y="112" text-anchor="middle" font-size="11" fill="#fff">溜めつつ</text>
 	<text x="390" y="134" text-anchor="middle" font-size="11" fill="#fff">1 行ごとに通知</text>
 
@@ -397,7 +397,7 @@ return {
 <section class="ch05" id="ch05">
 <h1>越えてはいけない線</h1>
 
-<p>コマンドを実行するサーバーは、<strong>作れるものの中で最も危ないもの</strong>です。線を引いておきます。</p>
+<p>コマンドを実行するサーバは、<strong>作れるものの中で最も危ないもの</strong>です。線を引いておきます。</p>
 
 <div class="tablewrap">
 <table>
@@ -452,11 +452,11 @@ return {
 
 	<text x="450" y="248" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">「何を実行できるか」を、実行時ではなく設計時に決める</text>
 </svg>
-<figcaption>ホスト側の承認は最後の砦であって、最初の砦ではない。範囲はサーバー側で決める。</figcaption>
+<figcaption>ホスト側の承認は最後の砦であって、最初の砦ではない。範囲はサーバ側で決める。</figcaption>
 </figure>
 
 <div class="callout">
-	<p><strong>ツールの説明文は信用されない前提で設計します。</strong>仕様にも「注釈は信用できないものとして扱え」とあります。「危険なので確認してください」と <code>description</code> に書いても、それは<strong>お願い</strong>にすぎません。実際に守らせるには、サーバー側で実行できる範囲を絞るしかありません。</p>
+	<p><strong>ツールの説明文は信用されない前提で設計します。</strong>仕様にも「注釈は信用できないものとして扱え」とあります。「危険なので確認してください」と <code>description</code> に書いても、それは<strong>お願い</strong>にすぎません。実際に守らせるには、サーバ側で実行できる範囲を絞るしかありません。</p>
 </div>
 
 <h2>ここまでで身に付いたこと</h2>

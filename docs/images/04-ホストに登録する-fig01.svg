@@ -39,5 +39,5 @@
 
 	<rect x="730" y="100" width="140" height="56" rx="8" fill="#1d7a3c"/>
 	<text x="800" y="124" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">あなたの</text>
-	<text x="800" y="143" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">サーバー</text>
+	<text x="800" y="143" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">サーバ</text>
 </svg>

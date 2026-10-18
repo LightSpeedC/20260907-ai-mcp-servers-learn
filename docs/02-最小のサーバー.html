@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>02. 最小のサーバー</title>
+<title>02. 最小のサーバ</title>
 <style>
 /* css/style.css が読めなかったときの代替色 */
 .titlebar, section h1, th, a.doclink, .badge { background: #12224d; color: #fff; }
@@ -22,7 +22,7 @@
 
 <div class="titlebar">
 	<div class="inner">
-		<h1>02. 最小のサーバー</h1>
+		<h1>02. 最小のサーバ</h1>
 		<p class="lead">ライブラリを使わず、JSON-RPC を手で組み立てて動かす</p>
 		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
 	</div>
@@ -54,7 +54,7 @@
 
 <p>MCP には公式の SDK があり、次の章ではそれを使います。ここで<strong>あえて手で書く</strong>のには理由があります。</p>
 
-<p>SDK を使うと 20 行ほどでサーバーが完成します。ところが、いざホストに登録して動かないとき、<strong>どこまで届いているのかが分かりません</strong>。プロセスは起動しているのか。初期化まで進んだのか。ツールの一覧は渡ったのか。SDK の内側で起きていることが見えないと、切り分けようがありません。</p>
+<p>SDK を使うと 20 行ほどでサーバが完成します。ところが、いざホストに登録して動かないとき、<strong>どこまで届いているのかが分かりません</strong>。プロセスは起動しているのか。初期化まで進んだのか。ツールの一覧は渡ったのか。SDK の内側で起きていることが見えないと、切り分けようがありません。</p>
 
 <p>この章で JSON-RPC を 1 往復させておけば、以降どの章で詰まっても「どこまで来ているか」を自分で確かめられます。<strong>15 分の投資で、残りの時間が助かります。</strong></p>
 
@@ -105,7 +105,7 @@
 		<tr><th class="nowrap">運び方</th><th>やっていること</th><th>いつ使うか</th></tr>
 	</thead>
 	<tbody>
-		<tr><td class="nowrap">stdio</td><td>ホストがサーバーを子プロセスとして起動し、その標準入出力に JSON を 1 行ずつ流す</td><td>手元の PC で動かすとき。<strong>まずこれ</strong></td></tr>
+		<tr><td class="nowrap">stdio</td><td>ホストがサーバを子プロセスとして起動し、その標準入出力に JSON を 1 行ずつ流す</td><td>手元の PC で動かすとき。<strong>まずこれ</strong></td></tr>
 		<tr><td class="nowrap">Streamable HTTP</td><td>1 つの URL に HTTP POST する</td><td>別のマシンに置くとき、1 本を共有するとき</td></tr>
 	</tbody>
 </table>
@@ -129,7 +129,7 @@
 	<text x="130" y="136" text-anchor="middle" font-size="11" fill="#fff">親プロセス</text>
 
 	<rect x="480" y="80" width="200" height="80" rx="10" fill="#1d7a3c"/>
-	<text x="580" y="115" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">サーバー</text>
+	<text x="580" y="115" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">サーバ</text>
 	<text x="580" y="136" text-anchor="middle" font-size="11" fill="#fff">子プロセス（node）</text>
 
 	<line x1="220" y1="100" x2="480" y2="100" stroke="#4a5568" stroke-width="2" marker-end="url(#m-02-2a)"/>
@@ -178,7 +178,7 @@ rl.on('line', (line) =&gt; {
 <section class="ch03" id="ch03">
 <h1>3 つのメソッドに答える</h1>
 
-<p>最低限のサーバーが答えるべきメソッドは 3 つです。</p>
+<p>最低限のサーバが答えるべきメソッドは 3 つです。</p>
 
 <div class="tablewrap">
 <table>
@@ -297,7 +297,7 @@ rl.on('line', (line) =&gt; {
 </div>
 
 <div class="callout">
-	<p><strong>ツールの失敗は <code>isError</code> で返します。</strong>JSON-RPC のエラー（<code>error</code>）にすると「サーバーが壊れた」扱いになり、モデルには理由が伝わりません。<code>isError: true</code> と本文を返せば、モデルはそれを読んで引数を直し、もう一度呼べます。<strong>直せる失敗は結果として返す</strong>のが原則です。</p>
+	<p><strong>ツールの失敗は <code>isError</code> で返します。</strong>JSON-RPC のエラー（<code>error</code>）にすると「サーバが壊れた」扱いになり、モデルには理由が伝わりません。<code>isError: true</code> と本文を返せば、モデルはそれを読んで引数を直し、もう一度呼べます。<strong>直せる失敗は結果として返す</strong>のが原則です。</p>
 </div>
 
 <p>全体は <a href="samples/02-minimal/server.mjs">samples/02-minimal/server.mjs</a> にあります。90 行ほどです。</p>
@@ -367,10 +367,10 @@ rl.on('line', (line) =&gt; {
 <section class="ch05" id="ch05">
 <h1>stdout を汚さない</h1>
 
-<p>MCP サーバーで最も多い事故がこれです。</p>
+<p>MCP サーバで最も多い事故がこれです。</p>
 
 <pre><code class="language-javascript">// これをやると壊れる
-console.log('サーバーを起動しました');</code></pre>
+console.log('サーバを起動しました');</code></pre>
 
 <p><code>console.log</code> は stdout に書きます。stdout は JSON-RPC の通り道なので、ホストはこの行を<strong>メッセージとして読もうとします</strong>。JSON として読めないので、その接続は成立しません。</p>
 
@@ -389,7 +389,7 @@ console.log('サーバーを起動しました');</code></pre>
 	<text x="760" y="72" font-size="12" font-weight="700" fill="#1d7a3c">読めた</text>
 
 	<rect x="80" y="95" width="740" height="34" rx="6" fill="#fdeaea" stroke="#a51f22" stroke-width="2"/>
-	<text x="100" y="117" font-size="12" fill="#a51f22" font-family="monospace">サーバーを起動しました</text>
+	<text x="100" y="117" font-size="12" fill="#a51f22" font-family="monospace">サーバを起動しました</text>
 	<text x="700" y="117" font-size="12" font-weight="700" fill="#a51f22">JSON として読めない</text>
 
 	<rect x="80" y="140" width="740" height="34" rx="6" fill="#f2f4f7" stroke="#97a1ae" stroke-width="2" stroke-dasharray="5 3"/>
@@ -417,12 +417,12 @@ console.log('サーバーを起動しました');</code></pre>
 </div>
 
 <div class="callout">
-	<p><strong>この癖は stdio のときだけ必要です。</strong><a href="07-HTTPに載せ替える.html">07. HTTP に載せ替える</a> で扱う HTTP 版では、標準出力は空いているので <code>console.log</code> を使えます。同じサーバーでも運び方で作法が変わります。</p>
+	<p><strong>この癖は stdio のときだけ必要です。</strong><a href="07-HTTPに載せ替える.html">07. HTTP に載せ替える</a> で扱う HTTP 版では、標準出力は空いているので <code>console.log</code> を使えます。同じサーバでも運び方で作法が変わります。</p>
 </div>
 
 <h2>次の章へ</h2>
 
-<p>ここまでで、MCP サーバーが何をしているかは全部見えました。次は同じものを SDK で書き直し、<strong>何が省けるのか</strong>を確かめます。</p>
+<p>ここまでで、MCP サーバが何をしているかは全部見えました。次は同じものを SDK で書き直し、<strong>何が省けるのか</strong>を確かめます。</p>
 </section>
 
 </div>

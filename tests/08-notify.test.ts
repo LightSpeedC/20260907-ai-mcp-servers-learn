@@ -40,13 +40,13 @@ test('progressToken が無ければ進捗は送られない', async () => {
 	}
 });
 
-test('elicitation に答えると、その内容がサーバーへ渡る', async () => {
+test('elicitation に答えると、その内容がサーバへ渡る', async () => {
 	const client = await connect(sample('08-notify/server.mjs'), {
 		// 尋ねられる用意があることを名乗る
 		capabilities: { elicitation: {} },
 	});
 
-	// サーバーからの問いかけに答える役
+	// サーバからの問いかけに答える役
 	client.setRequestHandler(ElicitRequestSchema, async (request) => {
 		assert.match(request.params.message, /お名前/);
 		return { action: 'accept', content: { name: '山田' } };

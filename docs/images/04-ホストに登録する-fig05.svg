@@ -24,7 +24,7 @@
 	<rect x="40" y="185" width="380" height="40" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
 	<text x="60" y="210" font-size="12" fill="#1c2330" font-family="monospace">tools/list まで来て、call が無い</text>
 	<rect x="440" y="185" width="420" height="40" rx="7" fill="#fff6e8" stroke="#b8620a"/>
-	<text x="460" y="210" font-size="12" fill="#b8620a">サーバーは正常。説明文か承認の設定を疑う</text>
+	<text x="460" y="210" font-size="12" fill="#b8620a">サーバは正常。説明文か承認の設定を疑う</text>
 
 	<rect x="40" y="235" width="380" height="40" rx="7" fill="#ffffff" stroke="#d9dfe8"/>
 	<text x="60" y="260" font-size="12" fill="#1c2330" font-family="monospace">tools/call が来ている</text>

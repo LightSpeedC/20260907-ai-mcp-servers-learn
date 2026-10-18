@@ -1,4 +1,4 @@
-// 06 章「メモサーバー」と 07 章「Streamable HTTP」。
+// 06 章「メモサーバ」と 07 章「Streamable HTTP」。
 // 同じ中身が stdio でも HTTP でも同じように動くことを確かめる。
 
 import { test, before, after } from 'node:test';

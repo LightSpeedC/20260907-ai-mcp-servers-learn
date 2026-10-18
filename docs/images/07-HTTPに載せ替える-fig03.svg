@@ -39,6 +39,6 @@
 	<text x="760" y="106" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">memo.jsonl</text>
 	<text x="760" y="126" text-anchor="middle" font-size="11" fill="#fff">状態はここだけにある</text>
 
-	<text x="450" y="215" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">サーバーの側に記憶を持たせないと、作り直しても平気になる</text>
+	<text x="450" y="215" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">サーバの側に記憶を持たせないと、作り直しても平気になる</text>
 	<text x="450" y="236" text-anchor="middle" font-size="11" fill="#4a5568">プロセスを再起動しても、複数台に増やしても、同じように動く</text>
 </svg>

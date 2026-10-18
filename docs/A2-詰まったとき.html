@@ -60,7 +60,7 @@
 	<tbody>
 		<tr><td class="nowrap">1</td><td><code>node server.mjs</code> を手で実行する</td><td>そもそも起動するか。エラーが出れば内容が見える</td></tr>
 		<tr><td class="nowrap">2</td><td>JSON を流し込んで応答を見る</td><td>プロトコルとして成立しているか</td></tr>
-		<tr><td class="nowrap">3</td><td>観測用サーバーに差し替える</td><td>ホストからどこまで届いているか</td></tr>
+		<tr><td class="nowrap">3</td><td>観測用サーバに差し替える</td><td>ホストからどこまで届いているか</td></tr>
 		<tr><td class="nowrap">4</td><td><code>claude mcp list</code> を見る</td><td>登録できているか、承認されているか</td></tr>
 	</tbody>
 </table>
@@ -80,9 +80,9 @@
 '{"jsonrpc":"2.0","id":2,"method":"tools/list"}'
 ) -join "`n" | node docs/samples/06-memo/server.mjs</code></pre>
 
-<p><code>tools/list</code> の応答にツールが並べば、サーバー側は正常です。<strong>ここまで通れば、残りはホスト側の話</strong>になります。</p>
+<p><code>tools/list</code> の応答にツールが並べば、サーバ側は正常です。<strong>ここまで通れば、残りはホスト側の話</strong>になります。</p>
 
-<h2>3. 観測用サーバーに差し替える</h2>
+<h2>3. 観測用サーバに差し替える</h2>
 
 <p><a href="samples/02-minimal/probe.mjs">samples/02-minimal/probe.mjs</a> を登録すると、ホストが送ってきたものが全部ファイルに残ります。詳しくは <a href="04-ホストに登録する.html">04 章</a>。</p>
 </section>
@@ -109,7 +109,7 @@
 		<tr>
 			<td class="nowrap">Cannot find module</td>
 			<td><code>node_modules</code> の位置が違う</td>
-			<td>サーバーの置き場から上に辿れる所に <code>node_modules</code> があるか確かめる</td>
+			<td>サーバの置き場から上に辿れる所に <code>node_modules</code> があるか確かめる</td>
 		</tr>
 		<tr>
 			<td class="nowrap">繋がるがツールが出ない</td>
@@ -167,7 +167,7 @@
 		<tr>
 			<td class="nowrap">呼ばれるが断られる</td>
 			<td>ホスト側の承認の設定</td>
-			<td>サーバーの問題ではない。ホストの設定を見る（<a href="04-ホストに登録する.html">04 章</a>）</td>
+			<td>サーバの問題ではない。ホストの設定を見る（<a href="04-ホストに登録する.html">04 章</a>）</td>
 		</tr>
 		<tr>
 			<td class="nowrap">Resource が読まれない</td>
@@ -282,7 +282,7 @@
 		</tr>
 		<tr>
 			<td class="nowrap"><code>Internal error</code>（-32603）</td>
-			<td>サーバーの中で例外が出た。stderr にスタックが出ていないか見る</td>
+			<td>サーバの中で例外が出た。stderr にスタックが出ていないか見る</td>
 		</tr>
 		<tr>
 			<td class="nowrap"><code>Server does not support task creation</code></td>
@@ -290,7 +290,7 @@
 		</tr>
 		<tr>
 			<td class="nowrap"><code>MCP tool call requires approval, but approval policy is never</code></td>
-			<td>Codex の承認の設定。サーバーは正常</td>
+			<td>Codex の承認の設定。サーバは正常</td>
 		</tr>
 		<tr>
 			<td class="nowrap"><code>Unable to find type [Windows.UI.Notifications...]</code></td>
@@ -323,7 +323,7 @@
 		<tr><td class="nowrap">仕様</td><td><a href="https://modelcontextprotocol.io/specification/2025-11-25/">modelcontextprotocol.io の 2025-11-25</a>。<strong>日付を確かめて読む</strong></td></tr>
 		<tr><td class="nowrap">SDK の型定義</td><td><code>node_modules/@modelcontextprotocol/sdk/dist/esm/**/*.d.ts</code></td></tr>
 		<tr><td class="nowrap">SDK の実例</td><td><code>node_modules/@modelcontextprotocol/sdk/dist/esm/examples/</code></td></tr>
-		<tr><td class="nowrap">実際に流れているもの</td><td>観測用サーバーのログ（<a href="04-ホストに登録する.html">04 章</a>）</td></tr>
+		<tr><td class="nowrap">実際に流れているもの</td><td>観測用サーバのログ（<a href="04-ホストに登録する.html">04 章</a>）</td></tr>
 	</tbody>
 </table>
 </div>

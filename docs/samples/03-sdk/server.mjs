@@ -1,4 +1,4 @@
-// 02-minimal と同じサーバーを SDK で書いたもの。
+// 02-minimal と同じサーバを SDK で書いたもの。
 // JSON-RPC の組み立て・initialize の応答・エラー形式は SDK が受け持つ。
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';

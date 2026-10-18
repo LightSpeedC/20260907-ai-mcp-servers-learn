@@ -1,4 +1,4 @@
-// MCP サーバー（C# 版）
+// MCP サーバ（C# 版）
 //
 // 02-minimal/server.mjs と同じことをする。
 // csc.exe（.NET Framework 同梱）だけでビルドでき、単一の exe になる。
@@ -95,7 +95,7 @@ class Program
 		return null;
 	}
 
-	// このサーバーが提供するツールは 1 つだけ
+	// このサーバが提供するツールは 1 つだけ
 	static object Tools()
 	{
 		return new object[] {

@@ -1,4 +1,4 @@
-// メモサーバーの Streamable HTTP 版
+// メモサーバの Streamable HTTP 版
 //
 // 中身（memo-tools.mjs）は stdio 版とまったく同じ。繋ぎ先だけが違う。
 // 待ち受けポートは引数 --port で変えられる（既定 3333）。
@@ -52,5 +52,5 @@ const http = createServer(async (req, res) => {
 
 http.listen(PORT, () => {
 	// stdio 版と違い、標準出力に書いても壊れない
-	console.log(`メモサーバー（HTTP）: http://localhost:${PORT}/mcp`);
+	console.log(`メモサーバ（HTTP）: http://localhost:${PORT}/mcp`);
 });

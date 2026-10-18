@@ -28,7 +28,7 @@ if (-not (Test-Path -LiteralPath $testDir)) {
 	throw "tests フォルダが見つかりません: $($testDir.Replace($env:USERPROFILE, '~'))"
 }
 
-# 表示するときはユーザー名を伏せる
+# 表示するときはユーザ名を伏せる
 Write-Host "対象: $($root.Replace($env:USERPROFILE, '~'))"
 
 if (-not (Test-Path -LiteralPath (Join-Path $root 'node_modules'))) {

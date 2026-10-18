@@ -33,7 +33,7 @@
 <!-- AUTO:nav -->
 <div class="nav">
 	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
-	<a href="02-最小のサーバー.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>02. 最小のサーバー</a>
+	<a href="02-最小のサーバー.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>02. 最小のサーバ</a>
 </div>
 <!-- /AUTO:nav -->
 
@@ -42,8 +42,8 @@
 	<ol>
 		<li class="ch01"><a href="#ch01">つなぎ方がバラバラだった頃</a></li>
 		<li class="ch02"><a href="#ch02">MCP が運ぶもの</a></li>
-		<li class="ch03"><a href="#ch03">ホスト・クライアント・サーバー</a></li>
-		<li class="ch04"><a href="#ch04">サーバーが出せる 3 つのもの</a></li>
+		<li class="ch03"><a href="#ch03">ホスト・クライアント・サーバ</a></li>
+		<li class="ch04"><a href="#ch04">サーバが出せる 3 つのもの</a></li>
 		<li class="ch05"><a href="#ch05">版は 1 つではない</a></li>
 	</ol>
 </div>
@@ -123,7 +123,7 @@
 <figcaption>道具と機能の組み合わせが増えるほど差が開く。MCP は間に規約を 1 枚挟んで、掛け算を足し算に変える。</figcaption>
 </figure>
 
-<p>MCP（Model Context Protocol）は、この<strong>間に挟む規約</strong>です。機能を提供する側を「MCP サーバー」として 1 回書けば、規約に対応した道具ならどれからでも呼べます。</p>
+<p>MCP（Model Context Protocol）は、この<strong>間に挟む規約</strong>です。機能を提供する側を「MCP サーバ」として 1 回書けば、規約に対応した道具ならどれからでも呼べます。</p>
 
 <div class="callout">
 	<p><strong>似た考え方が先にあります。</strong>エディタとプログラミング言語の間を取り持つ LSP（Language Server Protocol）です。MCP はこれを参考にしていると仕様に書かれています。「エディタ × 言語」を「エディタ ＋ 言語」に変えたのと同じことを、「AI アプリ × 機能」でやっています。</p>
@@ -164,7 +164,7 @@
 	<line x1="115" y1="60" x2="115" y2="215" stroke="#d9dfe8" stroke-width="2"/>
 
 	<rect x="700" y="20" width="150" height="40" rx="8" fill="url(#g-01-2a)"/>
-	<text x="775" y="45" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">サーバー</text>
+	<text x="775" y="45" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">サーバ</text>
 	<line x1="775" y1="60" x2="775" y2="215" stroke="#d9dfe8" stroke-width="2"/>
 
 	<line x1="115" y1="90" x2="775" y2="90" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-01-2a)"/>
@@ -182,16 +182,16 @@
 	<line x1="775" y1="212" x2="115" y2="212" stroke="#4a5568" stroke-width="1.8" marker-end="url(#m-01-2a)" stroke-dasharray="5 3"/>
 	<text x="445" y="205" text-anchor="middle" font-size="12" fill="#1c2330">結果</text>
 </svg>
-<figcaption>やりとりは必ずクライアントから始まる。サーバーが勝手に話しかけることはできない。</figcaption>
+<figcaption>やりとりは必ずクライアントから始まる。サーバが勝手に話しかけることはできない。</figcaption>
 </figure>
 
 <div class="callout">
-	<p><strong>始めるのは必ずクライアント側です。</strong>サーバーは訊かれたことに答えるだけで、自分から「これをやってくれ」と頼むことはできません。この非対称は最後まで効いてくるので、頭の隅に置いてください。<a href="08-通知で伝える.html">08. 通知で伝える</a> で詳しく扱います。</p>
+	<p><strong>始めるのは必ずクライアント側です。</strong>サーバは訊かれたことに答えるだけで、自分から「これをやってくれ」と頼むことはできません。この非対称は最後まで効いてくるので、頭の隅に置いてください。<a href="08-通知で伝える.html">08. 通知で伝える</a> で詳しく扱います。</p>
 </div>
 </section>
 
 <section class="ch03" id="ch03">
-<h1>ホスト・クライアント・サーバー</h1>
+<h1>ホスト・クライアント・サーバ</h1>
 
 <p>MCP の話には 3 つの登場人物が出てきます。混同しやすいので、最初に押さえます。</p>
 
@@ -202,16 +202,16 @@
 	</thead>
 	<tbody>
 		<tr><td class="nowrap">ホスト</td><td>AI を動かしているアプリそのもの</td><td>Claude Code、Codex、Antigravity</td></tr>
-		<tr><td class="nowrap">クライアント</td><td>ホストの中にある、サーバー 1 本ごとの接続係</td><td>（利用者からは見えない）</td></tr>
-		<tr><td class="nowrap">サーバー</td><td>機能を提供する側。<strong>これから作るもの</strong></td><td>メモを検索する、ビルドを走らせる</td></tr>
+		<tr><td class="nowrap">クライアント</td><td>ホストの中にある、サーバ 1 本ごとの接続係</td><td>（利用者からは見えない）</td></tr>
+		<tr><td class="nowrap">サーバ</td><td>機能を提供する側。<strong>これから作るもの</strong></td><td>メモを検索する、ビルドを走らせる</td></tr>
 	</tbody>
 </table>
 </div>
 
-<p><strong>サーバー 1 本につきクライアントが 1 つ</strong>付きます。3 本のサーバーを登録すれば、ホストの中に 3 つのクライアントができ、3 つのプロセスが起動します。</p>
+<p><strong>サーバ 1 本につきクライアントが 1 つ</strong>付きます。3 本のサーバを登録すれば、ホストの中に 3 つのクライアントができ、3 つのプロセスが起動します。</p>
 
 <figure>
-<svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ホストの中にクライアントがあり、それぞれがサーバーのプロセスに繋がる">
+<svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ホストの中にクライアントがあり、それぞれがサーバのプロセスに繋がる">
 	<defs>
 		<linearGradient id="g-01-3a" x1="0" y1="1" x2="0" y2="0">
 			<stop offset="0" stop-color="var(--accent)"/>
@@ -239,15 +239,15 @@
 	</g>
 
 	<rect x="560" y="72" width="310" height="40" rx="7" fill="#1d7a3c"/>
-	<text x="715" y="97" text-anchor="middle" font-size="13" fill="#fff">メモのサーバー（別プロセス）</text>
+	<text x="715" y="97" text-anchor="middle" font-size="13" fill="#fff">メモのサーバ（別プロセス）</text>
 	<rect x="560" y="124" width="310" height="40" rx="7" fill="#1d7a3c"/>
-	<text x="715" y="149" text-anchor="middle" font-size="13" fill="#fff">ビルドのサーバー（別プロセス）</text>
+	<text x="715" y="149" text-anchor="middle" font-size="13" fill="#fff">ビルドのサーバ（別プロセス）</text>
 	<rect x="560" y="176" width="310" height="40" rx="7" fill="#1d7a3c"/>
-	<text x="715" y="201" text-anchor="middle" font-size="13" fill="#fff">社内 Wiki のサーバー（別プロセス）</text>
+	<text x="715" y="201" text-anchor="middle" font-size="13" fill="#fff">社内 Wiki のサーバ（別プロセス）</text>
 
-	<text x="450" y="248" text-anchor="middle" font-size="11" fill="#4a5568">1 本のサーバーにつき 1 つのクライアント・1 つのプロセス</text>
+	<text x="450" y="248" text-anchor="middle" font-size="11" fill="#4a5568">1 本のサーバにつき 1 つのクライアント・1 つのプロセス</text>
 </svg>
-<figcaption>サーバーは別のプロセスとして動く。落ちてもホストは巻き添えにならない代わり、起動の数だけ資源を使う。</figcaption>
+<figcaption>サーバは別のプロセスとして動く。落ちてもホストは巻き添えにならない代わり、起動の数だけ資源を使う。</figcaption>
 </figure>
 
 <h2>相手は名乗ってくる</h2>
@@ -273,9 +273,9 @@
 </section>
 
 <section class="ch04" id="ch04">
-<h1>サーバーが出せる 3 つのもの</h1>
+<h1>サーバが出せる 3 つのもの</h1>
 
-<p>サーバーが提供できるものは 3 種類です。<strong>誰が使うか</strong>で分かれています。</p>
+<p>サーバが提供できるものは 3 種類です。<strong>誰が使うか</strong>で分かれています。</p>
 
 <figure>
 <svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tools・Resources・Prompts の使い手の違い">
@@ -316,7 +316,7 @@
 </figure>
 
 <div class="callout">
-	<p><strong>まず Tools だけで足ります。</strong>実際に公開されているサーバーの多くは Tools しか持っていません。Resources と Prompts は <a href="05-3つの提供物.html">05. 3 つの提供物</a> で扱います。</p>
+	<p><strong>まず Tools だけで足ります。</strong>実際に公開されているサーバの多くは Tools しか持っていません。Resources と Prompts は <a href="05-3つの提供物.html">05. 3 つの提供物</a> で扱います。</p>
 </div>
 </section>
 
@@ -327,7 +327,7 @@
 
 <h2>実測した結果</h2>
 
-<p>同じサーバーに 2 つのホストから繋いで、届いた <code>protocolVersion</code> を記録しました。</p>
+<p>同じサーバに 2 つのホストから繋いで、届いた <code>protocolVersion</code> を記録しました。</p>
 
 <div class="tablewrap">
 <table>
@@ -370,12 +370,12 @@
 	<text x="430" y="170" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2330">"2025-06-18"</text>
 
 	<rect x="620" y="85" width="240" height="50" rx="8" fill="#1d7a3c"/>
-	<text x="740" y="106" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">あなたのサーバー</text>
+	<text x="740" y="106" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">あなたのサーバ</text>
 	<text x="740" y="124" text-anchor="middle" font-size="11" fill="#fff">来た版に合わせて返す</text>
 
 	<text x="450" y="205" text-anchor="middle" font-size="11" fill="#4a5568">自分の対応版を押し付けず、相手が言ってきた版をそのまま返すのが安全</text>
 </svg>
-<figcaption>同じサーバーに、違う版のホストが繋いでくる。片方に合わせて決め打ちにすると、もう片方で動かなくなる。</figcaption>
+<figcaption>同じサーバに、違う版のホストが繋いでくる。片方に合わせて決め打ちにすると、もう片方で動かなくなる。</figcaption>
 </figure>
 
 <h2>この資料が対象にする版</h2>
@@ -383,14 +383,14 @@
 <p><strong>2025-11-25</strong> を基準にします。手元の Claude Code が喋る版であり、実際に動かして確かめられるからです。</p>
 
 <div class="callout">
-	<p><strong>2026-07-28 という、もっと新しい版もあります。</strong>ただし作りが大きく変わっており（接続ごとの状態を持たない、サーバーからのリクエストが無くなる）、<strong>今のところどの CLI もそこまで追いついていません</strong>。仕様を読むときは、自分が見ているページの日付を必ず確かめてください。</p>
+	<p><strong>2026-07-28 という、もっと新しい版もあります。</strong>ただし作りが大きく変わっており（接続ごとの状態を持たない、サーバからのリクエストが無くなる）、<strong>今のところどの CLI もそこまで追いついていません</strong>。仕様を読むときは、自分が見ているページの日付を必ず確かめてください。</p>
 </div>
 
 <h2>版が違っても、作り方はほぼ同じ</h2>
 
-<p>安心してよい点として、<code>tools/list</code> でツールを並べ、<code>tools/call</code> で実行する、という骨格はどの版でも変わりません。違いが出るのは、通知・タスク・サーバーからの問いかけといった応用の部分です。</p>
+<p>安心してよい点として、<code>tools/list</code> でツールを並べ、<code>tools/call</code> で実行する、という骨格はどの版でも変わりません。違いが出るのは、通知・タスク・サーバからの問いかけといった応用の部分です。</p>
 
-<p>次の章では、この骨格だけを持つサーバーを、ライブラリを使わずに書きます。</p>
+<p>次の章では、この骨格だけを持つサーバを、ライブラリを使わずに書きます。</p>
 </section>
 
 </div>
@@ -400,7 +400,7 @@
 <!-- AUTO:nav -->
 <div class="nav">
 	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
-	<a href="02-最小のサーバー.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>02. 最小のサーバー</a>
+	<a href="02-最小のサーバー.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>02. 最小のサーバ</a>
 </div>
 <!-- /AUTO:nav -->
 	</div>

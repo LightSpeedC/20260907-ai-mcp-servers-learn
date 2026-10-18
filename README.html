@@ -261,11 +261,11 @@ svg { max-width: 100%; height: auto; }
 	<h2>本編</h2>
 	<ol>
 		<li class="d01"><a href="docs/01-背景.html">01. 背景</a></li>
-		<li class="d02"><a href="docs/02-最小のサーバー.html">02. 最小のサーバー</a></li>
+		<li class="d02"><a href="docs/02-最小のサーバー.html">02. 最小のサーバ</a></li>
 		<li class="d03"><a href="docs/03-SDKで書き直す.html">03. SDK で書き直す</a></li>
 		<li class="d04"><a href="docs/04-ホストに登録する.html">04. ホストに登録する</a></li>
 		<li class="d05"><a href="docs/05-3つの提供物.html">05. 3 つの提供物</a></li>
-		<li class="d06"><a href="docs/06-ハンズオン-メモサーバー.html">06. ハンズオン① メモサーバー</a></li>
+		<li class="d06"><a href="docs/06-ハンズオン-メモサーバー.html">06. ハンズオン① メモサーバ</a></li>
 		<li class="d07"><a href="docs/07-HTTPに載せ替える.html">07. HTTP に載せ替える</a></li>
 		<li class="d08"><a href="docs/08-通知で伝える.html">08. 通知で伝える</a></li>
 		<li class="d09"><a href="docs/09-タスク.html">09. タスク</a></li>
@@ -299,18 +299,18 @@ svg { max-width: 100%; height: auto; }
 		<tr><td class="nowrap">MCP</td><td>まったく知らない</td></tr>
 		<tr><td class="nowrap">JavaScript</td><td>文法は十分に知っている。<code>async</code>／<code>await</code>・モジュール・クラスの説明は要らない</td></tr>
 		<tr><td class="nowrap">AI コーディング CLI</td><td>Claude Code・Codex を「とりあえず使える」水準</td></tr>
-		<tr><td class="nowrap">サーバー開発</td><td>HTTP・プロセス・標準入出力は分かる。JSON-RPC は知らなくてよい</td></tr>
+		<tr><td class="nowrap">サーバ開発</td><td>HTTP・プロセス・標準入出力は分かる。JSON-RPC は知らなくてよい</td></tr>
 	</tbody>
 </table>
 </div>
 
 <h2>到達点</h2>
 <ul>
-	<li>MCP が何を運ぶ規約なのかを、ホスト・クライアント・サーバーの関係で説明できる</li>
+	<li>MCP が何を運ぶ規約なのかを、ホスト・クライアント・サーバの関係で説明できる</li>
 	<li>stdio の MCP Server を書き、Claude Code に登録して呼び出せる</li>
-	<li>同じサーバーを Streamable HTTP に載せ替えられる</li>
+	<li>同じサーバを Streamable HTTP に載せ替えられる</li>
 	<li>処理の完了を伝える手段と、その限界が分かる</li>
-	<li>1 本のサーバーを複数のホストから共有できる</li>
+	<li>1 本のサーバを複数のホストから共有できる</li>
 	<li>詰まったときにどこを見れば分かるか（ログ・仕様書・SDK の型定義）が分かる</li>
 </ul>
 
@@ -326,7 +326,7 @@ svg { max-width: 100%; height: auto; }
 		<tr><td>Tools・Resources・Prompts の使い分け</td><td>TypeScript の型システムの解説</td></tr>
 		<tr><td>3 つの CLI への登録方法</td><td>MCP Server の商用ホスティング</td></tr>
 		<tr><td>処理の完了を伝える通知とタスク</td><td>認証（OAuth）を伴うリモート MCP</td></tr>
-		<tr><td>同一 PC で 1 本のサーバーを共有する構成</td><td>&nbsp;</td></tr>
+		<tr><td>同一 PC で 1 本のサーバを共有する構成</td><td>&nbsp;</td></tr>
 		<tr><td>C# で単一 exe にする方法（付録）</td><td>&nbsp;</td></tr>
 	</tbody>
 </table>
@@ -342,7 +342,7 @@ svg { max-width: 100%; height: auto; }
 
 <h2>サンプルを動かす</h2>
 
-<p>資料に出てくるサーバーは <code>docs/samples/</code> にあります。手で叩いて確かめられます。</p>
+<p>資料に出てくるサーバは <code>docs/samples/</code> にあります。手で叩いて確かめられます。</p>
 
 <pre><code class="language-powershell">@(
 '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"手","version":"1.0"}}}'
@@ -390,7 +390,7 @@ svg { max-width: 100%; height: auto; }
 		<tr><td class="nowrap"><code>docs/</code></td><td>学習資料の本編と付録</td></tr>
 		<tr><td class="nowrap"><code>docs/samples/</code></td><td>資料に載せたサンプルコード</td></tr>
 		<tr><td class="nowrap"><code>tests/</code></td><td>サンプルを検証するテスト</td></tr>
-		<tr><td class="nowrap"><code>tools/40_test/</code></td><td>テストの実行ランチャー</td></tr>
+		<tr><td class="nowrap"><code>tools/40_test/</code></td><td>テストの実行ランチャ</td></tr>
 		<tr><td class="nowrap"><code>notes/</code></td><td>作る側のための管理ドキュメント</td></tr>
 		<tr><td class="nowrap"><code>AGENTS.md</code></td><td>AI エージェントにローカルルールを読ませる入口</td></tr>
 	</tbody>

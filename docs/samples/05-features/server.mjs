@@ -1,4 +1,4 @@
-// サーバーが提供できる 3 種類（Tools・Resources・Prompts）を 1 本にまとめたもの。
+// サーバが提供できる 3 種類（Tools・Resources・Prompts）を 1 本にまとめたもの。
 
 import { McpServer, ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';

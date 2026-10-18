@@ -23,7 +23,7 @@
 <div class="titlebar">
 	<div class="inner">
 		<h1>07. HTTP に載せ替える</h1>
-		<p class="lead">同じサーバーを Streamable HTTP で動かす</p>
+		<p class="lead">同じサーバを Streamable HTTP で動かす</p>
 		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-10-09</div>
 	</div>
 </div>
@@ -32,7 +32,7 @@
 
 <!-- AUTO:nav -->
 <div class="nav">
-	<a href="06-ハンズオン-メモサーバー.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>06. ハンズオン① メモサーバー</a>
+	<a href="06-ハンズオン-メモサーバー.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>06. ハンズオン① メモサーバ</a>
 	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
 	<a href="08-通知で伝える.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>08. 通知で伝える</a>
 </div>
@@ -100,11 +100,11 @@
 	</g>
 
 	<rect x="270" y="45" width="150" height="34" rx="7" fill="#97a1ae"/>
-	<text x="345" y="67" text-anchor="middle" font-size="11" fill="#fff">サーバー 1</text>
+	<text x="345" y="67" text-anchor="middle" font-size="11" fill="#fff">サーバ 1</text>
 	<rect x="270" y="100" width="150" height="34" rx="7" fill="#97a1ae"/>
-	<text x="345" y="122" text-anchor="middle" font-size="11" fill="#fff">サーバー 2</text>
+	<text x="345" y="122" text-anchor="middle" font-size="11" fill="#fff">サーバ 2</text>
 	<rect x="270" y="155" width="150" height="34" rx="7" fill="#97a1ae"/>
-	<text x="345" y="177" text-anchor="middle" font-size="11" fill="#fff">サーバー 3</text>
+	<text x="345" y="177" text-anchor="middle" font-size="11" fill="#fff">サーバ 3</text>
 
 	<text x="225" y="222" text-anchor="middle" font-size="12" font-weight="700" fill="#a51f22">同じものが 3 つ動く</text>
 	<text x="225" y="243" text-anchor="middle" font-size="11" fill="#4a5568">状態は共有されない</text>
@@ -125,7 +125,7 @@
 	</g>
 
 	<rect x="720" y="90" width="150" height="54" rx="7" fill="#1d7a3c"/>
-	<text x="795" y="112" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">サーバー 1 本</text>
+	<text x="795" y="112" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">サーバ 1 本</text>
 	<text x="795" y="130" text-anchor="middle" font-size="11" fill="#fff">:3333</text>
 
 	<text x="675" y="222" text-anchor="middle" font-size="12" font-weight="700" fill="#1d7a3c">1 つで足りる</text>
@@ -187,7 +187,7 @@ const http = createServer(async (req, res) =&gt; {
 
 http.listen(PORT, () =&gt; {
 	// stdio 版と違い、標準出力に書いても壊れない
-	console.log(`メモサーバー（HTTP）: http://localhost:${PORT}/mcp`);
+	console.log(`メモサーバ（HTTP）: http://localhost:${PORT}/mcp`);
 });</code></pre>
 
 <div class="callout">
@@ -244,13 +244,13 @@ http.listen(PORT, () =&gt; {
 		<tr><th class="nowrap">書き方</th><th>ふるまい</th><th>向くもの</th></tr>
 	</thead>
 	<tbody>
-		<tr><td class="nowrap"><code>undefined</code></td><td>セッションを持たない。1 回のリクエストで完結する</td><td>状態をファイルや DB に持つサーバー</td></tr>
-		<tr><td class="nowrap"><code>() =&gt; randomUUID()</code></td><td>セッション ID を発行し、記憶の中に状態を持つ</td><td>接続ごとの状態が要るサーバー</td></tr>
+		<tr><td class="nowrap"><code>undefined</code></td><td>セッションを持たない。1 回のリクエストで完結する</td><td>状態をファイルや DB に持つサーバ</td></tr>
+		<tr><td class="nowrap"><code>() =&gt; randomUUID()</code></td><td>セッション ID を発行し、記憶の中に状態を持つ</td><td>接続ごとの状態が要るサーバ</td></tr>
 	</tbody>
 </table>
 </div>
 
-<p>メモサーバーは<strong>持たない側</strong>にしました。状態はファイルにあるので、リクエストごとに作り直しても困りません。</p>
+<p>メモサーバは<strong>持たない側</strong>にしました。状態はファイルにあるので、リクエストごとに作り直しても困りません。</p>
 
 <figure>
 <svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="セッションを持たない構成では状態を外に置く">
@@ -293,7 +293,7 @@ http.listen(PORT, () =&gt; {
 	<text x="760" y="106" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">memo.jsonl</text>
 	<text x="760" y="126" text-anchor="middle" font-size="11" fill="#fff">状態はここだけにある</text>
 
-	<text x="450" y="215" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">サーバーの側に記憶を持たせないと、作り直しても平気になる</text>
+	<text x="450" y="215" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">サーバの側に記憶を持たせないと、作り直しても平気になる</text>
 	<text x="450" y="236" text-anchor="middle" font-size="11" fill="#4a5568">プロセスを再起動しても、複数台に増やしても、同じように動く</text>
 </svg>
 <figcaption>状態を外に出しておくのは、共有や再起動を考えると効いてくる。</figcaption>
@@ -309,9 +309,9 @@ http.listen(PORT, () =&gt; {
 
 <pre><code class="language-powershell">node docs/samples/07-http/server.mjs --port 3333</code></pre>
 
-<pre><code class="language-text">メモサーバー（HTTP）: http://localhost:3333/mcp</code></pre>
+<pre><code class="language-text">メモサーバ（HTTP）: http://localhost:3333/mcp</code></pre>
 
-<p>ポートは<strong>環境変数ではなく引数</strong>で渡します。常駐させると、同じサーバーを本番用・試験用と複数立てることがあります。引数ならプロセス一覧（<code>tasklist</code> やタスクマネージャー）のコマンドラインに出るので、どれがどのポートかを見分けて止められます。環境変数は一覧に出ません。</p>
+<p>ポートは<strong>環境変数ではなく引数</strong>で渡します。常駐させると、同じサーバを本番用・試験用と複数立てることがあります。引数ならプロセス一覧（<code>tasklist</code> やタスクマネージャ）のコマンドラインに出るので、どれがどのポートかを見分けて止められます。環境変数は一覧に出ません。</p>
 
 <h2>叩いてみる</h2>
 
@@ -329,7 +329,7 @@ data: {"result":{"protocolVersion":"2025-11-25","capabilities":{...},"serverInfo
 
 <h2>Accept ヘッダを忘れない</h2>
 
-<p><strong>これが最初の関門です。</strong>応答は「ただの JSON」か「SSE のストリーム」のどちらかで返ります。<strong>両方を受け取れると伝えないと、サーバーは断ります</strong>。</p>
+<p><strong>これが最初の関門です。</strong>応答は「ただの JSON」か「SSE のストリーム」のどちらかで返ります。<strong>両方を受け取れると伝えないと、サーバは断ります</strong>。</p>
 
 <pre><code class="language-text">Accept: application/json, text/event-stream</code></pre>
 
@@ -351,7 +351,7 @@ data: {"result":{"protocolVersion":"2025-11-25","capabilities":{...},"serverInfo
 	<text x="60" y="163" font-size="12" fill="#1c2330" font-family="monospace">Accept: application/json</text>
 	<text x="700" y="163" font-size="12" font-weight="700" fill="#a51f22">406 で断られる</text>
 
-	<text x="450" y="210" text-anchor="middle" font-size="11" fill="#4a5568">サーバーが SSE で返したいときに、受け取れる相手か確かめている</text>
+	<text x="450" y="210" text-anchor="middle" font-size="11" fill="#4a5568">サーバが SSE で返したいときに、受け取れる相手か確かめている</text>
 </svg>
 <figcaption>curl や fetch を手で書くときの引っかかりどころ。SDK のクライアントを使えば自動で付く。</figcaption>
 </figure>
@@ -442,12 +442,12 @@ codex mcp add memo --url http://localhost:3333/mcp</code></pre>
 </div>
 
 <div class="callout">
-	<p><strong>外に出すなら認証が要ります。</strong>この資料の例は <code>localhost</code> の中だけで使う前提です。ネットワークに出す場合は、MCP の認可（OAuth）が別に決まっています。<strong>認証なしのサーバーを社内ネットワークに置かないでください。</strong>ツールは実行される側であり、誰でも叩ける状態は危険です。</p>
+	<p><strong>外に出すなら認証が要ります。</strong>この資料の例は <code>localhost</code> の中だけで使う前提です。ネットワークに出す場合は、MCP の認可（OAuth）が別に決まっています。<strong>認証なしのサーバを社内ネットワークに置かないでください。</strong>ツールは実行される側であり、誰でも叩ける状態は危険です。</p>
 </div>
 
 <h2>次の章へ</h2>
 
-<p>ここまでは「訊かれたら答える」だけでした。次は<strong>サーバーの側から伝える</strong>方法と、その限界を扱います。</p>
+<p>ここまでは「訊かれたら答える」だけでした。次は<strong>サーバの側から伝える</strong>方法と、その限界を扱います。</p>
 </section>
 
 </div>
@@ -456,7 +456,7 @@ codex mcp add memo --url http://localhost:3333/mcp</code></pre>
 	<div class="inner">
 <!-- AUTO:nav -->
 <div class="nav">
-	<a href="06-ハンズオン-メモサーバー.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>06. ハンズオン① メモサーバー</a>
+	<a href="06-ハンズオン-メモサーバー.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>06. ハンズオン① メモサーバ</a>
 	<a class="home" href="../README.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 8 L8 2.5 L14 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7 L4 13.5 L12 13.5 L12 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>目次</a>
 	<a href="08-通知で伝える.html"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>08. 通知で伝える</a>
 </div>

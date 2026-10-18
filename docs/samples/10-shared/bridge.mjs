@@ -1,9 +1,9 @@
 // stdio ブリッジ
 //
-// ホストからは stdio のサーバーに見えるが、中身は HTTP の本体へ中継するだけ。
-// これを挟むと、ホスト側の設定を stdio のまま変えずに 1 本のサーバーを共有できる。
+// ホストからは stdio のサーバに見えるが、中身は HTTP の本体へ中継するだけ。
+// これを挟むと、ホスト側の設定を stdio のまま変えずに 1 本のサーバを共有できる。
 //
-//   Claude Code ──stdio──▶ bridge ──HTTP──▶ 常駐サーバー
+//   Claude Code ──stdio──▶ bridge ──HTTP──▶ 常駐サーバ
 //   Codex       ──stdio──▶ bridge ──┘
 //
 // 中継先は引数 --target で指定する（既定 http://localhost:3333/mcp）。

@@ -1,4 +1,4 @@
-// 最小の MCP サーバー（SDK を使わず、JSON-RPC を手で組み立てる）
+// 最小の MCP サーバ（SDK を使わず、JSON-RPC を手で組み立てる）
 //
 // ホストが何を送ってくるかを見るために、受け取った行をすべて stderr に出す。
 // stdout には JSON-RPC のメッセージ以外を書いてはいけない。
@@ -23,7 +23,7 @@ function replyError(id, code, message) {
 	send({ jsonrpc: '2.0', id, error: { code, message } });
 }
 
-// このサーバーが提供するツールは 1 つだけ
+// このサーバが提供するツールは 1 つだけ
 const TOOLS = [
 	{
 		name: 'add',

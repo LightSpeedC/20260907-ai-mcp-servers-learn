@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>06. ハンズオン① メモサーバー</title>
+<title>06. ハンズオン① メモサーバ</title>
 <style>
 /* css/style.css が読めなかったときの代替色 */
 .titlebar, section h1, th, a.doclink, .badge { background: #12224d; color: #fff; }
@@ -22,8 +22,8 @@
 
 <div class="titlebar">
 	<div class="inner">
-		<h1>06. ハンズオン① メモサーバー</h1>
-		<p class="lead">メモを記録・検索するサーバーを、動くところまで作りきる</p>
+		<h1>06. ハンズオン① メモサーバ</h1>
+		<p class="lead">メモを記録・検索するサーバを、動くところまで作りきる</p>
 		<div class="date">📅 作成: 2026-09-07 / 更新: 2026-09-07</div>
 	</div>
 </div>
@@ -52,7 +52,7 @@
 <section class="ch01" id="ch01">
 <h1>何を作るか</h1>
 
-<p>思いついたことを記録し、あとから探せるサーバーです。外部のサービスに繋がないので、ネットワークが無くても動きます。</p>
+<p>思いついたことを記録し、あとから探せるサーバです。外部のサービスに繋がないので、ネットワークが無くても動きます。</p>
 
 <div class="tablewrap">
 <table>
@@ -68,7 +68,7 @@
 </div>
 
 <figure>
-<svg viewBox="0 0 900 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="メモサーバーの構成">
+<svg viewBox="0 0 900 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="メモサーバの構成">
 	<defs>
 		<linearGradient id="g-06-1a" x1="0" y1="1" x2="0" y2="0">
 			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
@@ -90,7 +90,7 @@
 	<text x="270" y="127" text-anchor="middle" font-size="11" fill="#4a5568">memo_search</text>
 
 	<rect x="330" y="40" width="250" height="130" rx="9" fill="#1d7a3c"/>
-	<text x="455" y="72" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">メモサーバー</text>
+	<text x="455" y="72" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">メモサーバ</text>
 	<text x="455" y="100" text-anchor="middle" font-size="11" fill="#fff">追記する / 探す</text>
 	<text x="455" y="126" text-anchor="middle" font-size="11" fill="#fff">memo://all で全部読む</text>
 	<text x="455" y="150" text-anchor="middle" font-size="11" fill="#fff">状態は持たない</text>
@@ -101,7 +101,7 @@
 	<text x="780" y="95" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">memo.jsonl</text>
 	<text x="780" y="118" text-anchor="middle" font-size="11" fill="#4a5568">1 行 1 件の JSON</text>
 
-	<text x="450" y="210" text-anchor="middle" font-size="11" fill="#4a5568">サーバー自身は何も覚えない。覚えるのはファイル側の役目</text>
+	<text x="450" y="210" text-anchor="middle" font-size="11" fill="#4a5568">サーバ自身は何も覚えない。覚えるのはファイル側の役目</text>
 </svg>
 <figcaption>状態をファイルに持たせておくと、07 章でそのまま HTTP に載せ替えられる。</figcaption>
 </figure>
@@ -137,7 +137,7 @@ import { createMemoServer } from './memo-tools.mjs';
 
 await createMemoServer().connect(new StdioServerTransport());</code></pre>
 
-<p><code>memo-tools.mjs</code> 側は、サーバーを組み立てて返す関数にします。</p>
+<p><code>memo-tools.mjs</code> 側は、サーバを組み立てて返す関数にします。</p>
 
 <pre><code class="language-javascript">export function createMemoServer() {
 	const server = new McpServer({ name: 'memo', version: '1.0.0' });
@@ -330,7 +330,7 @@ async function load() {
 
 	<text x="450" y="200" text-anchor="middle" font-size="11" fill="#4a5568">ツールの戻り値はそのまま文脈に入る。長さは設計事項</text>
 </svg>
-<figcaption>返す量を決めるのはサーバー側の責任。ホストは受け取ったものをそのまま渡す。</figcaption>
+<figcaption>返す量を決めるのはサーバ側の責任。ホストは受け取ったものをそのまま渡す。</figcaption>
 </figure>
 </section>
 
@@ -347,7 +347,7 @@ async function load() {
 ) -join "`n" | node server.mjs</code></pre>
 
 <div class="callout">
-	<p><strong>手で流し込むと、順番どおりに処理されるとは限りません。</strong>実際にやってみると、後から送った検索が先に返ってくることがあります。サーバーは受け取った順に<strong>並行して</strong>処理し、終わった順に返すためです。<code>id</code> で対応が取れているので問題はありませんが、「追記してから探す」ような確認には向きません。</p>
+	<p><strong>手で流し込むと、順番どおりに処理されるとは限りません。</strong>実際にやってみると、後から送った検索が先に返ってくることがあります。サーバは受け取った順に<strong>並行して</strong>処理し、終わった順に返すためです。<code>id</code> で対応が取れているので問題はありませんが、「追記してから探す」ような確認には向きません。</p>
 </div>
 
 <h2>テストを書く</h2>
@@ -397,7 +397,7 @@ await client.connect(transport);</code></pre>
 ✔ 何度実行しても同じ結果になる（前の実行が残らない） (699.2658ms)</code></pre>
 
 <figure>
-<svg viewBox="0 0 900 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="テスト用クライアントはサーバーを子プロセスとして起こす">
+<svg viewBox="0 0 900 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="テスト用クライアントはサーバを子プロセスとして起こす">
 	<defs>
 		<linearGradient id="g-06-5a" x1="0" y1="1" x2="0" y2="0">
 			<stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/>
@@ -416,7 +416,7 @@ await client.connect(transport);</code></pre>
 	<text x="320" y="97" text-anchor="middle" font-size="11" fill="#4a5568">stdio</text>
 
 	<rect x="380" y="60" width="220" height="90" rx="9" fill="#1d7a3c"/>
-	<text x="490" y="90" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">メモサーバー</text>
+	<text x="490" y="90" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">メモサーバ</text>
 	<text x="490" y="114" text-anchor="middle" font-size="11" fill="#fff">ホストに登録せずに</text>
 	<text x="490" y="134" text-anchor="middle" font-size="11" fill="#fff">そのまま起動できる</text>
 
@@ -426,7 +426,7 @@ await client.connect(transport);</code></pre>
 	<text x="785" y="97" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">tmp/ のファイル</text>
 	<text x="785" y="120" text-anchor="middle" font-size="11" fill="#4a5568">毎回消してから始める</text>
 
-	<text x="450" y="195" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">ホストを起動しなくても、サーバー単体で検証できる</text>
+	<text x="450" y="195" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2330">ホストを起動しなくても、サーバ単体で検証できる</text>
 	<text x="450" y="216" text-anchor="middle" font-size="11" fill="#4a5568">直してはホストを再起動、という往復が要らなくなる</text>
 </svg>
 <figcaption>ホストを介さずに確かめられる。これがあると開発が速くなる。</figcaption>
@@ -447,7 +447,7 @@ await client.connect(transport);</code></pre>
 
 <h2>次の章へ</h2>
 
-<p>このサーバーを、次の章で HTTP に載せ替えます。<strong><code>memo-tools.mjs</code> は 1 文字も変えません。</strong></p>
+<p>このサーバを、次の章で HTTP に載せ替えます。<strong><code>memo-tools.mjs</code> は 1 文字も変えません。</strong></p>
 </section>
 
 </div>
